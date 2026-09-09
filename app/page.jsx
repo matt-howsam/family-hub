@@ -1,9 +1,11 @@
 import Clock from '@/components/Clock';
 import WeekLetter from '@/components/WeekLetter';
 import KidCard from '@/components/KidCard';
+import DayCard from '@/components/DayCard';
 import { getAnchor, hasDb } from '@/lib/db';
 import { weekLetter, today, TZ } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
+import { getEvents } from '@/lib/homecal';
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';
@@ -22,6 +24,57 @@ export default async function Wall() {
   const kids = w.schoolWeek && day
     ? ['tom', 'rose'].map((id) => briefing(id, w.letter, day)).filter(Boolean)
     : [];
+
+  /* The Home calendar. Absent or unreachable simply means no cards — a fridge
+     with no calendar beats a fridge showing an error. */
+  const events = await getEvents({ from: now, days: 8 });
+  const todayKey = now.toISOString().slice(0, 10);
+  const isToday = (e) => e.date === todayKey;
+
+  /* A child's own events belong on their card, not in a general list, so the
+     same activity never appears twice on one screen. */
+  const mine = (id) => events.filter((e) => e.person === id && isToday(e));
+  for (const k of kids) {
+    const own = mine(k.id);
+    if (own.length) {
+      k.after = own.map((e) => (e.time ? `${e.label}, ${e.time}` : e.label)).join(' · ');
+    }
+  }
+
+  /* A mufti day is announced by the school, not scheduled, so the timetable
+     cannot know about it. When the calendar says the uniform changes, it wins. */
+  const override = events.find((e) => isToday(e) && e.uniformOverride);
+  if (override) {
+    for (const k of kids) {
+      k.uniformLabel = 'Mufti day';
+      k.bring = override.label.replace(/^mufti day\s*[-–—:]\s*/i, '') || k.bring;
+    }
+  }
+
+  const kidIds = new Set(kids.map((k) => k.id));
+  const todayEvents = events.filter(
+    (e) => isToday(e) && !kidIds.has(e.person) && e !== override
+  );
+
+  /* A multi-day span appears once per day it covers, which is right for
+     "today" and wrong for a look-ahead list — otherwise school holidays fill
+     it with fifteen identical rows. Keep the first occurrence of each. */
+  const seen = new Set();
+  const ahead = events
+    .filter((e) => !isToday(e))
+    .filter((e) => {
+      const base = e.uid.split(':')[0];
+      if (seen.has(base)) return false;
+      seen.add(base);
+      return true;
+    })
+    .slice(0, 4)
+    .map((e) => ({
+      ...e,
+      when: new Date(e.date + 'T00:00:00Z').toLocaleDateString('en-AU', {
+        timeZone: 'UTC', weekday: 'short',
+      }) + (e.time ? ` ${e.time}` : ''),
+    }));
 
   return (
     <main className="wall">
@@ -43,6 +96,10 @@ export default async function Wall() {
           {kids.map((b) => <KidCard key={b.id} b={b} />)}
         </div>
       )}
+
+      <div data-register="household">
+        <DayCard today={todayEvents} ahead={ahead} />
+      </div>
 
       {/* Household register — the ledger. Tight radius, dense rows, flat white.
           Static until the projects module lands; the markup is the shape the
