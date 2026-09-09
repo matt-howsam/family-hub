@@ -1,7 +1,9 @@
 import Clock from '@/components/Clock';
 import WeekLetter from '@/components/WeekLetter';
+import KidCard from '@/components/KidCard';
 import { getAnchor, hasDb } from '@/lib/db';
 import { weekLetter, today, TZ } from '@/lib/week';
+import { briefing, dayKey } from '@/lib/timetable';
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';
@@ -10,7 +12,16 @@ const fmt = (d, o) => d.toLocaleDateString('en-AU', { timeZone: 'UTC', ...o });
 
 export default async function Wall() {
   const anchor = await getAnchor();
-  const w = weekLetter(anchor, today(TZ));
+  const now = today(TZ);
+  const w = weekLetter(anchor, now);
+
+  /* Only build briefings on a school weekday. At the weekend or in the
+     holidays the children's blocks have nothing true to say, so they are
+     absent rather than stale. */
+  const day = dayKey(now);
+  const kids = w.schoolWeek && day
+    ? ['tom', 'rose'].map((id) => briefing(id, w.letter, day)).filter(Boolean)
+    : [];
 
   return (
     <main className="wall">
@@ -25,6 +36,13 @@ export default async function Wall() {
           canWrite={hasDb}
         />
       </section>
+
+      {/* Family register — people. Softer radius, more air, tinted. */}
+      {kids.length > 0 && (
+        <div data-register="family" style={{ marginTop: 'var(--fh-space-8)' }}>
+          {kids.map((b) => <KidCard key={b.id} b={b} />)}
+        </div>
+      )}
 
       {/* Household register — the ledger. Tight radius, dense rows, flat white.
           Static until the projects module lands; the markup is the shape the
@@ -85,49 +103,6 @@ export default async function Wall() {
               <span className="row__sub">Waiting on the kitchen. Nothing to do.</span>
             </span>
             <span className="row__end"><span className="row__meta">Idea</span></span>
-          </div>
-        </div>
-      </div>
-
-      {/* Family register — people. Softer radius, more air, tinted. */}
-      <div data-register="family" style={{ marginTop: 'var(--fh-space-8)' }}>
-        <div
-          className="card kid"
-          style={{ '--fh-tint': 'var(--fh-tom-slab)', '--fh-slab-ink': 'var(--fh-tom-slab-ink)' }}
-        >
-          <div className="kid__slab" style={{ background: 'var(--fh-tint)' }}>
-            <span className="kid__who">Tom · Year 6</span>
-            <span className="kid__uniform">PE uniform</span>
-          </div>
-          <div className="kid__body">
-            <div className="kid__answer">PE Prac, middle of the day</div>
-            <div className="kid__note">Sport shoes and a water bottle</div>
-            <div className="kid__after">
-              <div className="row__meta">After school</div>
-              <div className="kid__answer" style={{ marginTop: 'var(--fh-space-2)' }}>
-                Surf coaching, 4:00
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="card kid"
-          style={{ '--fh-tint': 'var(--fh-rose-slab)', '--fh-slab-ink': 'var(--fh-rose-slab-ink)' }}
-        >
-          <div className="kid__slab" style={{ background: 'var(--fh-tint)' }}>
-            <span className="kid__who">Rose · Year 7</span>
-            <span className="kid__uniform">Formal uniform</span>
-          </div>
-          <div className="kid__body">
-            <div className="kid__answer">Timber Tech</div>
-            <div className="kid__note">Closed shoes</div>
-            <div className="kid__after">
-              <div className="row__meta">After school</div>
-              <div className="kid__answer" style={{ marginTop: 'var(--fh-space-2)' }}>
-                KPA, 4:00
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -105,7 +105,8 @@ html, body {
 
 .kid { display: flex; align-items: stretch; }
 .kid__slab { background: var(--fh-r-fill);
-             padding: var(--fh-r-pad-y) var(--fh-r-pad-x); min-width: 240px;
+             padding: var(--fh-r-pad-y) var(--fh-r-pad-x);
+             flex: 0 0 34%; min-width: 0;
              display: flex; flex-direction: column; justify-content: center; }
 .kid__who { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
             text-transform: uppercase; color: var(--fh-slab-ink); opacity: .8; }
@@ -134,7 +135,7 @@ html, body {
   .week { min-width: 92px; padding: var(--fh-space-3) var(--fh-space-4); }
   .week__letter { font-size: 34px; }
   .kid { flex-direction: column; }
-  .kid__slab { min-width: 0; }
+  .kid__slab { flex: none; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
