@@ -1,3 +1,5 @@
+import { TShirt } from '@phosphor-icons/react/ssr';
+
 /* One child's day. Server-rendered — nothing here is interactive.
    The uniform answer is the payload; everything else is supporting detail. */
 export default function KidCard({ b }) {
@@ -11,7 +13,10 @@ export default function KidCard({ b }) {
     >
       <div className="kid__slab" style={{ background: 'var(--fh-tint)' }}>
         <span className="kid__who">{b.name} · Year {b.year}</span>
-        <span className="kid__uniform">{b.uniformLabel}</span>
+        <div>
+          <TShirt size={30} className="kid__icon" />
+          <span className="kid__uniform">{b.uniformLabel}</span>
+        </div>
       </div>
       <div className="kid__body">
         {b.headline && <div className="kid__answer">{b.headline}</div>}

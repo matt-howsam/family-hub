@@ -107,11 +107,12 @@ html, body {
 .kid__slab { background: var(--fh-r-fill);
              padding: var(--fh-r-pad-y) var(--fh-r-pad-x);
              flex: 0 0 34%; min-width: 0;
-             display: flex; flex-direction: column; justify-content: center; }
+             display: flex; flex-direction: column; justify-content: space-between; }
 .kid__who { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
             text-transform: uppercase; color: var(--fh-slab-ink); opacity: .8; }
+.kid__icon { display: block; color: var(--fh-slab-ink); margin-bottom: var(--fh-space-2); }
 .kid__uniform { font: var(--fh-text-slab); letter-spacing: var(--fh-track-display);
-                color: var(--fh-slab-ink); margin-top: var(--fh-space-4); }
+                color: var(--fh-slab-ink); }
 .kid__body { flex: 1; padding: var(--fh-r-pad-y) var(--fh-r-pad-x); }
 .kid__answer { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer); }
 .kid__note { font: var(--fh-text-body); color: var(--fh-ink-body);
@@ -125,6 +126,100 @@ html, body {
                 text-transform: uppercase; font-style: normal;
                 color: var(--fh-ink-label); white-space: nowrap; align-self: flex-end; }
 
+/* ---- Module tiles — one line per module, answer first, name last and
+   smallest. Calm and attention differ only by wash + accent colour. ---- */
+.tiles { border-radius: var(--fh-radius-xl); background: var(--fh-surface);
+         box-shadow: var(--fh-shadow-card); overflow: hidden;
+         margin-top: var(--fh-space-6); }
+.tile { display: grid; grid-template-columns: 24px 1fr auto; align-items: center;
+        gap: var(--fh-space-4); padding: var(--fh-space-3) var(--fh-space-6);
+        border-top: var(--fh-border-hair); }
+.tile:first-child { border-top: 0; }
+.tile__icon { color: var(--fh-teal-ink); flex-shrink: 0; }
+.tile__answer { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
+                font-variant-numeric: tabular-nums; }
+.tile__accent { color: var(--fh-teal-ink); }
+.tile__name { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+              text-transform: uppercase; color: var(--fh-ink-label); white-space: nowrap; }
+.tile--attention { background: var(--fh-attention-surface); }
+.tile--attention .tile__icon,
+.tile--attention .tile__answer,
+.tile--attention .tile__name { color: var(--fh-attention-accent); }
+
+/* ---- What's on — a quiet, receding card. Real calendar data. ---- */
+.whats-on { border-radius: var(--fh-radius-xl); background: var(--fh-surface-sunken);
+            padding: var(--fh-space-4) var(--fh-space-6) var(--fh-space-5);
+            margin-top: var(--fh-space-4); }
+.whats-on__label { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                    text-transform: uppercase; color: var(--fh-ink-label);
+                    margin-bottom: var(--fh-space-3); }
+.whats-on__row { font: 500 19px/1.3 var(--fh-font); letter-spacing: -.01em; }
+.whats-on__row + .whats-on__row { margin-top: var(--fh-space-1); }
+.whats-on__when { color: var(--fh-ink-label); font-weight: 400; margin-right: var(--fh-space-2); }
+
+/* ---- Avatar strip — one tap opens a person's own view (not built yet). ---- */
+.avatars { display: flex; justify-content: space-between;
+           padding: 0 var(--fh-space-2); margin-top: var(--fh-space-7); }
+.avatar { text-align: center; }
+.avatar__disc { width: var(--fh-avatar-wall); height: var(--fh-avatar-wall);
+                border-radius: var(--fh-radius-pill); display: flex;
+                align-items: center; justify-content: center;
+                font: 700 30px var(--fh-font); }
+.avatar__name { display: block; font: var(--fh-text-label);
+                letter-spacing: var(--fh-track-label); text-transform: uppercase;
+                color: var(--fh-ink-label); margin-top: var(--fh-space-3); }
+.avatar__rule { width: 22px; height: 3px; border-radius: var(--fh-radius-pill);
+                background: var(--fh-teal-ink); margin: var(--fh-space-2) auto 0; }
+
+/* ---- Water hero — the non-school-day family lead. Static until a surf or
+   weather source is wired in. ---- */
+.water { border-radius: var(--fh-radius-2xl); background: var(--fh-water);
+         color: var(--fh-ink-inverse); padding: var(--fh-space-6) var(--fh-space-7) var(--fh-space-7); }
+.water__head { display: flex; justify-content: space-between; align-items: flex-start;
+               gap: var(--fh-space-6); }
+.water__label { font: var(--fh-text-label); letter-spacing: .2em;
+                text-transform: uppercase; opacity: .9; }
+.water__title { font: var(--fh-text-hero); letter-spacing: var(--fh-track-display);
+                margin-top: var(--fh-space-3); }
+.water__verdict { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
+                   margin-top: var(--fh-space-2); }
+.water__icon { opacity: .5; flex-shrink: 0; }
+.water__stats { display: flex; flex-wrap: wrap; gap: var(--fh-space-2) var(--fh-space-8);
+                margin-top: var(--fh-space-5); padding-top: var(--fh-space-4);
+                border-top: 1px solid var(--fh-water-rule);
+                font: 500 20px/1.25 var(--fh-font); font-variant-numeric: tabular-nums; }
+.water__note { font: 400 italic 21px/1.3 var(--fh-font); margin-top: var(--fh-space-4);
+               opacity: .95; }
+
+/* ---- Chores — static until the chores module ships. Ticking one is the
+   one write the fridge allows, but it happens in a personal view, not here. ---- */
+.chore { display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+         gap: var(--fh-space-5); background: var(--fh-surface);
+         border-radius: var(--fh-radius-xl); box-shadow: var(--fh-shadow-card);
+         padding: var(--fh-space-4) var(--fh-space-5); }
+.chore + .chore { margin-top: var(--fh-space-4); }
+.chore__avatar { width: var(--fh-avatar-row); height: var(--fh-avatar-row);
+                 border-radius: var(--fh-radius-pill); display: flex;
+                 align-items: center; justify-content: center;
+                 font: 700 21px var(--fh-font); flex-shrink: 0; }
+.chore__who { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+              text-transform: uppercase; color: var(--fh-ink-label);
+              margin-bottom: var(--fh-space-3); }
+.chore__list { display: flex; flex-wrap: wrap; gap: var(--fh-space-2) var(--fh-space-3);
+               align-items: center; }
+.chore__pill { display: inline-flex; align-items: center; gap: var(--fh-space-2);
+               border-radius: var(--fh-radius-md); padding: 9px var(--fh-space-4);
+               font: 500 18px var(--fh-font); min-height: var(--fh-target-min); }
+.chore__pill--done { background: var(--fh-teal-wash); color: var(--fh-teal-ink);
+                      text-decoration: line-through; }
+.chore__pill--open { background: var(--fh-surface-sunken);
+                      border-bottom: 3px solid var(--fh-teal); }
+.chore__earned { text-align: right; flex-shrink: 0; }
+.chore__figure { font: var(--fh-text-figure); letter-spacing: var(--fh-track-title);
+                 color: var(--fh-teal-ink); font-variant-numeric: tabular-nums; }
+.chore__label { display: block; font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                text-transform: uppercase; color: var(--fh-ink-label); margin-top: var(--fh-space-1); }
+
 @media (max-width: 560px) {
   .wall { padding: var(--fh-gutter-phone); }
   .clock { font-size: 38px; }
@@ -136,6 +231,9 @@ html, body {
   .week__letter { font-size: 34px; }
   .kid { flex-direction: column; }
   .kid__slab { flex: none; }
+  .tile__answer { font-size: 19px; }
+  .water__title { font-size: 38px; }
+  .avatar__disc { width: 60px; height: 60px; font-size: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
