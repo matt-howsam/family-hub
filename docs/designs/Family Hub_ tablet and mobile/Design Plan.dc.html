@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,300;1,6..72,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#EDE8DC; color:#1C242A; font-family:'Archivo',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:#8A5C12; text-decoration:none; border-bottom:1px solid rgba(169,114,26,.35); }
+  a:hover { color:#6E4A0E; border-bottom-color:#6E4A0E; }
+  * { box-sizing:border-box; }
+</style>
+</helmet>
+
+<div style="max-width:980px;margin:0 auto;padding:0 0 120px;background:#F6F2E9;box-shadow:0 0 0 1px rgba(28,36,42,.08),0 24px 60px rgba(28,36,42,.10);">
+
+  <header style="padding:56px 56px 40px;border-bottom:2px solid #1C242A;">
+    <div style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#5C6670;">Howsam Household · Family Hub</div>
+    <h1 style="margin:14px 0 0;font:700 clamp(38px,6vw,62px)/1.02 'Newsreader',serif;letter-spacing:-.015em;">Design Plan</h1>
+    <p style="margin:12px 0 0;font:400 17px/1.5 'Archivo',sans-serif;color:#5C6670;max-width:58ch;text-wrap:pretty;">Palette, typefaces, layout concept and the principles this build runs on. For review before any pixels. Nothing here is built yet — the sketches are deliberately rough.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:28px;margin-top:28px;font:500 12px/1 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;">
+      <span>Version 1</span><span>5 September 2026</span><span>Read: register, scorecard, 6C timetable</span>
+    </div>
+  </header>
+
+  <!-- 01 WHAT I READ -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:22px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">01</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">What I took from the paper</h2>
+    </div>
+    <p style="margin:0 0 26px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">The two documents already have a design point of view and it is a good one. I am not starting from scratch; I am translating a page meant to be written on into a page meant to be read across a room. Three things carry over intact, one thing has to change.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:10px;">Carries over</div>
+        <div style="font:600 19px/1.25 'Newsreader',serif;margin-bottom:8px;">Letterspaced micro-caps</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">Every label on both documents is small, uppercase and widely tracked. It is how the paper stays quiet while still being organised. It becomes the Hub's only label style.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:10px;">Carries over</div>
+        <div style="font:600 19px/1.25 'Newsreader',serif;margin-bottom:8px;">Money is set in serif</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">$6,618.78 and $4,650 are the loudest things on the paper and they are serif, not sans. Figures stay serif everywhere in the Hub. It is why the product will not read as a budgeting app.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:10px;">Carries over</div>
+        <div style="font:600 19px/1.25 'Newsreader',serif;margin-bottom:8px;">One warm accent, earned</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">The register uses brass on precisely five things: the pull-quote, the action queue, the two switched policies, the overleaf line. Nothing decorative is coloured. That discipline is the whole reason a wall of amber never happens.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:10px;">Has to change</div>
+        <div style="font:600 19px/1.25 'Newsreader',serif;margin-bottom:8px;">The grid of columns</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">Eight columns work at arm's length with a pen. At a metre they collapse. Rows become two-line stacks: the fact on top, its qualifiers beneath. Same information, half the width, four times the size.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;border-left:3px solid #A9721A;padding:4px 0 4px 20px;">
+      <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:9px;">Three things in the paper that differ from the brief</div>
+      <ul style="margin:0;padding-left:18px;font:400 15px/1.65 'Archivo',sans-serif;color:#3E474E;">
+        <li>The current card is <strong style="font-weight:600;">September: $4,650 target, $1,163 per week</strong> — the brief says August's $4,510 / $1,128. I will design against September, and against Week 4 being 9 days with a pro-rata target of $1,495, because a scorecard that cannot express a short week is broken in the first month I ship it.</li>
+        <li>The mortgage is mid-switch to Peoples Choice at 5.84%, saving ~$2,231/yr. That is a second savings win in flight and roughly <em>one and a half times</em> the home insurance one. Savings Won needs to hold a pending row, not just a done one.</li>
+        <li>The register has rows with no cost at all — Mazda CTP "Insurer TBC", boat licence "TBC". Missing cost is as normal as missing renewal date, and both are small calls to action rather than gaps.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 02 PALETTE -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">02</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Palette</h2>
+    </div>
+    <p style="margin:0 0 26px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">Twelve values, three of which carry meaning and nine of which are structure. The meaning is the important part: <strong style="font-weight:600;">ink states a fact, green marks progress, brass asks for something.</strong> No fourth semantic colour will be added — severity is expressed in type size, never in hue, which is how "two states, not a gradient" survives contact with nine modules.</p>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">Ground · the paper it is printed on</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:30px;">
+      <div><div style="height:76px;background:#F6F2E9;border:1px solid #DED7C7;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Paper</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#F6F2E9 · every ground</div></div>
+      <div><div style="height:76px;background:#FFFCF6;border:1px solid #DED7C7;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Leaf</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#FFFCF6 · rows, cards</div></div>
+      <div><div style="height:76px;background:#EDE8DC;border:1px solid #DED7C7;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Shade</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#EDE8DC · recessed, desk</div></div>
+      <div><div style="height:76px;background:#DED7C7;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Rule</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#DED7C7 · every hairline</div></div>
+    </div>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">Ink · facts, in four weights of certainty</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:30px;">
+      <div><div style="height:76px;background:#12181C;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Black</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#12181C · inverted bars</div></div>
+      <div><div style="height:76px;background:#1C242A;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Ink</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#1C242A · all primary text</div></div>
+      <div><div style="height:76px;background:#5C6670;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Graphite</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#5C6670 · qualifiers, notes</div></div>
+      <div><div style="height:76px;background:#6B7379;"></div><div style="margin-top:8px;font:600 13px/1.3 'Archivo',sans-serif;">Mist</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#6B7379 · labels, stale ink · 4.6:1</div></div>
+    </div>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">Meaning · only these three ever mean anything</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;margin-bottom:16px;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:0;">
+        <div style="height:96px;background:#3C5148;"></div>
+        <div style="padding:16px 18px 18px;">
+          <div style="font:600 15px/1.3 'Archivo',sans-serif;">Register Green <span style="font-weight:500;color:#6B7379;letter-spacing:.04em;">#3C5148</span></div>
+          <p style="margin:8px 0 0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;"><strong style="font-weight:600;color:#3E474E;">Progress.</strong> Section headers, savings won, a chore ticked, a stage moved forward, a trip booked. Lifted straight off the register's section bars. It never asks for anything.</p>
+        </div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:0;">
+        <div style="height:96px;background:#A9721A;"></div>
+        <div style="padding:16px 18px 18px;">
+          <div style="font:600 15px/1.3 'Archivo',sans-serif;">Brass <span style="font-weight:500;color:#6B7379;letter-spacing:.04em;">#A9721A · #8A5C12 small</span></div>
+          <p style="margin:8px 0 0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;"><strong style="font-weight:600;color:#3E474E;">Attention, and nothing else.</strong> Status A, a renewal inside 14 days, a slot past its decide-by, a briefing that failed to refresh. Budget: roughly six brass marks visible across the whole wall at once. Past that it stops working and I will cut something. Two values: <strong style="font-weight:600;">#A9721A at headline scale</strong>, where it has the mass to carry, and <strong style="font-weight:600;">#8A5C12 for anything label-sized</strong> — the lighter brass measures 5.1:1 on paper against the headline value's 3.4:1, which is fine for a 26px answer line and not fine for a 10px micro-cap.</p>
+        </div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:0;">
+        <div style="height:96px;background:#F6F2E9;border-bottom:1px solid #DED7C7;display:flex;align-items:center;justify-content:center;"><span style="font:700 30px/1 'Newsreader',serif;color:#1C242A;">$2,462</span></div>
+        <div style="padding:16px 18px 18px;">
+          <div style="font:600 15px/1.3 'Archivo',sans-serif;">Unpainted <span style="font-weight:500;color:#6B7379;letter-spacing:.04em;">the default</span></div>
+          <p style="margin:8px 0 0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;"><strong style="font-weight:600;color:#3E474E;">A fact.</strong> The overwhelming majority of the product. Ink on paper, sized by importance. If everything that matters is coloured, colour has stopped meaning anything.</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin:0 0 30px;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:66ch;">Every ink tier clears 4.5:1 on both grounds — Graphite 6.9:1, Mist 4.6:1, Green 7.7:1 — which is a hard requirement rather than a nicety, because Mist carries the source-and-age lines that principle 2 depends on and the wall is read from a metre away. Deliberately absent: red. There is no emergency in this house. A twenty-year-old hot water unit, a stalled bathroom remodel and a credit card fee are all quiet dated facts, and the register's own most urgent state is a small brass letter <strong style="font-weight:600;">A</strong>.</p>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">People · four hues, identifiable from across the kitchen</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:14px;"><div style="width:64px;height:64px;border-radius:50%;background:#35566B;display:flex;align-items:center;justify-content:center;font:500 26px/1 'Newsreader',serif;color:#F6F2E9;flex:none;">M</div><div><div style="font:600 14px/1.3 'Archivo',sans-serif;">Matt</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#35566B</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;"><div style="width:64px;height:64px;border-radius:50%;background:#8A4B62;display:flex;align-items:center;justify-content:center;font:500 26px/1 'Newsreader',serif;color:#F6F2E9;flex:none;">R</div><div><div style="font:600 14px/1.3 'Archivo',sans-serif;">Renée</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#8A4B62</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;"><div style="width:64px;height:64px;border-radius:50%;background:#6B4E8C;display:flex;align-items:center;justify-content:center;font:500 26px/1 'Newsreader',serif;color:#F6F2E9;flex:none;">R</div><div><div style="font:600 14px/1.3 'Archivo',sans-serif;">Rose</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#6B4E8C</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;"><div style="width:64px;height:64px;border-radius:50%;background:#2C6B62;display:flex;align-items:center;justify-content:center;font:500 26px/1 'Newsreader',serif;color:#F6F2E9;flex:none;">T</div><div><div style="font:600 14px/1.3 'Archivo',sans-serif;">Tom</div><div style="font:500 12px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.04em;">#2C6B62</div></div></div>
+    </div>
+    <p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:66ch;">Four different hues at one shared value and saturation, so no-one's disc reads as more important than anyone else's, and none of them is brass or green — a person can never accidentally look like an alert. Flat initial discs now, per your call; the illustrated set drops into exactly this footprint later. Rose and Tom share an initial, so the disc always carries the colour and the letter together, and the two R's are the furthest-apart hues of the four.</p>
+  </section>
+
+  <!-- 03 TYPE -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">03</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Typefaces and their jobs</h2>
+    </div>
+    <p style="margin:0 0 26px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">Two families, split by job rather than by hierarchy: <strong style="font-weight:600;">the serif holds anything true about the world</strong> — money, dates, names, the next action — <strong style="font-weight:600;">and the sans holds anything the interface is saying about it.</strong> Once that rule is in place, a number never needs a label to look like a number.</p>
+
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:30px 28px;margin-bottom:14px;">
+      <div style="display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;margin-bottom:20px;">
+        <span style="font:700 26px/1 'Newsreader',serif;">Newsreader</span>
+        <span style="font:500 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Facts · display · all figures</span>
+      </div>
+      <div style="font:400 46px/1.1 'Newsreader',serif;letter-spacing:-.01em;margin-bottom:6px;">Paint the house</div>
+      <div style="font:700 46px/1.1 'Newsreader',serif;font-variant-numeric:tabular-nums;margin-bottom:6px;">$2,462 · $4,650 · $1,449</div>
+      <div style="font:400 italic 26px/1.3 'Newsreader',serif;color:#5C6670;">Call Brett for a quote.</div>
+      <p style="margin:18px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:64ch;">A bookish serif with true tabular figures, so columns of money align without a monospace. It has the paper's warmth without the printed page's fussiness, holds up at 200px for the week letter, and its italic gives me a voice for the family's own phrases that is not just another weight.</p>
+    </div>
+
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:30px 28px;margin-bottom:24px;">
+      <div style="display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;margin-bottom:20px;">
+        <span style="font:700 26px/1 'Archivo',sans-serif;">Archivo</span>
+        <span style="font:500 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Labels · body · interface</span>
+      </div>
+      <div style="font:600 15px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px;">Renewal · Provider · Stalled 142 days</div>
+      <div style="font:400 19px/1.5 'Archivo',sans-serif;max-width:52ch;margin-bottom:6px;">Quoting since 4 May. Nothing has moved.</div>
+      <p style="margin:18px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:64ch;">A grotesque that stays sturdy when tracked out to 0.18em, which the paper's micro-caps require. Not Inter, not Roboto — it has slightly narrower, more deliberate proportions that keep dense fridge rows from turning into an admin panel.</p>
+    </div>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">The scale · fridge, read at a metre</div>
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;">
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;gap:0;background:#12181C;color:#F6F2E9;font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;"><div style="padding:12px 16px;">Size</div><div style="padding:12px 16px;">Role</div><div style="padding:12px 16px;">Specimen</div></div>
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;border-bottom:1px solid #EDE8DC;align-items:center;"><div style="padding:14px 16px;font:600 13px/1 'Archivo',sans-serif;color:#6B7379;">200px</div><div style="padding:14px 16px;font:400 14px/1.4 'Archivo',sans-serif;">Week letter</div><div style="padding:8px 16px;font:700 64px/1 'Newsreader',serif;">B</div></div>
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;border-bottom:1px solid #EDE8DC;align-items:center;"><div style="padding:14px 16px;font:600 13px/1 'Archivo',sans-serif;color:#6B7379;">40px</div><div style="padding:14px 16px;font:400 14px/1.4 'Archivo',sans-serif;">The one next action · the uniform answer</div><div style="padding:12px 16px;font:400 27px/1.2 'Newsreader',serif;">Sports uniform</div></div>
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;border-bottom:1px solid #EDE8DC;align-items:center;"><div style="padding:14px 16px;font:600 13px/1 'Archivo',sans-serif;color:#6B7379;">34px</div><div style="padding:14px 16px;font:400 14px/1.4 'Archivo',sans-serif;">Money, tile answer lines</div><div style="padding:12px 16px;font:700 23px/1.2 'Newsreader',serif;font-variant-numeric:tabular-nums;">$4,650</div></div>
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;border-bottom:1px solid #EDE8DC;align-items:center;"><div style="padding:14px 16px;font:600 13px/1 'Archivo',sans-serif;color:#6B7379;">30px</div><div style="padding:14px 16px;font:400 14px/1.4 'Archivo',sans-serif;">Row title — a job, a service, a class</div><div style="padding:12px 16px;font:400 20px/1.2 'Newsreader',serif;">Remodel kitchen</div></div>
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;border-bottom:1px solid #EDE8DC;align-items:center;"><div style="padding:14px 16px;font:600 13px/1 'Archivo',sans-serif;color:#6B7379;">20px</div><div style="padding:14px 16px;font:400 14px/1.4 'Archivo',sans-serif;">Qualifier beneath a fact</div><div style="padding:12px 16px;font:400 15px/1.3 'Archivo',sans-serif;color:#5C6670;">working average / mo</div></div>
+      <div style="display:grid;grid-template-columns:100px 1fr 1.3fr;align-items:center;"><div style="padding:14px 16px;font:600 13px/1 'Archivo',sans-serif;color:#6B7379;">15px</div><div style="padding:14px 16px;font:400 14px/1.4 'Archivo',sans-serif;">Micro-caps label · the floor</div><div style="padding:12px 16px;font:600 12px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#6B7379;">Last moved</div></div>
+    </div>
+    <p style="margin:14px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:66ch;">Specimens shown here at document scale, not fridge scale. Nothing on the wall goes below 15px and nothing below 20px carries information you would be annoyed to miss. Phone scale is a separate ramp, roughly 60% of these, because a phone is read at 30cm.</p>
+  </section>
+
+  <!-- 04 LAYOUT -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">04</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Layout concept — the Page and the Slip</h2>
+    </div>
+    <p style="margin:0 0 28px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">One idea, and it comes from the fridge itself: <strong style="font-weight:600;">the iPad is a page pinned to the door, and a phone is a slip of paper you fill in and hand over.</strong> The page never scrolls if I can help it, has no navigation chrome, and is always already open. The slip is a single-purpose form with a large target for every finger.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:24px;">
+      <div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:12px;">The Page · 810 × 1080, portrait, never sleeps</div>
+        <div style="border:1px solid #DED7C7;background:#F6F2E9;padding:14px;">
+          <div style="aspect-ratio:810/1080;background:#FFFCF6;border:1px solid #DED7C7;display:flex;flex-direction:column;padding:14px;gap:10px;">
+            <div style="border:1px dashed #C8BFA9;padding:10px 12px;">
+              <div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">Standing head — never changes position</div>
+              <div style="font:400 13px/1.3 'Newsreader',serif;color:#5C6670;margin-top:6px;">Saturday 5 September · Week B · 7:42 am</div>
+            </div>
+            <div style="flex:1.5;border:1px dashed #C8BFA9;background:#F6F2E9;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;">
+              <div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">The answer zone</div>
+              <div style="font:400 12px/1.45 'Archivo',sans-serif;color:#5C6670;margin-top:8px;">Whatever the house needs right now, at the largest size on the screen. Time of day decides what lives here — the uniform answer before school, the spending number on Sunday evening, the stalled list on Saturday morning.</div>
+            </div>
+            <div style="flex:2;border:1px dashed #C8BFA9;padding:10px 12px;">
+              <div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">The register — a stack of rows</div>
+              <div style="font:400 12px/1.45 'Archivo',sans-serif;color:#5C6670;margin-top:8px;">Full-width rows, hairline-separated, one line of answer each. No cards, no tiles-in-a-grid, no gutters wasted on a second column. This is the shape both paper documents already use and it is why they work at 30+ rows.</div>
+            </div>
+            <div style="border:1px dashed #C8BFA9;padding:10px 12px;">
+              <div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">Avatar strip — thumb reach, ~140px tall</div>
+            </div>
+            <div style="border:1px dashed #C8BFA9;padding:8px 12px;">
+              <div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Footer — the house line, and freshness</div>
+            </div>
+          </div>
+        </div>
+        <p style="margin:12px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;">Rough placement only. Ratios and row counts get decided against real content, not in the abstract.</p>
+      </div>
+      <div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:12px;">The Slip · phone, one job at a time</div>
+        <div style="border:1px solid #DED7C7;background:#F6F2E9;padding:14px;">
+          <div style="aspect-ratio:393/852;max-width:230px;margin:0 auto;background:#FFFCF6;border:1px solid #DED7C7;display:flex;flex-direction:column;padding:12px;gap:9px;">
+            <div style="border:1px dashed #C8BFA9;padding:8px 10px;"><div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">What and whose</div></div>
+            <div style="flex:1;border:1px dashed #C8BFA9;padding:8px 10px;"><div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">The one field</div><div style="font:400 11px/1.45 'Archivo',sans-serif;color:#5C6670;margin-top:6px;">Eleven numbers, or a stage change, or a line of next action. Sensitive fields — policy numbers, plates, the mortgage payment — exist only here.</div></div>
+            <div style="border:1px dashed #C8BFA9;padding:14px 10px;text-align:center;"><div style="font:600 9px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;">One commit, ≥56px</div></div>
+          </div>
+        </div>
+        <p style="margin:12px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;">Every screen exists twice. The fridge variant is not the phone variant with the buttons disabled — it is a different composition, generated from the same row, and it has no affordances at all.</p>
+      </div>
+    </div>
+
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 26px;">
+      <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:12px;">How the fridge shows read-only without looking disabled</div>
+      <p style="margin:0 0 12px;font:400 15px/1.65 'Archivo',sans-serif;color:#3E474E;max-width:70ch;text-wrap:pretty;">Your §13 question, and it is answered by removal plus one addition. Removal: no buttons, no chevrons, no rounded rectangles anywhere on the wall, no tap targets except the avatar strip, the week letter and a chore tick. Nothing on the page looks pressable, so nothing looks broken for not being pressable.</p>
+      <p style="margin:0;font:400 15px/1.65 'Archivo',sans-serif;color:#3E474E;max-width:70ch;text-wrap:pretty;">The addition: the three things that <em>are</em> tappable share one visual signature that appears nowhere else — a solid ink underline, 3px, sitting directly under the text. Learn it once, and the whole wall's interaction model is known. Everything else is print.</p>
+    </div>
+  </section>
+
+  <!-- 05 PRINCIPLES -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">05</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Working principles</h2>
+    </div>
+    <p style="margin:0 0 26px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;">Your seven product principles restated as things I can be held to at the pixel level. Each one has a consequence I have to live with.</p>
+
+    <div style="display:grid;gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">1</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">Severity is typographic, never chromatic</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">A job stalled 142 days and one stalled 24 days are the same brass, different type sizes. Consequence: the stalled list is a size ramp, and the worst job is physically the biggest thing on the screen.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">2</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">Every generated claim carries its source and its age, inline</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">Not in a settings pane, not on hover — a mist-coloured micro-caps line beneath the claim: <span style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">School email · 6:04 am</span>. Consequence: entered content and generated content are visibly different species, and the family learns to read freshness without ever being told.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">3</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">Stale is a state of the ink, not a banner</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">A value that failed to refresh drops from Ink to Mist and keeps its timestamp. It is still the last known truth and still readable. Consequence: no spinners, no skeletons, no error dialogs anywhere in the product.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">4</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">A cost never appears without its basis</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">$346.50 <span style="color:#3E474E;">per month</span> and ~$175 <span style="color:#3E474E;">working avg / mo</span> are different kinds of number. Actuals get full ink and no marker; working averages and estimates keep the tilde and set the basis line in italic serif. Consequence: nothing in the register is ever rounded into a lie, and the same rule governs asset estimates — "2026 estimate" is a basis, not a footnote.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">5</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">Objects decay. People do not.</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">Days-since, stall lists and dated attention states apply to jobs, assets, renewals and slots. Goals and chores get <em>next step</em> and a week that resets clean. Consequence: no counter, streak, bar or brass mark ever appears next to a child's name — and I will treat that as a bug, not a preference.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">6</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">Debt and progress are always set as a pair</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">Never a number owed without the matching number won, at matching weight. $2,462/mo being reduced sits beside $1,449 saved; seven stalled jobs sit beside the count moved this month. Consequence: no screen in the product can be read as purely bad news, which is the difference between a wall that gets looked at and one that gets ignored.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">7</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">The house speaks in its own sentences</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">Empty states are invitations: <em>"Nothing has moved in a fortnight. Pick one."</em> Not "No items." The register's own lines — <em>"Nothing renews without a conscious decision"</em> — are set in italic serif and used as running heads, the way the paper uses them. Consequence: zero task-management vocabulary. No backlog, no items, no cards, no tasks, no dashboard-speak.</p></div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+        <span style="font:700 22px/1 'Newsreader',serif;color:#8A5C12;">8</span>
+        <div><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:6px;">A correction always reads as chosen</div><p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">Hand-corrected content — a week letter someone flipped, a class a parent fixed after re-import — is the <em>most</em> trustworthy content in the system, and gets full ink plus a small attribution: <span style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Set by Matt · Mon</span>. Consequence: nothing that a human overruled ever renders in an error or warning treatment. Your timetable is corrected in four places in blue pen and those four are the right ones.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 MONEY -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">06</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">The three kinds of money</h2>
+    </div>
+    <p style="margin:0 0 24px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">Deliverable 12.9, resolved as a typographic scheme rather than a legend. Three numbers, three different sentence shapes, and the shape tells you what kind of money it is before you have read the figure.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:26px 24px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:14px;">Recurring · the register</div>
+        <div style="font:700 40px/1 'Newsreader',serif;font-variant-numeric:tabular-nums;">$2,462<span style="font:400 20px/1 'Newsreader',serif;color:#5C6670;">/mo</span></div>
+        <div style="font:400 italic 16px/1.4 'Newsreader',serif;color:#3C5148;margin-top:8px;">and falling</div>
+        <p style="margin:12px 0 0;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Set with a rate. It has a direction, so it always carries the savings-won figure and the verb. Green, because the story is progress.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:26px 24px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:14px;">Capital · the assets</div>
+        <div style="font:700 40px/1 'Newsreader',serif;font-variant-numeric:tabular-nums;">$318<span style="font:400 20px/1 'Newsreader',serif;color:#5C6670;">/mo</span></div>
+        <div style="font:400 italic 16px/1.4 'Newsreader',serif;color:#5C6670;margin-top:8px;">to not be surprised</div>
+        <p style="margin:12px 0 0;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Set with a horizon, never a target. Illustrative figure — it comes out of the real asset list. Unpainted ink: it is neither a debt nor a win, just arithmetic about a 20-year-old house.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:26px 24px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:14px;">Discretionary · the scorecard</div>
+        <div style="font:700 40px/1 'Newsreader',serif;font-variant-numeric:tabular-nums;">$1,163<span style="font:400 20px/1 'Newsreader',serif;color:#5C6670;">/wk</span></div>
+        <div style="font:400 italic 16px/1.4 'Newsreader',serif;color:#5C6670;margin-top:8px;">of $4,650 this month</div>
+        <p style="margin:12px 0 0;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Set with a pace. The only one of the three with a week in it, and the only one that can be over. Weekly on the wall; the month total is a phone number.</p>
+      </div>
+    </div>
+    <p style="margin:16px 0 0;font:400 15px/1.65 'Archivo',sans-serif;color:#3E474E;max-width:72ch;text-wrap:pretty;"><strong style="font-weight:600;">The unit is the tell:</strong> a rate that is falling, a rate with a horizon, a pace against a target. Nobody needs to be taught that. And the scorecard's own <em>"Not on this card"</em> list travels with the $4,650 wherever it appears, stated flatly and without apology — it is the sentence that stops $4,650 reading as what the family costs to run.</p>
+  </section>
+
+  <!-- 07 ATTENTION -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">07</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Calm and attention, side by side</h2>
+    </div>
+    <p style="margin:0 0 24px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;">Deliverable 12.10 in rough. A tile in attention differs by exactly three things: a 4px brass edge, the answer line in brass, and one extra line saying what to do. Nothing moves, nothing grows, nothing pulses.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
+      <div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:10px;">Calm</div>
+        <div style="background:#FFFCF6;border:1px solid #DED7C7;border-left:4px solid #DED7C7;padding:22px 24px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;"><span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#5C6670;">Register</span></div>
+          <div style="font:400 26px/1.25 'Newsreader',serif;margin-top:12px;">Nothing renews for 6 weeks</div>
+          <div style="font:400 italic 18px/1.3 'Newsreader',serif;color:#3C5148;margin-top:8px;">$1,449 saved this year</div>
+        </div>
+      </div>
+      <div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:10px;">Attention</div>
+        <div style="background:#FFFCF6;border:1px solid #DED7C7;border-left:4px solid #A9721A;padding:22px 24px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;"><span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#5C6670;">Register</span><span style="font:700 13px/1 'Archivo',sans-serif;letter-spacing:.1em;color:#8A5C12;">A</span></div>
+          <div style="font:400 26px/1.25 'Newsreader',serif;color:#A9721A;margin-top:12px;">Green slip due 29 Oct</div>
+          <div style="font:400 18px/1.35 'Archivo',sans-serif;color:#3E474E;margin-top:8px;">Compare before you renew.</div>
+          <div style="font:400 italic 18px/1.3 'Newsreader',serif;color:#3C5148;margin-top:6px;">$1,449 saved this year</div>
+        </div>
+      </div>
+    </div>
+    <p style="margin:16px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:72ch;">The win line stays in both states. That is principle 6 doing its job in the smallest possible space.</p>
+  </section>
+
+  <!-- 08 STATES -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">08</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Growing from one module to nine</h2>
+    </div>
+    <p style="margin:0 0 24px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">The Page absorbs modules by getting <em>denser at the bottom</em> and never by adding chrome. Nothing re-lays-out when a module arrives, because the standing head, the answer zone and the row stack exist from day one — the stack just gets longer and the rows get shorter.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:10px;">State A · now</div>
+        <div style="font:600 18px/1.3 'Newsreader',serif;margin-bottom:8px;">The stalled list is the home screen</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">No dashboard, no tiles, no avatar strip — there is nothing personal behind it yet, and four discs that lead nowhere would be the first lie the product tells. The standing head and the answer zone are already there, holding the worst job.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:10px;">State B · three modules</div>
+        <div style="font:600 18px/1.3 'Newsreader',serif;margin-bottom:8px;">The list steps down, the stack appears</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">Projects gives up the answer zone and becomes the first row in the stack. A module arriving is a row appearing at its rank in the decay order, which is a small, legible change — not a re-shuffle.</p>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:10px;">State C · all nine</div>
+        <div style="font:600 18px/1.3 'Newsreader',serif;margin-bottom:8px;">Nine modules, five rows</div>
+        <p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">The wall stays glanceable only if calm modules are allowed to be <em>absent</em>. A module with nothing to say prints no row — it lives behind the avatar strip or one tap down. Nine modules do not mean nine rows, and if the wall ever needs a tenth row, the answer is a shorter wall.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 JOY -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">09</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Where the joy goes</h2>
+    </div>
+    <p style="margin:0 0 24px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">Your note. The rule I would work to: <strong style="font-weight:600;">the surprises are dry, they are rare, and they are all about this house specifically.</strong> Nothing congratulates anyone. A widget that says "Great job!" is exactly the thing Rose will use to decide the whole app is embarrassing. Six candidates, and I would ship two or three.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;"><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:8px;">The strike-through</div><p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">When a job finally moves, <span style="text-decoration:line-through;text-decoration-thickness:2px;color:#6B7379;">142 days</span> does not vanish — it gets a line drawn through it and sits there for the rest of the day before the counter resets. You beat it, and you get to see the number you beat.</p></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;"><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:8px;">Week closed</div><p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">The eleventh Sunday number lands and the card takes a letterpress stamp — <span style="font:600 11px 'Archivo',sans-serif;letter-spacing:.16em;color:#3C5148;">WEEK CLOSED</span>, slightly off-square, like it was done by hand. The whole ritual gets a full stop.</p></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;"><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:8px;">The house line
+</div><p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">One line in the footer that is about the house and not about the family's obligations: water 22°, high tide 4:12, the moon, the first frost that will never come. It changes daily and asks for nothing. This is the reason to look when nothing needs you.</p></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;"><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:8px;">Anniversaries of wins</div><p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">One year on from the insurance switch, the register mentions it once: <em>"a year ago today. $1,449, still working."</em> The family's own scoreboard, keeping its own score.</p></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;"><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:8px;">Rare empty states</div><p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">Nothing stalled is a genuinely unusual event and the screen is allowed to say so: <em>"Nothing has stalled. This has not happened before."</em> Dry, factual, and quietly a bit funny because it is true.</p></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 20px;"><div style="font:600 17px/1.3 'Newsreader',serif;margin-bottom:8px;">The tick</div><p style="margin:0;font:400 14px/1.55 'Archivo',sans-serif;color:#5C6670;">The one tactile thing in the product, performed by an 11-year-old with wet hands. A 72px target, an ink stamp that lands slightly rotated with a short weighted thump, and the row settles into green. No confetti, no sound, no score.</p></div>
+    </div>
+  </section>
+
+  <!-- 10 DECISIONS -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">10</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Decisions taken, and what I need from you</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
+      <div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:12px;">Taken, from your answers</div>
+        <ul style="margin:0;padding-left:18px;font:400 15px/1.7 'Archivo',sans-serif;color:#3E474E;">
+          <li>Canvas is <strong style="font-weight:600;">810 × 1080</strong>, portrait, fluid enough to survive a different iPad.</li>
+          <li>Projects is <strong style="font-weight:600;">pointed</strong> — it gets the size ramp, the day counts stated bluntly, and no softening language. Everything else in the product is warm by contrast.</li>
+          <li>Holidays and Wants stay <strong style="font-weight:600;">two modules</strong>. Slots and a decide-by on one, a queue with one active item on the other. They will cross-reference, not merge.</li>
+          <li>Chores ship with a <strong style="font-weight:600;">rate line that is data, not layout</strong> — flat-weekly and per-job both render in the same row shape, so the family decision can land later without a redesign.</li>
+          <li>Avatars are flat initial discs in the four hues above, sized and positioned for illustration to drop in later.</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:12px;">Open — worth a minute before I build</div>
+        <ul style="margin:0;padding-left:18px;font:400 15px/1.7 'Archivo',sans-serif;color:#3E474E;">
+          <li><strong style="font-weight:600;">The uniform answer on the dashboard.</strong> Your §13 asks it and I think yes — it and the week letter share the answer zone before school, which is the single biggest daily win in the product. It does cost the largest real estate on the wall to a question that is irrelevant from 9am.</li>
+          <li><strong style="font-weight:600;">Does the queued state show its blocker by name?</strong> "Waiting on the kitchen" is more useful than "Queued", but it is one step from the dependency graph you ruled out. I would show the name and stop there.</li>
+          <li><strong style="font-weight:600;">Two savings-won rows, one pending.</strong> The mortgage switch is worth ~$2,231/yr and is not done. Pending wins are motivating but a scoreboard of things that nearly happened is worse than a short honest one.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT -->
+  <section style="padding:44px 56px 0;border-top:2px solid #1C242A;margin-top:36px;">
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:14px;">Next, on your word</div>
+    <p style="margin:0 0 16px;font:400 17px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:66ch;text-wrap:pretty;">Deliverable 12.2 — State A. The stalled list on day one with all seven real jobs, and the job detail with the one next action dominant. Fridge and phone, both variants, at real size. I would build the week indicator (12.5) immediately after, since it is the smallest thing that can go live.</p>
+    <p style="margin:0 0 44px;font:400 italic 20px/1.5 'Newsreader',serif;color:#3C5148;max-width:52ch;">"Every dollar has a job. Every week has a number."</p>
+  </section>
+
+</div></x-dc>
+</body>
+</html>

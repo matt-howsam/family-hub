@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style>
+  body { margin:0; background:#EDE8DC; color:#1C242A; font-family:'Archivo',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:#8A5C12; text-decoration:none; border-bottom:1px solid rgba(169,114,26,.35); }
+  a:hover { color:#6E4A0E; border-bottom-color:#6E4A0E; }
+  * { box-sizing:border-box; }
+</style>
+</helmet>
+
+<div style="max-width:1080px;margin:0 auto;padding:0 0 120px;background:#F6F2E9;box-shadow:0 0 0 1px rgba(28,36,42,.08),0 24px 60px rgba(28,36,42,.10);">
+
+  <header style="padding:56px 56px 40px;border-bottom:2px solid #1C242A;">
+    <div style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#5C6670;">Howsam Household · Family Hub</div>
+    <h1 style="margin:14px 0 0;font:700 clamp(36px,5.6vw,58px)/1.02 'Newsreader',serif;letter-spacing:-.015em;">Icons, Illustration &amp; Information Architecture</h1>
+    <p style="margin:12px 0 0;font:400 17px/1.5 'Archivo',sans-serif;color:#5C6670;max-width:60ch;text-wrap:pretty;">The two libraries, the rules that keep them quiet, and the full map of screens and containers across fridge and phone. Second document; follows the Design Plan and changes nothing in it.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:28px;margin-top:28px;font:500 12px/1 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;">
+      <span>Version 1</span><span>Phosphor · MIT</span><span>Open Peeps · CC0</span>
+    </div>
+  </header>
+
+  <!-- 01 ICON LIBRARY -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">01</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Icons — Phosphor, Light weight</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;margin-bottom:26px;">
+      <p style="margin:0;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;text-wrap:pretty;"><a href="https://phosphoricons.com">Phosphor Icons</a> — MIT licence, free for commercial use, ~9,000 glyphs across six weights, available as a web font, plain SVG, or React package. It is the right library here for one specific reason: the <strong style="font-weight:600;">Light</strong> weight draws at roughly a 1.5px stroke on a 24px grid, which is the same optical weight as the register's hairline rules. Most icon sets only offer a 2px stroke, which on this paper reads as heavy and app-like.</p>
+      <p style="margin:0;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;text-wrap:pretty;">It also has the specific vocabulary this house needs and generic sets don't — <em>broom, tent, hammer, piggy-bank, backpack, seal-check, sun-horizon</em>. No compromise glyphs, no gear-icon-standing-in-for-a-lawnmower. One family, one weight, one stroke width, no mixing.
+      <span style="display:block;margin-top:12px;font:500 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Loaded here as the official web font from unpkg. Production would self-host a subset of the ~20 glyphs actually used, which is a few kilobytes and works offline — a fridge PWA cannot depend on a CDN.</span></p>
+    </div>
+
+    <div style="border-left:3px solid #A9721A;padding:4px 0 4px 20px;margin-bottom:30px;">
+      <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:9px;">Four rules, and the third is the important one</div>
+      <ul style="margin:0;padding-left:18px;font:400 15px/1.7 'Archivo',sans-serif;color:#3E474E;">
+        <li><strong style="font-weight:600;">Ink or Mist only. Never brass, never green.</strong> An icon may not carry status. If a renewal needs attention, the type says so — an amber pictogram is the "wall of amber" failure mode arriving through the side door.</li>
+        <li><strong style="font-weight:600;">An icon never appears alone.</strong> Always beside its word, never as a naked target. A pictogram that has to be interpreted is slower than a word for four people of different ages, and unlike a word it can be got wrong.</li>
+        <li><strong style="font-weight:600;">Three legal positions.</strong> The module mark at the head of a stack row; the row-type mark inside a phone list; the verb mark inside a phone commit button. Nowhere else — and that means <em>zero icons in the fridge answer zone and zero in the standing head</em>. The wall stays print.</li>
+        <li><strong style="font-weight:600;">Two sizes.</strong> 28px on the wall, 20px on the phone. Both optically aligned to the cap-height of the label beside them, not to its baseline.</li>
+      </ul>
+    </div>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">The assigned set · one glyph per module, fixed for the life of the product</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;margin-bottom:14px;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-sun-horizon" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Briefing</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">sun-horizon</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-hammer" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Projects</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">hammer</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-receipt" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Register</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">receipt</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-chart-line-down" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Scorecard</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">chart-line-down</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-house-line" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Assets</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">house-line</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-broom" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Chores</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">broom</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-piggy-bank" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Goals</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">piggy-bank</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-tent" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Holidays</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">tent</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-bookmark-simple" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Wants</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">bookmark-simple</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-backpack" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">School</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">backpack</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-seal-check" style="font-size:34px;color:#3C5148;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">Savings won</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">seal-check</div></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:20px 16px;"><i class="ph-light ph-users-three" style="font-size:34px;color:#1C242A;"></i><div style="font:600 14px/1.3 'Archivo',sans-serif;margin-top:12px;">People</div><div style="font:500 11px/1.4 'Archivo',sans-serif;color:#6B7379;letter-spacing:.06em;">users-three</div></div>
+    </div>
+    <p style="margin:0 0 24px;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:70ch;">Savings won is the single exception to the ink-only rule — it is a green seal, because it is the only mark in the product that certifies something finished. Note that <em>chart-line-down</em> is the right glyph for the scorecard and not a wallet or a dollar sign: the point of that card is the direction of travel.</p>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">Verbs · phone only, inside commit buttons and row actions</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;margin-bottom:24px;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:16px 20px;display:flex;align-items:center;gap:11px;"><i class="ph-light ph-pencil-simple" style="font-size:24px;"></i><span style="font:500 14px/1 'Archivo',sans-serif;">Log a number</span></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:16px 20px;display:flex;align-items:center;gap:11px;"><i class="ph-light ph-arrow-up-right" style="font-size:24px;"></i><span style="font:500 14px/1 'Archivo',sans-serif;">Move it on</span></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:16px 20px;display:flex;align-items:center;gap:11px;"><i class="ph-light ph-check" style="font-size:24px;"></i><span style="font:500 14px/1 'Archivo',sans-serif;">Done</span></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:16px 20px;display:flex;align-items:center;gap:11px;"><i class="ph-light ph-clock-counter-clockwise" style="font-size:24px;"></i><span style="font:500 14px/1 'Archivo',sans-serif;">History</span></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:16px 20px;display:flex;align-items:center;gap:11px;"><i class="ph-light ph-phone" style="font-size:24px;"></i><span style="font:500 14px/1 'Archivo',sans-serif;">Ring them</span></div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:16px 20px;display:flex;align-items:center;gap:11px;"><i class="ph-light ph-camera" style="font-size:24px;"></i><span style="font:500 14px/1 'Archivo',sans-serif;">Photograph it</span></div>
+    </div>
+
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin:0 0 12px;">Weight test · why Light and not Regular or Bold</div>
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+      <div style="padding:24px;border-right:1px solid #EDE8DC;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;"><i class="ph-light ph-hammer" style="font-size:28px;"></i><span style="font:600 15px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;">Projects</span></div>
+        <div style="height:1px;background:#DED7C7;margin:14px 0;"></div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Light · chosen</div>
+        <p style="margin:8px 0 0;font:400 13px/1.5 'Archivo',sans-serif;color:#5C6670;">Sits at the same density as the hairline beneath it. Reads as part of the page.</p>
+      </div>
+      <div style="padding:24px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;"><i class="ph ph-hammer" style="font-size:28px;"></i><span style="font:600 15px/1 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;">Projects</span></div>
+        <div style="height:1px;background:#DED7C7;margin:14px 0;"></div>
+        <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Regular · rejected</div>
+        <p style="margin:8px 0 0;font:400 13px/1.5 'Archivo',sans-serif;color:#5C6670;">Outweighs its own label and starts to compete with the answer line. Marginal on its own, cumulative across ten rows.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 ILLUSTRATION -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">02</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Illustration — Open Peeps, public domain</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;margin-bottom:24px;">
+      <p style="margin:0;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;text-wrap:pretty;"><a href="https://www.openpeeps.com">Open Peeps</a> by Pablo Stanley — <strong style="font-weight:600;">CC0, public domain</strong>, the freest licence there is: no attribution, no restrictions, nothing to renew. A hand-drawn library of heads, faces, expressions and hair that mix combinatorially, so four family members get four genuinely distinct characters rather than four palette swaps.
+      <span style="display:block;margin-top:12px;font:500 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Available as raw SVG (self-host, offline, zero dependency) or generated on the fly via the open-source <a href="https://dicebear.com">DiceBear</a> API, which wraps Open Peeps and several other CC0 sets.</span></p>
+      <p style="margin:0;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;text-wrap:pretty;">Chosen over Big Heads — which the brief names, and which is also free (MIT) — for two reasons. Big Heads is a React component library, so the art is locked inside a runtime dependency rather than sitting in the project as files a fridge can cache. And its style is smooth, flat and vector-perfect, where Open Peeps is drawn with a visible pen — the same hand that filled in the timetable in blue biro. On this paper that matters more than it should.</p>
+    </div>
+
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:28px 26px;margin-bottom:16px;">
+      <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:20px;">Today · flat discs, shipping now, per your call</div>
+      <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-end;">
+        <div style="text-align:center;"><div style="width:96px;height:96px;border-radius:50%;background:#35566B;display:flex;align-items:center;justify-content:center;font:500 40px/1 'Newsreader',serif;color:#F6F2E9;">M</div><div style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:12px;">Matt</div></div>
+        <div style="text-align:center;"><div style="width:96px;height:96px;border-radius:50%;background:#8A4B62;display:flex;align-items:center;justify-content:center;font:500 40px/1 'Newsreader',serif;color:#F6F2E9;">R</div><div style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:12px;">Renée</div></div>
+        <div style="text-align:center;"><div style="width:96px;height:96px;border-radius:50%;background:#6B4E8C;display:flex;align-items:center;justify-content:center;font:500 40px/1 'Newsreader',serif;color:#F6F2E9;">R</div><div style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:12px;">Rose</div></div>
+        <div style="text-align:center;"><div style="width:96px;height:96px;border-radius:50%;background:#2C6B62;display:flex;align-items:center;justify-content:center;font:500 40px/1 'Newsreader',serif;color:#F6F2E9;">T</div><div style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-top:12px;">Tom</div></div>
+        <div style="flex:1;min-width:220px;padding-bottom:8px;">
+          <p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;">96px disc on the wall, 44px in a phone list, 28px inline beside an assignment. The illustrated head drops into this exact circle later — same diameter, same background hue, art bleeding slightly past the top edge. Nothing else in the layout moves when it lands, which is the point of specifying the footprint before the art exists.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-left:3px solid #A9721A;padding:4px 0 4px 20px;margin-bottom:8px;">
+      <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:9px;">Illustration appears in exactly two places</div>
+      <p style="margin:0 0 10px;font:400 15px/1.7 'Archivo',sans-serif;color:#3E474E;max-width:74ch;text-wrap:pretty;"><strong style="font-weight:600;">People, and the rare empty state.</strong> An avatar wherever a person is named or assigned. And a single Open Peeps figure, drawn small and off to one side, on the three or four screens that are genuinely empty — nothing stalled, nothing renewing, week not yet started. Those are the joy moments from the Design Plan and they are the only decorative art in the product.</p>
+      <p style="margin:0;font:400 15px/1.7 'Archivo',sans-serif;color:#3E474E;max-width:74ch;text-wrap:pretty;">No spot illustration on populated screens, no illustrated headers, no character mascot, and no illustrated empty state on a screen that is empty because something has gone wrong. A picture where a number should be is how a tool starts feeling like a toy — and Rose is thirteen, which is the whole audience risk in one sentence.</p>
+    </div>
+  </section>
+
+  <!-- 03 OBJECT MODEL -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">03</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">The object model — four nouns</h2>
+    </div>
+    <p style="margin:0 0 26px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:68ch;text-wrap:pretty;">Before screens, the things. Ten modules is a lot of product, and the only way it stays coherent is if they are all made of the same four nouns. Each noun has one decay rule and one row shape, so a new module is a query over existing types rather than a new design problem.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:700 34px/1 'Newsreader',serif;color:#DED7C7;margin-bottom:14px;">01</div>
+        <div style="font:600 20px/1.2 'Newsreader',serif;margin-bottom:4px;">Commitment</div>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:12px;">Recurring · a renewal date · a cost</div>
+        <p style="margin:0 0 12px;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Every register line. Mortgage, Spotify, the green slip, servicing allowances.</p>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Decays by</div>
+        <div style="font:400 15px/1.4 'Archivo',sans-serif;color:#3E474E;">Proximity to renewal</div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:700 34px/1 'Newsreader',serif;color:#DED7C7;margin-bottom:14px;">02</div>
+        <div style="font:600 20px/1.2 'Newsreader',serif;margin-bottom:4px;">Job</div>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:12px;">A stage · a next action · a last-moved date</div>
+        <p style="margin:0 0 12px;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Projects, and chores, which are jobs that recur weekly and belong to a person.</p>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Decays by</div>
+        <div style="font:400 15px/1.4 'Archivo',sans-serif;color:#3E474E;">Days since it moved</div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:700 34px/1 'Newsreader',serif;color:#DED7C7;margin-bottom:14px;">03</div>
+        <div style="font:600 20px/1.2 'Newsreader',serif;margin-bottom:4px;">Number</div>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:12px;">A figure · a basis · a period</div>
+        <p style="margin:0 0 12px;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">Scorecard entries, savings won, goal balances, asset reserves.</p>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Decays by</div>
+        <div style="font:400 15px/1.4 'Archivo',sans-serif;color:#3E474E;">Age of the entry</div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:24px 22px;">
+        <div style="font:700 34px/1 'Newsreader',serif;color:#DED7C7;margin-bottom:14px;">04</div>
+        <div style="font:600 20px/1.2 'Newsreader',serif;margin-bottom:4px;">Occasion</div>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:12px;">A window · a decide-by · who it involves</div>
+        <p style="margin:0 0 12px;font:400 13px/1.55 'Archivo',sans-serif;color:#5C6670;">School days, holiday slots, term dates, the Easter Straddie trip.</p>
+        <div style="font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Decays by</div>
+        <div style="font:400 15px/1.4 'Archivo',sans-serif;color:#3E474E;">Proximity to decide-by</div>
+      </div>
+    </div>
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 24px;">
+      <p style="margin:0;font:400 15px/1.65 'Archivo',sans-serif;color:#3E474E;max-width:78ch;text-wrap:pretty;"><strong style="font-weight:600;">The fifth thing is Person, and it is deliberately not an object with a decay rule.</strong> Matt, Renée, Rose and Tom are attributes of the other four — a job is assigned to someone, an occasion involves someone, a number was logged by someone. There is no person record that accumulates a state, no per-child page that can be compared with a sibling's, and no way to sort the house by who is behind. That is principle 5 from the Design Plan enforced in the data model rather than in the layout, which is the only place it will actually hold.</p>
+    </div>
+  </section>
+
+  <!-- 04 CONTAINERS -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">04</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Four containers, and no fifth</h2>
+    </div>
+    <p style="margin:0 0 24px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:68ch;text-wrap:pretty;">The entire product is built from four container types. Every screen in the map that follows is one of these. Adding a container type later is the thing most likely to wreck this, so they are named and numbered now.</p>
+    <div style="display:grid;gap:0;background:#FFFCF6;border:1px solid #DED7C7;overflow:hidden;">
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;">
+        <span style="font:700 20px/1 'Newsreader',serif;color:#8A5C12;min-width:26px;">C1</span>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;margin-bottom:6px;"><span style="font:600 18px/1.3 'Newsreader',serif;">The Page</span><span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Fridge only · exactly one exists</span></div>
+          <p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:78ch;">The wall. Standing head, answer zone, row stack, avatar strip, footer. Read-only, always open, no back button because there is nowhere to go back to. It does not scroll and it never navigates away — a Page that has been left on a sub-screen is a wall that has stopped working, and that is the single worst failure mode in the product.</p>
+        </div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;">
+        <span style="font:700 20px/1 'Newsreader',serif;color:#8A5C12;min-width:26px;">C2</span>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;margin-bottom:6px;"><span style="font:600 18px/1.3 'Newsreader',serif;">The Row</span><span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Both · one module's answer in one line</span></div>
+          <p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:78ch;">A module's entire contribution to the wall: its mark, its label, one answer line, one qualifier. Not a card, not a tile, not a widget — a typeset line in a stack, hairline above and below. A module with nothing to say prints no Row at all.</p>
+        </div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;">
+        <span style="font:700 20px/1 'Newsreader',serif;color:#8A5C12;min-width:26px;">C3</span>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;margin-bottom:6px;"><span style="font:600 18px/1.3 'Newsreader',serif;">The Sheet</span><span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Phone only · a full module, scrollable</span></div>
+          <p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:78ch;">All eleven scorecard categories, all thirty-one register lines, all seven jobs. The place where the paper documents live in full. Reading and light editing; scrolls freely, has a title and a back.</p>
+        </div>
+      </div>
+      <div style="background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;">
+        <span style="font:700 20px/1 'Newsreader',serif;color:#8A5C12;min-width:26px;">C4</span>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;margin-bottom:6px;"><span style="font:600 18px/1.3 'Newsreader',serif;">The Slip</span><span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;">Phone only · one decision, one commit</span></div>
+          <p style="margin:0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:78ch;">Where every change to the house is made. One object, one field or one stage picker, one button ≥56px. Sensitive values — policy numbers, plates, the mortgage figure — exist only here. Dismissible, never nested, and it cannot open another Slip.</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin:18px 0 0;font:400 15px/1.65 'Archivo',sans-serif;color:#3E474E;max-width:76ch;text-wrap:pretty;"><strong style="font-weight:600;">The rule that makes the whole thing navigable: depth never exceeds three.</strong> Sheet → Slip → commit, and you are back. There is no tab bar, no drawer, no settings tree. The phone's home is a single list of the ten Sheets, and a person is at most two taps from any change they are allowed to make.</p>
+  </section>
+
+  <!-- 05 THE MAP -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">05</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">The map — every module, both devices</h2>
+    </div>
+    <p style="margin:0 0 22px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:68ch;text-wrap:pretty;">Read across: what the module puts on the wall, what its phone Sheet holds, and what its Slips commit. The <span style="color:#8A5C12;font-weight:600;">brass rule</span> marks the three modules in State A. Blank in a column is a real answer — most modules have no Slip on the fridge, and several never appear on the wall at all.</p>
+
+    <div style="border:1px solid #DED7C7;background:#FFFCF6;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;background:#12181C;color:#F6F2E9;font:600 10px/1.3 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;">
+        <div style="padding:14px 16px;">Module</div><div style="padding:14px 16px;">C2 · Row on the wall</div><div style="padding:14px 16px;">C3 · Phone sheet</div><div style="padding:14px 16px;">C4 · Slips</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;border-left:3px solid #A9721A;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-sun-horizon" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Briefing</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Occasion</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Owns the standing head and the answer zone. Date, week letter, the one thing that matters at this hour.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Today and tomorrow in full — who is where, what is needed, what was imported and when.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Flip the week letter. Correct an imported line.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;border-left:3px solid #A9721A;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-hammer" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Projects</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Job</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">In State A, owns the answer zone: the worst-stalled job and its next action. Later, one Row — the stall count and the oldest.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">All jobs by days-since-moved. Stalled, moving, queued, done. Each opens a detail.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Move a stage. Write the next action. Log a cost. Photograph it.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;border-left:3px solid #A9721A;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-backpack" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">School</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Occasion</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">The week letter, at 200px. The uniform answer beneath it. Nothing else — a full timetable on the wall is a document, not an answer.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Tom's 6C grid and Rose's, both weeks, as corrected. Term dates.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Correct a class. Set the week letter by hand.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-receipt" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Register</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Commitment</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">One Row: what renews next and when, or the calm form — nothing for six weeks — always with the savings-won figure attached.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">All 31 lines in the paper's five sections. K/R/A status, working averages, watchlist notes.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Change status. Set a renewal date. Log a bill. Record a switch.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-chart-line-down" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Scorecard</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Number</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">One Row: the week's pace against $1,163. Takes the answer zone on Sunday evening, and only then.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">All eleven categories × four weeks. Month total, the not-on-this-card list, last month's close.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Log a category. Close the week with three answers.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-broom" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Chores</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Job · assigned</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Lives in the avatar strip, not the stack — the only tappable content on the wall. Wet hands, 72px targets.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">This week per person, the rate line, and what is owed on Sunday.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Tick. Reassign. Set the rate. Settle the week.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-house-line" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Assets</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Commitment</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Usually none. Prints a Row only when something crosses its horizon — the hot water unit at twenty years.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Everything with a life left: roof, hot water, both cars, the tinny. Age, horizon, replacement estimate with its basis.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Log a service. Revise an estimate. Retire an asset.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-piggy-bank" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Goals</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Number</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">One Row: what the house is saving for and how far off. Holds the savings-won seal.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Each goal, its balance, its rate. Savings won this year, every switch dated.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Add to a goal. Record a saving won.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;border-bottom:1px solid #EDE8DC;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-tent" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Holidays</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Occasion</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">Prints a Row only inside a decide-by window. Otherwise the next trip sits as a qualifier under Goals.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">The year's slots — school holidays, long weekends. Booked, being decided, unclaimed. Easter Straddie with its $678.90 to date.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Claim a slot. Log a cost. Set a decide-by.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.15fr 1.3fr 1.3fr 1.15fr;">
+        <div style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;"><i class="ph-light ph-bookmark-simple" style="font-size:24px;"></i><span style="font:600 15px/1.2 'Newsreader',serif;">Wants</span></div><div style="font:500 10px/1.3 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B7379;margin-top:6px;">Job · queued</div></div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Never. A wants queue on the wall is a shopping list with ambitions — it lives one tap down, by design.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#3E474E;">The queue in order, one item active. Who wants it, what it costs, what it is waiting on.</div>
+        <div style="padding:16px;font:400 14px/1.5 'Archivo',sans-serif;color:#5C6670;">Add a want. Reorder. Promote to active or to a goal.</div>
+      </div>
+    </div>
+    <p style="margin:16px 0 0;font:400 14px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:76ch;">Ten modules, and on a typical Tuesday four or five print a Row. That is the whole density argument: the wall is not a container for ten modules, it is a container for whatever five things are currently true.</p>
+  </section>
+
+  <!-- 06 FLOWS -->
+  <section style="padding:48px 56px 8px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px;">
+      <span style="font:600 12px/1 'Archivo',sans-serif;letter-spacing:.16em;color:#8A5C12;">06</span>
+      <h2 style="margin:0;font:600 30px/1.1 'Newsreader',serif;">Three flows that have to work</h2>
+    </div>
+    <p style="margin:0 0 26px;font:400 16px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:68ch;text-wrap:pretty;">Not every path — the three that decide whether the thing gets used after a fortnight. Each is written as containers, so it can be checked against the map above.</p>
+
+    <div style="display:grid;gap:20px;">
+      <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:26px 26px 22px;">
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin-bottom:6px;">
+          <span style="font:600 21px/1.2 'Newsreader',serif;">Tom, 7:40am, Tuesday</span>
+          <span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Zero taps · the flow is that there is no flow</span>
+        </div>
+        <p style="margin:0 0 18px;font:400 15px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:76ch;">He walks past the fridge and gets the answer without stopping. This is the flow the product is for, and every other consideration loses to it.</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;">
+          <div style="flex:1;min-width:180px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">C1 The Page</div><div style="font:400 17px/1.3 'Newsreader',serif;">Week <strong style="font-weight:700;">B</strong> · Sports uniform</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:180px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">He leaves</div><div style="font:400 17px/1.3 'Newsreader',serif;color:#5C6670;">Nobody was asked anything.</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:180px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A5C12;margin-bottom:8px;">Failure path</div><div style="font:400 15px/1.35 'Archivo',sans-serif;color:#3E474E;">Wrong letter. He taps it, it flips, and it stays flipped with <em>Set by Tom</em> beneath.</div></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:26px 26px 22px;">
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin-bottom:6px;">
+          <span style="font:600 21px/1.2 'Newsreader',serif;">Sunday night, the eleven numbers</span>
+          <span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Phone · the ritual that already exists on paper</span>
+        </div>
+        <p style="margin:0 0 18px;font:400 15px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:76ch;">The riskiest flow in the product: eleven fields is a form, and forms do not survive contact with a Sunday evening. It works only as one Sheet with eleven inline fields and no per-field commit — the wall updates as they go, and the three review answers close it.</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;">
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">C1 The Page</div><div style="font:400 16px/1.3 'Newsreader',serif;">The week wants its number</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">C3 Sheet</div><div style="font:400 16px/1.3 'Newsreader',serif;">Eleven categories, inline</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">C4 Slip</div><div style="font:400 16px/1.3 'Newsreader',serif;">Win · worst spend · one change</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:8px;">The wall</div><div style="font:400 16px/1.3 'Newsreader',serif;">Takes the stamp</div></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid #DED7C7;background:#FFFCF6;box-shadow:inset -1px -1px 0 #DED7C7;padding:26px 26px 22px;">
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin-bottom:6px;">
+          <span style="font:600 21px/1.2 'Newsreader',serif;">Saturday morning, one job moves</span>
+          <span style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;">Wall to phone · the handoff</span>
+        </div>
+        <p style="margin:0 0 18px;font:400 15px/1.6 'Archivo',sans-serif;color:#5C6670;max-width:76ch;">The wall names the worst job and its next action. He does the thing in the real world, then records it in two taps. Note what is absent: no picking from a list, because the wall already picked.</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;">
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">C1 answer zone</div><div style="font:400 16px/1.3 'Newsreader',serif;">The oldest job, its next action</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">Real life</div><div style="font:400 16px/1.3 'Newsreader',serif;color:#5C6670;">He makes the call</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:8px;">C4 Slip</div><div style="font:400 16px/1.3 'Newsreader',serif;">Stage on, next action written</div></div>
+          <div style="display:flex;align-items:center;color:#C8BFA9;font-size:22px;"><i class="ph-light ph-caret-right"></i></div>
+          <div style="flex:1;min-width:150px;background:#F6F2E9;border:1px solid #DED7C7;padding:14px 16px;"><div style="font:600 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#3C5148;margin-bottom:8px;">The wall</div><div style="font:400 16px/1.3 'Newsreader',serif;">Day count struck through</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 NEXT -->
+  <section style="padding:44px 56px 0;border-top:2px solid #1C242A;margin-top:40px;">
+    <div style="font:600 11px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B7379;margin-bottom:14px;">What I need to build the next two</div>
+    <p style="margin:0 0 14px;font:400 17px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:68ch;text-wrap:pretty;">The register and the scorecard are in the project and I am working from them line by line. <strong style="font-weight:600;">The brief itself is not</strong> — so I have the two paper documents but not the seven stalled jobs, their stages, or their day counts, and the Home Screen in State A <em>is</em> that list.</p>
+    <p style="margin:0 0 14px;font:400 17px/1.6 'Archivo',sans-serif;color:#3E474E;max-width:68ch;text-wrap:pretty;">Drop the brief into the project and I will build both screens against the real seven — with day counts that are actually true, which is the difference between a mockup and a design. Inventing them would put the one thing you asked me to treat as source of truth into the one screen you are about to review.</p>
+    <p style="margin:0 0 44px;font:400 italic 20px/1.5 'Newsreader',serif;color:#3C5148;max-width:52ch;">"Nothing renews without a conscious decision."</p>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

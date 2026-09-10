@@ -1,0 +1,290 @@
+/* ==========================================================================
+   Family Hub — design tokens, release 1
+   Locked from "Home Screen v2 Minimal" + "Projects Module".
+   Paste straight in. Nothing here is a judgement call at component level.
+   ========================================================================== */
+
+:root {
+  /* ---------- 1. GROUND ------------------------------------------------- */
+  --fh-ground:              #FFFFFF;  /* every base surface                */
+  --fh-ground-wash-top:     #F2F9F9;  /* top of the page gradient          */
+  --fh-desk:                #EAEFEF;  /* outside the frame / canvas        */
+  --fh-surface:             #FFFFFF;  /* card                              */
+  --fh-surface-sunken:      #FAFCFC;  /* queued, de-emphasised card        */
+  --fh-hairline:            #EDF2F2;  /* row divider inside a card         */
+  --fh-border:              #DCE6E6;  /* input + secondary button outline   */
+  --fh-border-strong:       #E4EBEB;  /* empty stage segment               */
+
+  /* Page gradient — the only full-page background in the product */
+  --fh-page-bg: linear-gradient(180deg, #F2F9F9 0%, #FFFFFF 300px, #FFFFFF 100%);
+
+  /* ---------- 2. INK ---------------------------------------------------- */
+  /* Ratios measured on --fh-ground. All clear 4.5:1. */
+  --fh-ink:                 #14454A;  /* 10.6:1 primary text, all headings */
+  --fh-ink-body:            #4F6265;  /* 6.4:1  body, qualifiers           */
+  --fh-ink-label:           #566A6E;  /* 5.7:1  micro-caps, metadata       */
+  --fh-ink-inverse:         #FFFFFF;  /* on teal / water fills             */
+
+  /* ---------- 3. MEANING ------------------------------------------------ */
+  /* Teal = progress. Amber = attention. There is no third meaning colour
+     and no red: nothing in this house is an emergency. */
+
+  /* Teal has TWO values. --fh-teal sits at 4.6:1 on white — a hair over the
+     line — and FAILS on the two grounds it most often lands on:
+     4.4:1 on --fh-surface-sunken, 4.0:1 on --fh-teal-tint-a — both FAIL. So it is legal
+     only at 24px+ (where 3:1 suffices) or as a fill. --fh-teal-ink clears
+     every ground at every size and is the default for text. */
+  --fh-teal:                #14828C;  /* 4.6:1 white / 4.0:1 tint — 24px+ or fill */
+  --fh-teal-ink:            #0E6B74;  /* 6.2:1 white / 5.5:1 tint — all sizes     */
+  --fh-teal-deep:           #0A555C;  /* hover / pressed                   */
+  --fh-teal-wash:           #EAF6F3;  /* done chip                         */
+  --fh-teal-tint-a:         #E4F4F3;  /* "ready" card gradient, light stop */
+  --fh-teal-tint-b:         #F6FCFB;
+
+  --fh-amber:               #9A5F14;  /* 5.6:1  — safe at every size       */
+  --fh-amber-wash-a:        #FCF4E7;  /* attention row / card, light stop  */
+  --fh-amber-wash-b:        #FFFDFA;
+  --fh-amber-hairline:      #F3E9D8;  /* divider inside an amber group     */
+
+  /* Composed gradients — use these, don't re-mix them per component */
+  --fh-calm-surface:        var(--fh-surface);
+  --fh-calm-border:         var(--fh-hairline);
+  --fh-calm-accent:         var(--fh-teal-ink);
+  --fh-attention-surface:   linear-gradient(90deg, #FCF4E7 0%, #FFFDFA 70%);
+  --fh-attention-surface-lg:linear-gradient(140deg, #FCF4E7 0%, #FFFDF9 100%);
+  --fh-attention-border:    var(--fh-amber-hairline);
+  --fh-attention-accent:    var(--fh-amber);
+  --fh-ready-surface:       linear-gradient(140deg, #E4F4F3 0%, #F6FCFB 100%);
+  --fh-ready-accent:        var(--fh-teal-ink);
+
+  /* ---------- 4. PEOPLE ------------------------------------------------- */
+  /* Tint ground + deep initial of the same hue. Every pairing clears 4.5:1
+     measured against the gradient's LIGHT stop, not the card behind it. */
+  --fh-matt-a:   #DCEAF6;  --fh-matt-b:   #B9D3EA;  --fh-matt-ink:   #1F4B70;
+  --fh-renee-a:  #FAE3DA;  --fh-renee-b:  #F0C3B2;  --fh-renee-ink:  #7E3A24;
+  --fh-rose-a:   #E5E4F7;  --fh-rose-b:   #C6C3EC;  --fh-rose-ink:   #3D3878;
+  --fh-tom-a:    #D8EFEA;  --fh-tom-b:    #AEDCD3;  --fh-tom-ink:    #0F5A51;
+
+  --fh-matt-disc:  linear-gradient(150deg, #DCEAF6 0%, #B9D3EA 100%);
+  --fh-renee-disc: linear-gradient(150deg, #FAE3DA 0%, #F0C3B2 100%);
+  --fh-rose-disc:  linear-gradient(150deg, #E5E4F7 0%, #C6C3EC 100%);
+  --fh-tom-disc:   linear-gradient(150deg, #D8EFEA 0%, #AEDCD3 100%);
+
+  /* Kid slab — the uniform block. Deeper than the disc: it carries a 34px
+     knocked-out word plus a 12px label. */
+  --fh-tom-slab:   linear-gradient(158deg, #DDF1EF 0%, #F0F9F8 100%);
+  --fh-tom-slab-ink:  #0E6B74;   /* 5.3:1 on #DDF1EF */
+  --fh-rose-slab:  linear-gradient(158deg, #E7E9F8 0%, #F4F5FC 100%);
+  --fh-rose-slab-ink: #414F87;   /* 6.5:1 on #E7E9F8 */
+
+  /* ---------- 5. WATER -------------------------------------------------- */
+  /* The one deep fill in the product. Family register only.
+     145deg puts the LIGHTEST stop bottom-right — exactly where the hero's
+     stats row and closing line sit. So the ramp is capped: white clears
+     4.5:1 against every stop, and the light stop (4.7:1) is the governing
+     number, not the dark one. Do not lighten these values. */
+  --fh-water: linear-gradient(145deg, #0E6A76 0%, #12798A 55%, #158089 100%);
+  --fh-water-rule: rgba(255,255,255,.28);
+  /* white on stops: 6.3:1 dark · 5.1:1 mid · 4.7:1 light */
+
+  /* ---------- 6. TWO-REGISTER SPLIT ------------------------------------- */
+  /* Household = the ledger: projects, spending, register, assets, maintenance.
+     Family    = people: kids, chores, water, what's on, holidays, goals.
+     Four things differ. Set the register on a wrapper and every child
+     inherits — never re-decide these per screen. */
+
+  [data-register="household"] {
+    --fh-r-radius:       var(--fh-radius-lg);   /* 22px  — tighter        */
+    --fh-r-pad-y:        var(--fh-space-3);     /* 11px  — dense          */
+    --fh-r-pad-x:        var(--fh-space-6);     /* 22px                   */
+    --fh-r-gap:          var(--fh-space-3);     /* between rows           */
+    --fh-r-surface:      var(--fh-surface);     /* flat white             */
+    --fh-r-fill:         none;                  /* no tint                */
+    --fh-r-title:        var(--fh-text-row);    /* 20px / 700             */
+    --fh-r-title-color:  var(--fh-ink);
+    --fh-r-shadow:       var(--fh-shadow-card);
+  }
+
+  [data-register="family"] {
+    --fh-r-radius:       var(--fh-radius-xl);   /* 26px  — softer         */
+    --fh-r-pad-y:        var(--fh-space-5);     /* 18px  — generous       */
+    --fh-r-pad-x:        var(--fh-space-6);     /* 22px                   */
+    --fh-r-gap:          var(--fh-space-4);     /* more air               */
+    --fh-r-surface:      var(--fh-surface);
+    --fh-r-fill:         tint;                  /* person / water hue     */
+    --fh-r-title:        var(--fh-text-answer); /* 24px / 700             */
+    --fh-r-title-color:  var(--fh-ink);
+    --fh-r-shadow:       var(--fh-shadow-card);
+  }
+
+  /* ---------- 7. TYPE -------------------------------------------------- */
+  --fh-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --fh-font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Display sizes carry negative tracking; label sizes carry positive.
+     Money and counters always get font-variant-numeric: tabular-nums. */
+  --fh-text-hero:     800 50px/1    var(--fh-font);   /* -.035em  water verdict     */
+  --fh-text-display:  800 42px/1.06 var(--fh-font);   /* -.035em  detail title      */
+  --fh-text-next:     800 40px/1.14 var(--fh-font);   /* -.032em  next action, wall */
+  --fh-text-slab:     800 34px/1.04 var(--fh-font);   /* -.030em  uniform word      */
+  --fh-text-title:    800 32px/1.05 var(--fh-font);   /* -.030em  screen title      */
+  --fh-text-figure:   800 28px/1    var(--fh-font);   /* -.030em  money             */
+  --fh-text-answer:   700 24px/1.25 var(--fh-font);   /* -.020em  card answer       */
+  --fh-text-row:      700 20px/1.20 var(--fh-font);   /* -.020em  list row title    */
+  --fh-text-body:     400 19px/1.35 var(--fh-font);   /*          qualifier         */
+  --fh-text-body-sm:  400 16px/1.30 var(--fh-font);   /*          phone qualifier   */
+  --fh-text-label:    700 11px/1    var(--fh-font);   /* .16em uppercase            */
+  --fh-text-meta:     600 10px/1    var(--fh-font);   /* .12em uppercase — FLOOR    */
+
+  --fh-track-display: -.035em;
+  --fh-track-title:   -.030em;
+  --fh-track-answer:  -.020em;
+  --fh-track-label:   .16em;
+  --fh-track-meta:    .12em;
+
+  /* THE METRE RULE.
+     Read at 1m on a 10.2" iPad (~810px across 174mm ⇒ ~4.66 px/mm):
+       --fh-min-glance  20px = 4.3mm cap-height ⇒ the floor for anything a
+                        passer-by must READ without stopping. Answers,
+                        row titles, money, next actions never go below this.
+       --fh-min-legible 16px = the floor for text you may lean in for.
+       --fh-min-meta    10px = labels ONLY. Never information. If a fact is
+                        set at 10px it is not on the wall, it is on the phone.
+     Phone ramp is ~0.85× of the wall ramp, floor 14px, read at 30cm. */
+  --fh-min-glance:   20px;
+  --fh-min-legible:  16px;
+  --fh-min-meta:     10px;
+
+  /* ---------- 8. SPACE ------------------------------------------------- */
+  --fh-space-1:   4px;
+  --fh-space-2:   8px;
+  --fh-space-3:  11px;
+  --fh-space-4:  14px;
+  --fh-space-5:  18px;
+  --fh-space-6:  22px;
+  --fh-space-7:  26px;
+  --fh-space-8:  30px;
+  --fh-space-9:  40px;
+
+  --fh-gutter-wall:   24px;   /* frame edge → card, 810 layout */
+  --fh-gutter-phone:  14px;   /* frame edge → card, 393 layout */
+  --fh-gutter-text:   30px;   /* frame edge → un-carded text   */
+
+  /* ---------- 9. RADII ------------------------------------------------- */
+  --fh-radius-sm:   8px;   /* badge                        */
+  --fh-radius-md:  14px;   /* chip, chore pill             */
+  --fh-radius-btn: 16px;   /* commit button                */
+  --fh-radius-lg:  22px;   /* household card, phone card   */
+  --fh-radius-xl:  26px;   /* family card, wall card       */
+  --fh-radius-2xl: 30px;   /* water hero                   */
+  --fh-radius-pill: 999px; /* stage segment, avatar        */
+
+  /* ---------- 10. BORDER + SHADOW -------------------------------------- */
+  --fh-border-hair:    1px solid var(--fh-hairline);
+  --fh-border-input:   1.5px solid var(--fh-border);
+  --fh-border-select:  2px solid var(--fh-teal);
+  --fh-ring-current:   0 0 0 3px rgba(20,130,140,.18);  /* current stage */
+
+  --fh-shadow-frame: 0 0 0 1px rgba(20,69,74,.07), 0 22px 54px rgba(20,69,74,.13);
+  --fh-shadow-card:  0 1px 3px rgba(20,69,74,.05), 0 8px 24px rgba(20,69,74,.06);
+  --fh-shadow-flat:  0 1px 3px rgba(20,69,74,.04);
+  --fh-shadow-inset: inset 0 0 0 1px var(--fh-hairline);
+
+  /* ---------- 11. TARGETS ---------------------------------------------- */
+  --fh-target-min:    44px;  /* anything tappable            */
+  --fh-target-commit: 56px;  /* the one primary button       */
+  --fh-target-wet:    72px;  /* chore tick — wet hands, kids */
+  --fh-avatar-wall:   80px;
+  --fh-avatar-row:    52px;
+  --fh-avatar-inline: 28px;
+
+  /* ---------- 12. MOTION ----------------------------------------------- */
+  --fh-ease:          cubic-bezier(.2,.8,.2,1);
+  --fh-dur-tick:      180ms;   /* chore tick                */
+  --fh-dur-settle:    320ms;   /* row moving group           */
+  --fh-dur-dim:      1200ms;   /* night fade — slow on purpose */
+}
+
+/* ==========================================================================
+   NIGHT STATE
+   Applies to the display role only. Never to the phone — a phone is read at
+   30cm with its own auto-brightness and inherits the OS dark mode instead.
+
+   RULE, in priority order:
+     1. Ambient light < 12 lux for 60s continuous  → night
+        (AmbientLightSensor where available; the kitchen at 10pm with the
+        rangehood light on measures ~8-15 lux, so the threshold sits above
+        "dark room" and below "someone turned a light on".)
+     2. No sensor → local time 20:30–06:00 → night.
+     3. Motion within 2.5m, or any touch → daylight for 90s, then re-evaluate.
+        Someone walking up gets the full-brightness screen before they arrive.
+     4. Never between 06:00–20:30 regardless of sensor. A dim screen on an
+        overcast Tuesday morning is a broken screen.
+
+   WHAT ELSE CHANGES, beyond colour:
+     - Content shortens. Kid slabs, chore cards and what's-on stop printing;
+       the wall holds time, date, tomorrow's week letter, the house line, and
+       any single amber row. Nothing that needs acting on tonight.
+     - Screen brightness drops to 35% via the kiosk shell, NOT via opacity.
+       Opacity on a bright layout still emits bright light.
+     - No animation. The 1200ms fade in and out is the only motion.
+   ========================================================================== */
+
+[data-mode="night"] {
+  --fh-ground:              #101E20;
+  --fh-ground-wash-top:     #16282B;
+  --fh-desk:                #0A1314;
+  --fh-surface:             #17282A;
+  --fh-surface-sunken:      #132224;
+  --fh-hairline:            #1F3336;
+  --fh-border:              #263D40;
+  --fh-border-strong:       #263D40;
+
+  --fh-page-bg: linear-gradient(180deg, #16282B 0%, #101E20 340px, #101E20 100%);
+
+  /* Ratios measured on #101E20 */
+  --fh-ink:                 #E2ECEC;  /* 14.2:1 ground / 12.7:1 surface */
+  --fh-ink-body:            #8FA5A6;  /*  6.6:1 ground / 6.0:1 surface */
+  --fh-ink-label:           #869C9E;  /*  5.9:1 ground / 5.3:1 surface */
+  --fh-ink-inverse:         #101E20;
+
+  /* Night reverses the teal split: the LIGHT value is now the safe one at
+     every size, and the dark #0E6B74 is unusable. One token, one rule. */
+  --fh-teal:                #4FBFC4;  /*  7.8:1 — all sizes */
+  --fh-teal-ink:            #4FBFC4;
+  --fh-teal-deep:           #6FD3D7;
+  --fh-teal-wash:           #15302F;
+  --fh-teal-tint-a:         #143034;
+  --fh-teal-tint-b:         #16292C;
+
+  --fh-amber:               #D99A3D;  /*  7.0:1 — all sizes */
+  --fh-amber-wash-a:        #221C12;
+  --fh-amber-wash-b:        #1A1712;
+  --fh-amber-hairline:      #2E2617;
+
+  --fh-attention-surface:    linear-gradient(90deg, #221C12 0%, #141F21 70%);
+  --fh-attention-surface-lg: linear-gradient(140deg, #221C12 0%, #141F21 100%);
+  --fh-ready-surface:        linear-gradient(140deg, #143034 0%, #16292C 100%);
+
+  --fh-water: linear-gradient(145deg, #0A3A42 0%, #0D4B50 55%, #11595A 100%);
+  --fh-water-rule: rgba(226,236,236,.16);
+
+  /* Person hues invert: deep ground, light initial. Same four hues. */
+  --fh-matt-disc:  linear-gradient(150deg, #1B3548 0%, #16293A 100%);
+  --fh-renee-disc: linear-gradient(150deg, #3F241B 0%, #2E1B14 100%);
+  --fh-rose-disc:  linear-gradient(150deg, #262450 0%, #1C1A3C 100%);
+  --fh-tom-disc:   linear-gradient(150deg, #143733 0%, #102A27 100%);
+  --fh-matt-ink:   #A9C9E4;
+  --fh-renee-ink:  #E8B49F;
+  --fh-rose-ink:   #B9B5E8;
+  --fh-tom-ink:    #8FD3C6;
+
+  /* Shadows do not read on a dark ground. Cards separate by surface value. */
+  --fh-shadow-frame: 0 0 0 1px rgba(226,236,236,.06);
+  --fh-shadow-card:  0 0 0 1px rgba(226,236,236,.05);
+  --fh-shadow-flat:  none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --fh-dur-tick: 0ms; --fh-dur-settle: 0ms; --fh-dur-dim: 0ms; }
+}

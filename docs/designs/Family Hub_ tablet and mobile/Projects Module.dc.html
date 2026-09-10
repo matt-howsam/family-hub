@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style>
+  body { margin:0; background:#EAEFEF; color:#14454A; font-family:'Plus Jakarta Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:#0E6B74; text-decoration:none; border-bottom:1px solid rgba(14,107,116,.32); }
+  a:hover { color:#0A555C; border-bottom-color:#0A555C; }
+  * { box-sizing:border-box; }
+</style>
+</helmet>
+
+<section style="padding:56px 56px 80px;">
+
+  <div style="max-width:920px;margin:0 0 44px;">
+    <div style="font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Howsam Household · Family Hub · Turn 3, revised</div>
+    <h1 style="margin:12px 0 0;font:800 46px/1.06 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;">Projects &amp; Maintenance · release 1</h1>
+    <p style="margin:14px 0 0;font:400 17px/1.6 'Plus Jakarta Sans',sans-serif;color:#4F6265;text-wrap:pretty;">Scope cut per your notes: <strong style="font-weight:700;color:#14454A;">three layouts, not five.</strong> One responsive list and one responsive detail, shown here at 810 (display role) and 393 (phone). The fridge detail view, the stage-history band and the funding labels are gone from the interface — the fields stay in the schema. Day one is 8 September 2026; month three is 8 December 2026.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start;">
+
+    <!-- ============ 3a DAY ONE ============ -->
+    <div id="3a">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="display:inline-block;background:#14454A;color:#fff;border-radius:8px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;padding:8px 11px;">3a</span>
+        <span style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">The list · day one · display role</span>
+        <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;">Nothing has ever moved</span>
+      </div>
+
+      <div style="width:810px;height:1080px;background:linear-gradient(180deg,#F2F9F9 0%,#FFFFFF 300px,#FFFFFF 100%);display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(20,69,74,.07),0 22px 54px rgba(20,69,74,.13);overflow:hidden;">
+
+        <div style="flex:none;padding:26px 30px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;">
+          <div>
+            <div style="font:800 34px/1.05 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;">Projects</div>
+            <div style="font:500 19px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:7px;">Eight jobs. One is already priced.</div>
+          </div>
+          <div style="font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Tuesday 8 Sept</div>
+        </div>
+
+        <div style="flex:none;padding:0 24px 12px;">
+          <div style="border-radius:20px;background:linear-gradient(140deg,#F1F8F8 0%,#FBFDFD 100%);padding:14px 20px 16px;">
+            <div style="font:500 19px/1.4 'Plus Jakarta Sans',sans-serif;color:#4F6265;">Nothing has moved yet, because nothing has been in here to move. <span style="color:#14454A;font-weight:700;">The clock starts today.</span></div>
+          </div>
+        </div>
+
+        <!-- READY -->
+        <div style="flex:none;padding:0 24px;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;padding:0 6px;">
+            <span style="font:700 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#0E6B74;">Ready when you are</span>
+            <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">1</span>
+          </div>
+          <div style="border-radius:24px;background:linear-gradient(140deg,#E4F4F3 0%,#F6FCFB 100%);box-shadow:0 1px 3px rgba(20,69,74,.05);padding:16px 22px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
+              <div style="flex:1;">
+                <div style="font:700 25px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.025em;">Upstairs bathroom cupboard sliders</div>
+                <div style="font:500 19px/1.35 'Plus Jakarta Sans',sans-serif;color:#0E6B74;margin-top:8px;">Quote in hand. Say yes and it's ordered.</div>
+              </div>
+              <div style="font:800 32px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;flex:none;">$500</div>
+            </div>
+            <div style="display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(20,130,140,.18);font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#566A6E;">
+              <span>Supply &amp; install</span><span>Quote received</span><span>Matt</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEEDS YOU -->
+        <div style="flex:none;padding:16px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;padding:0 6px;">
+            <span style="font:700 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#9A5F14;">Needs you</span>
+            <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">6 · smallest first</span>
+          </div>
+          <div style="border-radius:24px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);overflow:hidden;">
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div>
+                <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Under stair storage</div>
+                <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Sketch it and price the plywood</div>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font:700 19px/1 'Plus Jakarta Sans',sans-serif;font-variant-numeric:tabular-nums;">~$2,000</div>
+                <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;margin-top:6px;">Idea</div>
+              </div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div>
+                <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Paint the house</div>
+                <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Call Brett for a quote</div>
+              </div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;flex:none;">Quoting</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div>
+                <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Front landscaping</div>
+                <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Decide turf or native beds before quoting</div>
+              </div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;flex:none;">Research</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div>
+                <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Remodel kids' bathrooms</div>
+                <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Write down what actually needs to change</div>
+              </div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;flex:none;">Idea</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div>
+                <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Replace rear sliding doors</div>
+                <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Measure the openings and send for pricing</div>
+              </div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;flex:none;">Quoting</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div>
+                <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Remodel kitchen</div>
+                <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Book two designers to walk through it</div>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font:700 19px/1 'Plus Jakarta Sans',sans-serif;font-variant-numeric:tabular-nums;">$40,000+</div>
+                <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;margin-top:6px;">Research</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUEUED -->
+        <div style="flex:none;padding:16px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;padding:0 6px;">
+            <span style="font:700 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Queued</span>
+            <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">1</span>
+          </div>
+          <div style="border-radius:24px;background:#FAFCFC;box-shadow:0 0 0 1px #EDF2F2;padding:12px 22px 14px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;">
+            <div>
+              <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;color:#4F6265;">Downstairs flooring</div>
+              <div style="font:400 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#566A6E;margin-top:5px;">Waiting on the kitchen. Nothing to do.</div>
+            </div>
+            <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;">Idea</div>
+          </div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div style="flex:none;padding:12px 30px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;">
+          <span style="font:400 italic 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;">Six to start, one to say yes to, one that can wait.</span>
+          <span style="font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#566A6E;">Day 1 · no history yet</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 3b MONTH THREE ============ -->
+    <div id="3b">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="display:inline-block;background:#14454A;color:#fff;border-radius:8px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;padding:8px 11px;">3b</span>
+        <span style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">The list · month three · display role</span>
+        <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;">All six groups</span>
+      </div>
+
+      <div style="width:810px;height:1080px;background:linear-gradient(180deg,#F2F9F9 0%,#FFFFFF 300px,#FFFFFF 100%);display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(20,69,74,.07),0 22px 54px rgba(20,69,74,.13);overflow:hidden;">
+
+        <div style="flex:none;padding:24px 30px 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;">
+          <div>
+            <div style="font:800 32px/1.05 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;">Projects</div>
+            <div style="font:500 18px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:6px;">Three need you · three have moved since October</div>
+          </div>
+          <div style="font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Tuesday 8 Dec</div>
+        </div>
+
+        <!-- NEEDS YOU -->
+        <div style="flex:none;padding:0 24px;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:7px;padding:0 6px;">
+            <span style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#9A5F14;">Needs you</span>
+            <span style="font:500 11px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">3 · longest first</span>
+          </div>
+          <div style="border-radius:22px;overflow:hidden;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);">
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:10px 22px;background:linear-gradient(90deg,#FCF4E7 0%,#FFFDFA 70%);">
+              <div>
+                <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Remodel kids' bathrooms</div>
+                <div style="font:400 16px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:4px;">Write down what actually needs to change</div>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font:800 24px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;color:#9A5F14;font-variant-numeric:tabular-nums;">84</div>
+                <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9A5F14;margin-top:5px;">days · Idea</div>
+              </div>
+            </div>
+            <div style="height:1px;background:#F3E9D8;"></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:10px 22px;background:linear-gradient(90deg,#FCF4E7 0%,#FFFDFA 70%);">
+              <div>
+                <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Under stair storage</div>
+                <div style="font:400 16px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:4px;">Sketch it and price the plywood</div>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font:800 24px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;color:#9A5F14;font-variant-numeric:tabular-nums;">41</div>
+                <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9A5F14;margin-top:5px;">days · Idea</div>
+              </div>
+            </div>
+            <div style="height:1px;background:#F3E9D8;"></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:10px 22px;background:linear-gradient(90deg,#FCF4E7 0%,#FFFDFA 70%);">
+              <div>
+                <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Paint the house</div>
+                <div style="font:400 16px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:4px;">Chase Brett — the quote was due 11 days ago</div>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font:800 24px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;color:#9A5F14;font-variant-numeric:tabular-nums;">21</div>
+                <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9A5F14;margin-top:5px;">days · Quoting</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WAITING -->
+        <div style="flex:none;padding:12px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:7px;padding:0 6px;">
+            <span style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Waiting on someone</span>
+            <span style="font:500 11px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">1 · nothing to do</span>
+          </div>
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);padding:10px 22px 12px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;">
+            <div>
+              <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Replace rear sliding doors</div>
+              <div style="font:400 16px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:4px;">Pricing promised by Friday.</div>
+            </div>
+            <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;">Stegbar · 9 days</div>
+          </div>
+        </div>
+
+        <!-- MOVING -->
+        <div style="flex:none;padding:12px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:7px;padding:0 6px;">
+            <span style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#0E6B74;">Moving</span>
+            <span style="font:500 11px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">2</span>
+          </div>
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);overflow:hidden;">
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Front landscaping</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0E6B74;text-align:right;">→ Quoting · 4 days ago</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:11px 22px;">
+              <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Remodel kitchen</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0E6B74;text-align:right;">→ Research · 9 days ago</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- READY -->
+        <div style="flex:none;padding:12px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:7px;padding:0 6px;">
+            <span style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#0E6B74;">Ready when you are</span>
+            <span style="font:500 11px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">1</span>
+          </div>
+          <div style="border-radius:22px;background:linear-gradient(140deg,#E4F4F3 0%,#F6FCFB 100%);box-shadow:0 1px 3px rgba(20,69,74,.05);padding:11px 22px 13px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;">
+            <div>
+              <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Upstairs bathroom cupboard sliders</div>
+              <div style="font:500 16px/1.3 'Plus Jakarta Sans',sans-serif;color:#0E6B74;margin-top:4px;">Quote in hand. Say yes and it's ordered.</div>
+            </div>
+            <div style="font:800 24px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;flex:none;">$500</div>
+          </div>
+        </div>
+
+        <!-- QUEUED -->
+        <div style="flex:none;padding:12px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:7px;padding:0 6px;">
+            <span style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Queued</span>
+            <span style="font:500 11px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">1</span>
+          </div>
+          <div style="border-radius:22px;background:#FAFCFC;box-shadow:0 0 0 1px #EDF2F2;padding:10px 22px 12px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;">
+            <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;color:#4F6265;">Downstairs flooring</div>
+            <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;">Waiting on the kitchen</div>
+          </div>
+        </div>
+
+        <!-- DUE -->
+        <div style="flex:none;padding:12px 24px 0;">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:7px;padding:0 6px;">
+            <span style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Due</span>
+            <span style="font:500 11px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">3 · maintenance</span>
+          </div>
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);overflow:hidden;">
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:9px 22px;background:linear-gradient(90deg,#FCF4E7 0%,#FFFDFA 70%);">
+              <div style="font:700 19px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Pool pump service</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9A5F14;text-align:right;">6 days past due</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:9px 22px;">
+              <div style="font:700 19px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Defender service · Chinderah Motors</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;">Due in 3 weeks</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:9px 22px;">
+              <div style="font:700 19px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Gutter clean</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;text-align:right;">Due in 5 weeks</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div style="flex:none;padding:10px 30px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;">
+          <span style="font:400 italic 16px/1.3 'Plus Jakarta Sans',sans-serif;color:#4F6265;">Three moved in November. Three didn't.</span>
+          <span style="font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#566A6E;">Threshold 21 days</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 3c PHONE DETAIL ============ -->
+    <div id="3c">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="display:inline-block;background:#14454A;color:#fff;border-radius:8px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;padding:8px 11px;">3c</span>
+        <span style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">Detail · phone</span>
+        <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;">Full sheet, unclipped</span>
+      </div>
+
+      <div style="width:393px;background:linear-gradient(180deg,#F2F9F9 0%,#FFFFFF 220px,#FFFFFF 100%);box-shadow:0 0 0 1px rgba(20,69,74,.07),0 22px 54px rgba(20,69,74,.13);overflow:hidden;">
+
+        <div style="padding:18px 18px 12px;display:flex;align-items:center;gap:12px;">
+          <i class="ph ph-arrow-left" style="font-size:22px;color:#14454A;"></i>
+          <span style="font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#566A6E;">Projects · Needs you</span>
+        </div>
+
+        <div style="padding:0 18px 14px;">
+          <div style="font:800 28px/1.1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;">Paint the house</div>
+          <div style="display:flex;gap:16px;margin-top:9px;font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;">
+            <span>Contracted</span><span>Matt</span><span>21 days</span>
+          </div>
+        </div>
+
+        <div style="padding:0 14px 12px;">
+          <div style="border-radius:22px;background:linear-gradient(140deg,#FCF4E7 0%,#FFFDF9 100%);padding:16px 18px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;">
+              <span style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#9A5F14;">Next action</span>
+              <i class="ph ph-pencil-simple" style="font-size:18px;color:#9A5F14;"></i>
+            </div>
+            <div style="font:700 25px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.025em;color:#14454A;">Chase Brett — the quote was due 11 days ago.</div>
+            <div style="display:flex;gap:10px;margin-top:16px;">
+              <div style="flex:1;border-radius:15px;background:#14828C;color:#fff;min-height:48px;display:flex;align-items:center;justify-content:center;gap:9px;font:700 16px/1 'Plus Jakarta Sans',sans-serif;"><i class="ph ph-phone" style="font-size:19px;"></i>Ring Brett</div>
+              <div style="width:48px;height:48px;border-radius:15px;background:#fff;box-shadow:inset 0 0 0 1.5px #DCE6E6;display:flex;align-items:center;justify-content:center;"><i class="ph ph-check" style="font-size:20px;color:#14454A;"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 14px 12px;">
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);padding:15px 18px 17px;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+              <span style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Stage</span>
+              <span style="font:600 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">3 of 7</span>
+            </div>
+            <div style="display:flex;gap:4px;margin-bottom:10px;">
+              <div style="flex:1;height:8px;border-radius:4px;background:#14828C;"></div>
+              <div style="flex:1;height:8px;border-radius:4px;background:#14828C;"></div>
+              <div style="flex:1.6;height:8px;border-radius:4px;background:#14828C;box-shadow:0 0 0 3px rgba(20,130,140,.18);"></div>
+              <div style="flex:1;height:8px;border-radius:4px;background:#E4EBEB;"></div>
+              <div style="flex:1;height:8px;border-radius:4px;background:#E4EBEB;"></div>
+              <div style="flex:1;height:8px;border-radius:4px;background:#E4EBEB;"></div>
+              <div style="flex:1;height:8px;border-radius:4px;background:#E4EBEB;"></div>
+            </div>
+            <div style="font:700 21px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Quoting</div>
+            <div style="font:400 15px/1.35 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:4px;">Entered 17 November · Decide is next</div>
+            <div style="display:flex;gap:10px;margin-top:14px;">
+              <div style="flex:none;width:48px;height:48px;border-radius:15px;background:#fff;box-shadow:inset 0 0 0 1.5px #DCE6E6;display:flex;align-items:center;justify-content:center;"><i class="ph ph-arrow-left" style="font-size:19px;color:#4F6265;"></i></div>
+              <div style="flex:1;border-radius:15px;background:#fff;box-shadow:inset 0 0 0 1.5px #14828C;color:#0E6B74;min-height:48px;display:flex;align-items:center;justify-content:center;gap:9px;font:700 16px/1 'Plus Jakarta Sans',sans-serif;">Move to Decide<i class="ph ph-arrow-right" style="font-size:19px;"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 14px 12px;">
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);padding:15px 18px 17px;">
+            <div style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;margin-bottom:11px;">Waiting on</div>
+            <div style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;">Brett Hollis — quote</div>
+            <div style="display:flex;gap:22px;margin-top:12px;">
+              <div><div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;">Since</div><div style="font:600 16px/1.2 'Plus Jakarta Sans',sans-serif;margin-top:5px;">20 Nov · 18 days</div></div>
+              <div><div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9A5F14;">Expected</div><div style="font:600 16px/1.2 'Plus Jakarta Sans',sans-serif;color:#9A5F14;margin-top:5px;">27 Nov · overdue</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 14px 12px;">
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);overflow:hidden;">
+            <div style="padding:15px 18px 11px;font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Quotes</div>
+            <div style="padding:0 18px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div>
+                <div style="font:700 17px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.015em;">Coastal Painting Co</div>
+                <div style="font:400 14px/1.3 'Plus Jakarta Sans',sans-serif;color:#566A6E;margin-top:4px;">Received 14 Nov · valid to 20 Jan</div>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font:800 20px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums;">$18,400</div>
+                <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0E6B74;margin-top:5px;">Received</div>
+              </div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+            <div style="padding:12px 18px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div>
+                <div style="font:700 17px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.015em;">Brett Hollis</div>
+                <div style="font:400 14px/1.3 'Plus Jakarta Sans',sans-serif;color:#566A6E;margin-top:4px;">Requested 20 Nov</div>
+              </div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9A5F14;margin-top:5px;flex:none;">Requested</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 14px 18px;">
+          <div style="border-radius:22px;background:#fff;box-shadow:0 1px 3px rgba(20,69,74,.05),0 8px 24px rgba(20,69,74,.06);overflow:hidden;">
+            <div style="padding:15px 18px 11px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+              <span style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Notes</span>
+              <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">Adding one won't reset the clock</span>
+            </div>
+            <div style="padding:0 18px 12px;">
+              <div style="font:400 16px/1.4 'Plus Jakarta Sans',sans-serif;color:#14454A;">Brett says he's flat out until after Christmas but still wants the job.</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;margin-top:6px;">Matt · 2 Dec</div>
+            </div>
+            <div style="height:1px;background:#EDF2F2;"></div>
+            <div style="padding:12px 18px 16px;">
+              <div style="font:400 16px/1.4 'Plus Jakarta Sans',sans-serif;color:#14454A;">Coastal quote excludes the eaves. Ask about that before comparing.</div>
+              <div style="font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;margin-top:6px;">Renée · 16 Nov</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 3e ADD A JOB ============ -->
+    <div id="3e">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="display:inline-block;background:#14454A;color:#fff;border-radius:8px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;padding:8px 11px;">3e</span>
+        <span style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">Add a job · phone</span>
+        <span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#566A6E;">Under 30 seconds</span>
+      </div>
+      <div style="width:393px;background:linear-gradient(180deg,#F2F9F9 0%,#FFFFFF 200px,#FFFFFF 100%);box-shadow:0 0 0 1px rgba(20,69,74,.07),0 22px 54px rgba(20,69,74,.13);overflow:hidden;">
+        <div style="padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between;">
+          <i class="ph ph-x" style="font-size:22px;color:#4F6265;"></i>
+          <span style="font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#566A6E;">New job</span>
+          <span style="width:22px;"></span>
+        </div>
+
+        <div style="padding:6px 18px 16px;">
+          <div style="font:800 27px/1.14 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;color:#14454A;">Replace the pool pump timer</div>
+          <div style="height:2px;background:#14828C;margin-top:10px;border-radius:1px;"></div>
+          <div style="font:500 13px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;margin-top:9px;">What is it? Plain words are fine.</div>
+        </div>
+
+        <div style="padding:0 14px 14px;">
+          <div style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;margin:0 4px 9px;">How does the work happen?</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+            <div style="border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1.5px #DCE6E6;padding:13px 14px;min-height:76px;"><i class="ph ph-users-three" style="font-size:21px;color:#4F6265;"></i><div style="font:700 15px/1.2 'Plus Jakarta Sans',sans-serif;margin-top:8px;">Someone else does it</div></div>
+          <div style="border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1.5px #DCE6E6;padding:13px 14px;min-height:76px;"><i class="ph ph-hammer" style="font-size:21px;color:#4F6265;"></i><div style="font:700 15px/1.2 'Plus Jakarta Sans',sans-serif;margin-top:8px;">We do it</div></div>
+            <div style="border-radius:18px;background:linear-gradient(140deg,#E4F4F3 0%,#F6FCFB 100%);box-shadow:inset 0 0 0 2px #14828C;padding:13px 14px;min-height:76px;"><i class="ph ph-package" style="font-size:21px;color:#0E6B74;"></i><div style="font:700 15px/1.2 'Plus Jakarta Sans',sans-serif;margin-top:8px;color:#0E6B74;">Buy and install</div></div>
+            <div style="border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1.5px #DCE6E6;padding:13px 14px;min-height:76px;"><i class="ph ph-arrows-clockwise" style="font-size:21px;color:#4F6265;"></i><div style="font:700 15px/1.2 'Plus Jakarta Sans',sans-serif;margin-top:8px;">Happens again</div></div>
+          </div>
+          <div style="font:500 13px/1.4 'Plus Jakarta Sans',sans-serif;color:#566A6E;margin:11px 4px 0;">Buy and install gives it Research → Choose → Quote → Order → Delivery → Install. You can change the stages later.</div>
+        </div>
+
+        <div style="padding:0 14px 14px;">
+          <div style="border-radius:22px;background:#FAFCFC;box-shadow:0 0 0 1px #EDF2F2;padding:15px 18px 17px;">
+            <div style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;margin-bottom:12px;">If you know it now — otherwise skip</div>
+            <div style="font:500 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#566A6E;">First thing to do</div>
+            <div style="height:1.5px;background:#DCE6E6;margin:8px 0 16px;"></div>
+            <div style="display:flex;gap:20px;">
+              <div style="flex:1;">
+                <div style="font:500 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#566A6E;">Whose</div>
+                <div style="height:1.5px;background:#DCE6E6;margin-top:8px;"></div>
+              </div>
+              <div style="flex:1;">
+                <div style="font:500 17px/1.3 'Plus Jakarta Sans',sans-serif;color:#566A6E;">Rough cost</div>
+                <div style="height:1.5px;background:#DCE6E6;margin-top:8px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 14px 20px;">
+          <div style="border-radius:16px;background:#14828C;color:#fff;min-height:56px;display:flex;align-items:center;justify-content:center;font:700 18px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">Add it</div>
+          <div style="font:500 13px/1.4 'Plus Jakarta Sans',sans-serif;color:#566A6E;text-align:center;margin-top:11px;">Two taps and a title. Everything else can wait.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 3f STAGE INDICATOR ============ -->
+    <div id="3f" style="width:810px;">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="display:inline-block;background:#14454A;color:#fff;border-radius:8px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;padding:8px 11px;">3f</span>
+        <span style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">The stage indicator, at four and at seven</span>
+      </div>
+      <div style="background:#fff;border-radius:26px;box-shadow:0 1px 3px rgba(20,69,74,.05),0 12px 34px rgba(20,69,74,.08);padding:32px 34px 36px;">
+        <p style="margin:0 0 28px;font:400 16px/1.65 'Plus Jakarta Sans',sans-serif;color:#4F6265;max-width:68ch;text-wrap:pretty;">Segments, not dots. Seven dots on a phone are 6px each and unreadable; seven segments simply get narrower and still read as a progress band. <strong style="font-weight:700;color:#14454A;">The current stage is 1.6× wider than the others</strong> — so the eye lands on where the job actually is before it counts anything. The stage name is set below in full; the band never carries text.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;">
+          <div style="border-radius:20px;background:#FAFCFC;padding:22px 24px 24px;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
+              <span style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">DIY · four stages</span>
+              <span style="font:600 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">3 of 4</span>
+            </div>
+            <div style="display:flex;gap:5px;margin-bottom:12px;">
+              <div style="flex:1;height:10px;border-radius:5px;background:#14828C;"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#14828C;"></div>
+              <div style="flex:1.6;height:10px;border-radius:5px;background:#14828C;box-shadow:0 0 0 3px rgba(20,130,140,.18);"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#E4EBEB;"></div>
+            </div>
+            <div style="font:700 24px/1.15 'Plus Jakarta Sans',sans-serif;letter-spacing:-.025em;">Materials</div>
+            <div style="font:400 16px/1.35 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Build is next · Under stair storage</div>
+          </div>
+          <div style="border-radius:20px;background:#FAFCFC;padding:22px 24px 24px;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
+              <span style="font:700 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#566A6E;">Contracted · seven stages</span>
+              <span style="font:600 12px/1 'Plus Jakarta Sans',sans-serif;color:#566A6E;">3 of 7</span>
+            </div>
+            <div style="display:flex;gap:4px;margin-bottom:12px;">
+              <div style="flex:1;height:10px;border-radius:5px;background:#14828C;"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#14828C;"></div>
+              <div style="flex:1.6;height:10px;border-radius:5px;background:#14828C;box-shadow:0 0 0 3px rgba(20,130,140,.18);"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#E4EBEB;"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#E4EBEB;"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#E4EBEB;"></div>
+              <div style="flex:1;height:10px;border-radius:5px;background:#E4EBEB;"></div>
+            </div>
+            <div style="font:700 24px/1.15 'Plus Jakarta Sans',sans-serif;letter-spacing:-.025em;">Quoting</div>
+            <div style="font:400 16px/1.35 'Plus Jakarta Sans',sans-serif;color:#4F6265;margin-top:5px;">Decide is next · Paint the house</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 3g DECISIONS ============ -->
+    <div id="3g" style="width:810px;">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="display:inline-block;background:#14454A;color:#fff;border-radius:8px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;padding:8px 11px;">3g</span>
+        <span style="font:700 20px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;">What changed, and what release 1 is</span>
+      </div>
+      <div style="background:#fff;border-radius:26px;box-shadow:0 1px 3px rgba(20,69,74,.05),0 12px 34px rgba(20,69,74,.08);padding:32px 34px 36px;">
+
+        <div style="border-radius:20px;background:#F4FAFA;padding:20px 22px;margin-bottom:22px;">
+          <div style="font:700 15px/1.3 'Plus Jakarta Sans',sans-serif;color:#0E6B74;margin-bottom:10px;">Release 1 is three layouts</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+            <div>
+              <div style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#0E6B74;margin-bottom:8px;">Building</div>
+              <ul style="margin:0;padding-left:18px;font:400 14px/1.7 'Plus Jakarta Sans',sans-serif;color:#4F6265;">
+                <li>The list, responsive — <a href="#3a">3a</a> and <a href="#3b">3b</a> are the same layout at 810</li>
+                <li>The detail, responsive — <a href="#3c">3c</a>, with controls hidden at <code style="font:500 13px/1 ui-monospace,monospace;">role=display</code></li>
+                <li>Add a job — <a href="#3e">3e</a></li>
+                <li>All six groups, quotes, waiting-on, every line of copy</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#566A6E;margin-bottom:8px;">Cut, additive later</div>
+              <ul style="margin:0;padding-left:18px;font:400 14px/1.7 'Plus Jakarta Sans',sans-serif;color:#4F6265;">
+                <li>The fridge detail view — gone entirely</li>
+                <li>Where the time went — <code style="font:500 13px/1 ui-monospace,monospace;">entered_at</code> / <code style="font:500 13px/1 ui-monospace,monospace;">completed_at</code> still written from day one</li>
+                <li>Funding labels — <code style="font:500 13px/1 ui-monospace,monospace;">funding_source</code> stays in the schema</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:22px;">
+
+          <div style="border-radius:20px;background:#F4FAFA;padding:20px 22px;">
+            <div style="font:700 15px/1.3 'Plus Jakarta Sans',sans-serif;color:#0E6B74;margin-bottom:8px;">Waiting is now permanently calm</div>
+            <p style="margin:0;font:400 15px/1.65 'Plus Jakarta Sans',sans-serif;color:#4F6265;text-wrap:pretty;">Your rule, and it is better than mine. The moment the expected date passes it becomes your move, so <strong style="font-weight:700;color:#14454A;">Paint the house has lifted into Needs you</strong> and Waiting holds one genuinely calm row with no amber anywhere in it. The group can now be trusted at a glance, which is the only thing that makes a "nothing to do" group worth having. Two consequences worth noting: Needs you is three rows at month three rather than two, and the chase keeps its own words — <em>"Chase Brett — the quote was due 11 days ago"</em> — so the row still reads as a chase, not a fresh start.</p>
+          </div>
+
+          <div style="border-radius:20px;background:#F4FAFA;padding:20px 22px;">
+            <div style="font:700 15px/1.3 'Plus Jakarta Sans',sans-serif;color:#0E6B74;margin-bottom:8px;">Day one sorts smallest-first, and absence has gone quiet</div>
+            <p style="margin:0;font:400 15px/1.65 'Plus Jakarta Sans',sans-serif;color:#4F6265;text-wrap:pretty;">With no history the order was arbitrary, so it now sorts by estimate ascending: <strong style="font-weight:700;color:#14454A;">under stair storage at $2,000 leads, the kitchen at $40,000+ closes.</strong> Unpriced jobs sit between them — cheapest first, unpriced next, biggest last — which keeps the two real numbers at the ends of the list where they carry. And "no estimate" is gone: an unpriced row simply shows its stage. Four repetitions of the word <em>no</em> in the largest right-hand slot was the loudest thing on the launch screen, which is precisely backwards. From day 22 the sort reverts to days-descending.</p>
+          </div>
+
+          <div style="border-radius:20px;background:#F4FAFA;padding:20px 22px;">
+            <div style="font:700 15px/1.3 'Plus Jakarta Sans',sans-serif;color:#0E6B74;margin-bottom:8px;">Day one still has no day counts</div>
+            <p style="margin:0;font:400 15px/1.65 'Plus Jakarta Sans',sans-serif;color:#4F6265;text-wrap:pretty;">Unchanged, because it is the thing that makes the screen work. On 8 September nothing has ever moved, so there is no honest number to print — "0 days" is meaningless and a backdated count would be invented. Removing the counter removes the indictment automatically, and the framing line dates the start of the record: <em>"nothing has moved yet, because nothing has been in here to move — the clock starts today."</em></p>
+          </div>
+
+          <div style="border-radius:20px;background:#FCF6EE;padding:20px 22px;">
+            <div style="font:700 15px/1.3 'Plus Jakarta Sans',sans-serif;color:#9A5F14;margin-bottom:8px;">One thing the cuts leave exposed</div>
+            <p style="margin:0;font:400 15px/1.65 'Plus Jakarta Sans',sans-serif;color:#4F6265;text-wrap:pretty;">Dropping the fridge detail is right, and it means <strong style="font-weight:700;color:#14454A;">the list row is now the only thing the wall ever says about a job.</strong> That raises the stakes on the next-action line considerably — it is no longer a summary with a fuller version behind it, it is the entire fridge-side interface. It survives that here because every Needs-you row carries its next action in full, but it does mean a row with a vague next action becomes a dead end rather than an invitation to tap through. Worth a rule when the jobs go in: if the next action doesn't name a verb and a person or thing, it isn't finished.</p>
+          </div>
+
+          <div style="border-radius:20px;background:#FCF6EE;padding:20px 22px;">
+            <div style="font:700 15px/1.3 'Plus Jakarta Sans',sans-serif;color:#9A5F14;margin-bottom:8px;">Still mine, still needing your correction</div>
+            <p style="margin:0;font:400 15px/1.65 'Plus Jakarta Sans',sans-serif;color:#4F6265;text-wrap:pretty;">The next-action lines on <a href="#3a">3a</a> — the brief gives stages but not first moves, and only "Call Brett for a quote" is yours. Also the month-three day counts, the two quote amounts, and Stegbar as the sliding-door supplier. Given the paragraph above, those five next actions are now the most load-bearing copy in release 1.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1800,&quot;height&quot;:1300}}"></script>
+</body>
+</html>
