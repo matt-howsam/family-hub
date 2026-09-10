@@ -10,6 +10,7 @@ export default function WhatsOn({ items }) {
       {items.map((e) => (
         <div className="whats-on__row" key={e.uid}>
           <span className="whats-on__when">{e.when}</span>
+          <span className="whats-on__sep"> · </span>
           {e.label}
         </div>
       ))}
