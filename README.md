@@ -17,9 +17,20 @@ never ambiguous. Connect Neon and it becomes writable.
 
 1. Vercel project → Storage → Create Database → Neon. `DATABASE_URL` is set
    for you across all environments.
-2. Run the schema once:
+2. Run the schema once. `schema.sql` is safe to re-run — every statement is
+   idempotent (`if not exists`, `on conflict do nothing`) — so re-applying
+   it after a schema change (like the meal planner's tables) never
+   duplicates anything.
 
        psql "$DATABASE_URL" -f schema.sql
+
+   No `psql`, or on an OS Homebrew has stopped supporting it on? Use the
+   project's own database dependency instead — no extra install:
+
+       node scripts/apply-schema.mjs "postgres://...connection string..."
+
+   The connection string is in Vercel → the project → Storage → the Neon
+   database → Connection string (or the `.env.local` tab).
 
 3. Redeploy. The footer note disappears and the week letter becomes tappable.
 
