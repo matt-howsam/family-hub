@@ -6,11 +6,13 @@ import Chores from '@/components/Chores';
 import ModuleTiles from '@/components/ModuleTiles';
 import WhatsOn from '@/components/WhatsOn';
 import Avatars from '@/components/Avatars';
+import TonightLine from '@/components/TonightLine';
 import { getAnchor, hasDb } from '@/lib/db';
 import { weekLetter, today, TZ } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
+import { getTonight } from '@/lib/mealplanner';
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';
@@ -22,6 +24,7 @@ export default async function Wall() {
   const anchor = await getAnchor();
   const now = today(TZ);
   const w = weekLetter(anchor, now);
+  const tonight = await getTonight();
 
   /* Only build briefings on a school weekday. At the weekend or in the
      holidays the children's blocks have nothing true to say, so they are
@@ -89,6 +92,8 @@ export default async function Wall() {
           canWrite={hasDb}
         />
       </section>
+
+      <TonightLine tonight={tonight} />
 
       {/* Family register — people. Softer radius, more air, tinted. The
           weekday payload is the kids' briefings; the weekend payload is
