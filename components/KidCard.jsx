@@ -1,10 +1,12 @@
 import { TShirt } from '@phosphor-icons/react/ssr';
 
-/* One child's day. Server-rendered — nothing here is interactive.
-   The uniform answer is the payload; everything else is supporting detail. */
+/* One child's day. Tapping it opens their own view — the same destination
+   as their avatar (docs/family-hub-whats-on-person-views-brief.md,
+   "one destination per person"). Navigation only, never a write. */
 export default function KidCard({ b }) {
   return (
-    <div
+    <a
+      href={`/people/${b.id}`}
       className="card kid"
       style={{
         '--fh-tint': `var(--fh-${b.tint}-slab)`,
@@ -33,6 +35,6 @@ export default function KidCard({ b }) {
           <div className="kid__note">Ordinary day. Nothing to bring.</div>
         )}
       </div>
-    </div>
+    </a>
   );
 }

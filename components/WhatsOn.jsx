@@ -1,11 +1,12 @@
-/* Household events that aren't a child's own commitment — theirs are on
-   their own card, so the same activity never appears twice on one screen.
-   Multi-day spans are deduped to their first occurrence by the caller so a
-   school holiday doesn't fill this with repeats. */
+/* The home slot: up to three upcoming household events, real Home calendar
+   data. Tapping it opens the full What's On listing — navigation, not a
+   write. Theirs are on a child's own card, so the same activity never
+   appears twice on one screen; the caller drops anything already shown
+   there today. */
 export default function WhatsOn({ items }) {
   if (!items.length) return null;
   return (
-    <div className="whats-on">
+    <a className="whats-on" href="/whats-on">
       <div className="whats-on__label">What&rsquo;s on</div>
       {items.map((e) => (
         <div className="whats-on__row" key={e.uid}>
@@ -14,6 +15,6 @@ export default function WhatsOn({ items }) {
           {e.label}
         </div>
       ))}
-    </div>
+    </a>
   );
 }

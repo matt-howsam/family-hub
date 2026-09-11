@@ -9,7 +9,8 @@ import Avatars from '@/components/Avatars';
 import { getAnchor, hasDb } from '@/lib/db';
 import { weekLetter, today, TZ } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
-import { getEvents } from '@/lib/homecal';
+import { overlayToday } from '@/lib/todayBriefing';
+import { getWhatsOn } from '@/lib/whatson';
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';
@@ -30,34 +31,24 @@ export default async function Wall() {
     ? ['tom', 'rose'].map((id) => briefing(id, w.letter, day)).filter(Boolean)
     : [];
 
-  /* The Home calendar. Absent or unreachable simply means no cards — a fridge
-     with no calendar beats a fridge showing an error. */
-  const events = await getEvents({ from: now, days: 8 });
+  /* One read function behind the wall, the full What's On listing and
+     person views (docs/family-hub-whats-on-person-views-brief.md). Absent
+     or unreachable simply means no cards — a fridge with no calendar beats
+     a fridge showing an error. */
+  const { entries } = await getWhatsOn({ from: now, days: 8 });
   const todayKey = now.toISOString().slice(0, 10);
   const tomorrowKey = new Date(now.getTime() + DAY).toISOString().slice(0, 10);
-  const isToday = (e) => e.date === todayKey;
+  const nowInstant = new Date();
 
   /* A child's own events belong on their card, not in a general list, so the
-     same activity never appears twice on one screen. */
-  const mine = (id) => events.filter((e) => e.person === id && isToday(e));
+     same activity never appears twice on one screen. Track which entries
+     that covers so the home slot can drop them by id, never by title. Same
+     overlay a person view applies — see lib/todayBriefing.js. */
+  const shown = new Set();
   for (const k of kids) {
-    const own = mine(k.id);
-    if (own.length) {
-      k.after = own.map((e) => (e.time ? `${e.label}, ${e.time}` : e.label)).join(' · ');
-    }
+    const { consumed } = overlayToday(k, entries, todayKey);
+    consumed.forEach((id) => shown.add(id));
   }
-
-  /* A mufti day is announced by the school, not scheduled, so the timetable
-     cannot know about it. When the calendar says the uniform changes, it wins. */
-  const override = events.find((e) => isToday(e) && e.uniformOverride);
-  if (override) {
-    for (const k of kids) {
-      k.uniformLabel = 'Mufti day';
-      k.bring = override.label.replace(/^mufti day\s*[-–—:]\s*/i, '') || k.bring;
-    }
-  }
-
-  const kidIds = new Set(kids.map((k) => k.id));
 
   const dayLabel = (dateStr) => {
     if (dateStr === todayKey) return 'Today';
@@ -67,23 +58,17 @@ export default async function Wall() {
     });
   };
 
-  /* The household's own events — not a child's. A multi-day span appears
-     once per day it covers, which is right for a kid's "today" but wrong
-     here, so keep the first occurrence of each. */
-  const seen = new Set();
-  const onWall = events
-    .filter((e) => !kidIds.has(e.person) && e !== override)
-    .filter((e) => {
-      const base = e.uid.split(':')[0];
-      if (seen.has(base)) return false;
-      seen.add(base);
-      return true;
-    })
-    .slice(0, 4)
+  /* Up to three upcoming entries, dropping whatever the kids' blocks already
+     show today. A multi-day span already counts as one entry — getWhatsOn
+     collapsed it. */
+  const onWall = entries
+    .filter((e) => !shown.has(e.id))
+    .filter((e) => e.all_day || !e.starts_at || new Date(e.starts_at) >= nowInstant)
+    .slice(0, 3)
     .map((e) => ({
-      uid: e.uid,
-      label: e.label,
-      when: dayLabel(e.date) + (e.time ? ` ${e.time}` : ''),
+      uid: e.id,
+      label: e.title,
+      when: dayLabel(e.date) + (e.all_day ? '' : ` ${e.display_time}`),
     }));
 
   const schoolMorning = kids.length > 0;

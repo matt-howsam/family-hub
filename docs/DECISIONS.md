@@ -7,6 +7,46 @@ arbitrary until you know why.
 
 ---
 
+## What's On and person views
+
+**What's On and person views are lenses, not modules.** They own no content
+tables. Every entry belongs to a source and is read through `lib/whatson.js`
+— currently just the Home calendar adapter. The home wall reads through it
+too, so a record is never copied between the wall, the listing and a
+person's view.
+
+**Around town, the school adapter and the community adapter are not built.**
+Only the calendar exists as a source, so the Everything/Ours/Around town
+filter has nothing to filter and isn't rendered. Add it when a second source
+exists, not before.
+
+**No separate term adapter for standing after-school activities.** The home
+screen already treats `AFTER_SCHOOL` (the term layer) as a fallback only — a
+real calendar event for that child and day wins. Feeding both into
+`lib/whatson.js` as independent sources would double an activity that's
+already handled by the one adapter it needs.
+
+**Adults' Needs You section doesn't render.** It would read from Projects
+and the Register, and neither has real data behind it yet — both are still
+static placeholders. A section for a module that hasn't shipped renders
+nothing, not a fake one; Matt and Renée's person views currently show
+Coming up only.
+
+**A device identifies itself once, by URL.** Visit `/?role=display` on the
+kiosk iPad and a cookie remembers it from then on — no login, no deploy.
+Everything else defaults to a person. Read-only surfaces use it for
+idle-timeout behaviour (What's On, person views); a future write (chore
+ticks, the meal planner) will gate on the same cookie rather than building
+a second mechanism.
+
+**The School section's day-end cutoff is a fixed 3:30pm, not each child's
+real last bell.** Per-period bell times aren't in the data model yet — only
+the headline end time (`lib/people.js#endsAt`) and the period list itself,
+with no timing between them. A shared approximate cutoff decides which day
+the section opens on; it is not shown to anyone as a real time.
+
+---
+
 ## Data sources
 
 **The timetable is the source of truth for uniform, not the calendar.**
