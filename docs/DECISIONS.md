@@ -7,6 +7,24 @@ arbitrary until you know why.
 
 ---
 
+## Interface conventions
+
+**The chevron is the fridge's only affordance.** Every tappable region on a
+read-only display carries one; nothing else does. It's what lets the wall
+avoid disabled-looking controls entirely — there's no second vocabulary
+(underlines, arrows, colour) competing with it, so a passer-by learns the
+one signal once. If something needs to look tappable, it gets a chevron; if
+it can't be tapped, it never gets one by accident.
+
+**The dashboard's Tonight line never shows an edit affordance, on principle
+— not just in practice.** It is navigation to the planner, and it carries
+the chevron like everything else that's tappable-but-not-writable. A pencil
+icon would promise an edit the dashboard deliberately never offers; this
+generalises past the meal planner to any future line that links out to a
+surface with a real write.
+
+---
+
 ## What's On and person views
 
 **What's On and person views are lenses, not modules.** They own no content
@@ -83,6 +101,17 @@ shared school day, and no single template fits both.
 ---
 
 ## The week letter
+
+**The letter is derived once, from `week_anchor`, and every surface reads
+that derivation — no screen computes it for itself.** The home wall,
+`lib/week.js#weekLetter()` and the person screens' School section all trace
+back to the same anchor and the same flip-counting logic. Two independent
+derivations is exactly what remembered state exists to prevent — if a
+person screen and the wall ever showed different letters, the fix is never
+"which one is right", it's "why does a second derivation exist at all."
+When a person screen shows tomorrow's or next week's letter rather than
+today's, say so next to it (`next school day`) rather than let it read as
+disagreement with the wall.
 
 **Remembered state, never computed from a fixed anchor.**
 The school's A/B cycle carries across term breaks and years with no reset, so
