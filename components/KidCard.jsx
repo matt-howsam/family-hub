@@ -1,11 +1,14 @@
+import Link from 'next/link';
 import { TShirt } from '@phosphor-icons/react/ssr';
 
 /* One child's day. Tapping it opens their own view — the same destination
    as their avatar (docs/family-hub-whats-on-person-views-brief.md,
-   "one destination per person"). Navigation only, never a write. */
+   "one destination per person"). Navigation only, never a write. A plain
+   <a> here forces a full page reload; Link keeps it a client transition,
+   which is most of the "returning home feels slow" complaint. */
 export default function KidCard({ b }) {
   return (
-    <a
+    <Link
       href={`/people/${b.id}`}
       className="card kid"
       style={{
@@ -35,6 +38,6 @@ export default function KidCard({ b }) {
           <div className="kid__note">Ordinary day. Nothing to bring.</div>
         )}
       </div>
-    </a>
+    </Link>
   );
 }

@@ -81,9 +81,11 @@ export default async function PersonPage({ params }) {
       school={{
         dayKey: schoolDayKey,
         letter: schoolLetter,
+        isToday: showTodaySchool,
         timetable: TIMETABLE[id],
         uniformRules: UNIFORM[id],
         uniformLabel: UNIFORM_LABEL,
+        tint: p.tint,
       }}
       comingUp={comingUp}
     />

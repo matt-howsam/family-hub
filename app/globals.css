@@ -354,6 +354,7 @@ html, body {
 .pv-section__label { padding: 0 var(--fh-space-2) var(--fh-space-3);
                       font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
                       text-transform: uppercase; color: var(--fh-ink-label); }
+.pv-section__qualifier { color: var(--fh-teal-ink); font-weight: 500; }
 .pv-card { border-radius: var(--fh-radius-xl); background: var(--fh-surface);
            box-shadow: var(--fh-shadow-card); padding: var(--fh-space-6) var(--fh-space-6) var(--fh-space-7); }
 

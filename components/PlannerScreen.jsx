@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ArrowRight } from '@phosphor-icons/react/ssr';
 import { foodIcon, FOOD_ICONS } from '@/lib/foodIcons';
 
@@ -248,7 +249,7 @@ export default function PlannerScreen({
 
   return (
     <main className="mp-page">
-      <a className="wo-back" href="/">&larr; The wall</a>
+      <Link className="wo-back" href="/">&larr; The wall</Link>
       <div className="mp-header">
         <span className="mp-header__title">Dinner</span>
       </div>

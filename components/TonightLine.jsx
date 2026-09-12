@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { foodIcon } from '@/lib/foodIcons';
 
 /* Sits under the date and week letter, not a tile — tonight's dinner decays
@@ -8,11 +9,11 @@ export default function TonightLine({ tonight }) {
   const Icon = tonight.card ? foodIcon(tonight.card.icon) : null;
   return (
     <div className="tonight">
-      <a className="tonight__line" href="/planner">
+      <Link className="tonight__line" href="/planner">
         <span className="tonight__label">{tonight.label}</span>
         {Icon && <Icon size={18} className="tonight__icon" />}
         <span className="tonight__value">{tonight.card ? tonight.card.title : 'nothing planned'}</span>
-      </a>
+      </Link>
       {tonight.prep && <div className="tonight__prep">{tonight.prep}</div>}
     </div>
   );

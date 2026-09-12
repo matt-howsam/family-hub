@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { PEOPLE, PEOPLE_ORDER } from '@/lib/people';
 
 /* One tap opens a person's own view — their day, goals, chores. Same
@@ -8,7 +9,7 @@ export default function Avatars() {
       {PEOPLE_ORDER.map((id) => {
         const p = PEOPLE[id];
         return (
-          <a className="avatar" href={`/people/${id}`} key={id}>
+          <Link className="avatar" href={`/people/${id}`} key={id}>
             <div
               className="avatar__disc"
               style={{ background: `var(--fh-${id}-disc)`, color: `var(--fh-${id}-ink)` }}
@@ -17,7 +18,7 @@ export default function Avatars() {
             </div>
             <span className="avatar__name">{p.name}</span>
             <div className="avatar__rule" />
-          </a>
+          </Link>
         );
       })}
     </div>

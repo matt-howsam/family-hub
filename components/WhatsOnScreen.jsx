@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { CalendarBlank } from '@phosphor-icons/react/ssr';
 import { PEOPLE } from '@/lib/people';
 
@@ -123,7 +124,7 @@ export default function WhatsOnScreen({ groups, stale, fetchedAt, empty, fridge 
 
   return (
     <main className="wo-page">
-      <a className="wo-back" href="/">&larr; The wall</a>
+      <Link className="wo-back" href="/">&larr; The wall</Link>
       <div className="wo-header">
         <span className="wo-header__title">What&rsquo;s on</span>
         {updated && (

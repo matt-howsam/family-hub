@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { TShirt } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
 
@@ -13,6 +14,13 @@ const DAY_NAME = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursd
 
 const weekdayName = (dateStr) =>
   new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('en-AU', { timeZone: 'UTC', weekday: 'long' });
+
+/* Weekday + date, same format /whats-on uses. Coming up spans 14 days, so a
+   weekday-only subhead makes two different Mondays look identical. */
+const subheadFor = (dateStr) =>
+  new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('en-AU', {
+    timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'short',
+  });
 
 function ComingUpRow({ e }) {
   const time = e.all_day ? 'All day' : e.display_time;
@@ -43,7 +51,7 @@ function ComingUp({ entries }) {
       <div className="pv-section__label">Coming up</div>
       {[...grouped.entries()].map(([date, items]) => (
         <div key={date}>
-          <div className="wo-subhead">{weekdayName(date)}</div>
+          <div className="wo-subhead">{subheadFor(date)}</div>
           <div className="wo-rows">
             {items.map((e) => <ComingUpRow e={e} key={e.id} />)}
           </div>
@@ -53,7 +61,7 @@ function ComingUp({ entries }) {
   );
 }
 
-function TodaySection({ today }) {
+function TodaySection({ today, tint }) {
   if (!today) return null;
   if (today.kind === 'attributed') {
     return (
@@ -73,9 +81,9 @@ function TodaySection({ today }) {
   return (
     <div className="pv-section">
       <div className="pv-section__label">Today</div>
-      <div className="pv-card">
-        <TShirt size={32} className="pv-uniform__icon" />
-        <div className="pv-uniform__word">{b.uniformLabel}</div>
+      <div className="pv-card" style={{ '--fh-slab-ink': `var(--fh-${tint}-slab-ink)` }}>
+        <TShirt size={32} className="pv-uniform__icon" style={{ color: 'var(--fh-slab-ink)' }} />
+        <div className="pv-uniform__word" style={{ color: 'var(--fh-slab-ink)' }}>{b.uniformLabel}</div>
         {b.headline && <div className="pv-headline">{b.headline}</div>}
         {b.bring && <div className="pv-note">{b.bring}</div>}
         {b.after && (
@@ -99,10 +107,28 @@ function SchoolSection({ school }) {
   const periods = school.timetable?.[selLetter]?.[selDay] ?? [];
   const uniform = school.uniformRules?.[selLetter]?.[selDay] ?? 'formal';
 
+  // The "next school day" qualifier only means something while looking at
+  // the section's own opening view — once someone browses elsewhere with
+  // the day/week segments, it's just reference material, not an answer.
+  const isDefaultView = selDay === school.dayKey && selLetter === school.letter;
+
   return (
     <div className="pv-section">
-      <div className="pv-section__label">{DAY_NAME[selDay]} · Week {selLetter}</div>
-      <div className="pv-switch">
+      <div className="pv-section__label">
+        {DAY_NAME[selDay]} · Week {selLetter}
+        {isDefaultView && !school.isToday && (
+          <span className="pv-section__qualifier"> · next school day</span>
+        )}
+      </div>
+
+      <div className="pv-card" style={{ '--fh-slab-ink': `var(--fh-${school.tint}-slab-ink)` }}>
+        <TShirt size={32} className="pv-uniform__icon" style={{ color: 'var(--fh-slab-ink)' }} />
+        <div className="pv-uniform__word" style={{ color: 'var(--fh-slab-ink)' }}>
+          {school.uniformLabel[uniform]}
+        </div>
+      </div>
+
+      <div className="pv-switch" style={{ marginTop: 'var(--fh-space-6)' }}>
         {DAY_ORDER.map((d) => (
           <button
             key={d}
@@ -136,9 +162,6 @@ function SchoolSection({ school }) {
           );
         })}
       </div>
-      <div className="pv-note" style={{ marginTop: 'var(--fh-space-3)' }}>
-        {school.uniformLabel[uniform]}
-      </div>
     </div>
   );
 }
@@ -166,7 +189,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
   return (
     <main className="pv-page">
-      <a className="wo-back" href="/">&larr; The wall</a>
+      <Link className="wo-back" href="/">&larr; The wall</Link>
       <div className="pv-header">
         <div
           className="pv-header__disc"
@@ -182,7 +205,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
       {nothing && <div className="pv-empty">Nothing needs you.</div>}
 
-      <TodaySection today={today} />
+      <TodaySection today={today} tint={person.tint} />
       {school && <SchoolSection school={school} />}
       <ComingUp entries={comingUp} />
     </main>
