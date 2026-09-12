@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CalendarBlank, ArrowLeft } from '@phosphor-icons/react/ssr';
@@ -163,12 +163,12 @@ export default function WhatsOnScreen({ groups, stale, fetchedAt, empty, fridge 
         <div className="wo-group">
           <div className="wo-group__label">{weekendLabel}</div>
           {groups.weekend.map(({ date, items }) => (
-            <div key={date}>
+            <Fragment key={date}>
               {groups.weekend.length > 1 && <div className="wo-subhead">{weekdayName(date)}</div>}
               <div className="wo-rows">
                 {items.map((e) => <Row entry={e} key={e.id} onOpen={setSelected} />)}
               </div>
-            </div>
+            </Fragment>
           ))}
         </div>
       )}
@@ -177,12 +177,12 @@ export default function WhatsOnScreen({ groups, stale, fetchedAt, empty, fridge 
         <div className="wo-group">
           <div className="wo-group__label">Later</div>
           {groups.later.map(({ date, items }) => (
-            <div key={date}>
+            <Fragment key={date}>
               <div className="wo-subhead">{subheadFor(date)}</div>
               <div className="wo-rows">
                 {items.map((e) => <Row entry={e} key={e.id} onOpen={setSelected} />)}
               </div>
-            </div>
+            </Fragment>
           ))}
         </div>
       )}

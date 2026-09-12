@@ -17,7 +17,7 @@ html, body {
   margin: 0 auto;
   min-height: 100dvh;
   background: var(--fh-page-bg);
-  padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9);
+  padding: var(--fh-gutter-wall) var(--fh-gutter-wall) 160px;
   transition: background var(--fh-dur-dim) var(--fh-ease);
 }
 
@@ -176,9 +176,18 @@ html, body {
 .whats-on__when { color: var(--fh-ink-label); font-weight: 400; }
 .whats-on__sep { color: var(--fh-ink-label); }
 
-/* ---- Avatar strip — one tap opens a person's own view (not built yet). ---- */
-.avatars { display: flex; justify-content: space-between;
-           padding: 0 var(--fh-space-2); margin-top: var(--fh-space-7); }
+/* ---- Avatar strip — one tap opens a person's own view. Fixed to the
+   bottom of the viewport, within thumb reach, per the home screen brief —
+   growing page content (What's on, the conditions card) was pushing it
+   below the fold instead of leaving it reachable without scrolling. ---- */
+.avatars { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+           max-width: 810px; margin: 0 auto;
+           display: flex; justify-content: space-between;
+           background: var(--fh-ground);
+           box-shadow: 0 -8px 20px rgba(20,69,74,.08);
+           padding: var(--fh-space-4) var(--fh-gutter-wall)
+                    max(var(--fh-space-5), env(safe-area-inset-bottom));
+           transition: background var(--fh-dur-dim) var(--fh-ease); }
 .avatar { display: block; text-align: center; text-decoration: none; color: inherit; }
 .avatar__disc { width: var(--fh-avatar-wall); height: var(--fh-avatar-wall);
                 border-radius: var(--fh-radius-pill); display: flex;

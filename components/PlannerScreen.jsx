@@ -185,11 +185,17 @@ export default function PlannerScreen({
     setPlan((cur) => cur.map((n) => (n.date === date ? { ...n, card } : n)));
     if (card) await post({ action: 'set', night: date, cardId: card.id });
     else await post({ action: 'clear', night: date });
+    // The dashboard's Tonight line reads tonight's card server-side. Without
+    // this, the client router cache (see next.config.mjs) would keep
+    // showing the wall's cached payload from before this write for up to
+    // its full staleTimes window on the next "back to the wall" tap.
+    router.refresh();
 
     showToast(card ? `${card.title} planned` : 'Cleared', async () => {
       setPlan((cur) => cur.map((n) => (n.date === date ? { ...n, card: previous } : n)));
       if (previous) await post({ action: 'set', night: date, cardId: previous.id });
       else await post({ action: 'clear', night: date });
+      router.refresh();
     });
   };
 
@@ -224,9 +230,11 @@ export default function PlannerScreen({
       const card = lib.meals.concat(lib.notCooking).find((c) => c.id === f.cardId) ?? null;
       return { ...n, card };
     }));
+    router.refresh();
     showToast(`Filled ${filled.length} night${filled.length === 1 ? '' : 's'}`, async () => {
       setNextPlan(before);
       await Promise.all(filled.map((f) => post({ action: 'clear', night: f.date })));
+      router.refresh();
     });
   };
 
@@ -245,6 +253,7 @@ export default function PlannerScreen({
       meals: cur.meals.filter((c) => c.id !== id),
       notCooking: cur.notCooking.filter((c) => c.id !== id),
     }));
+    router.refresh();
   };
 
   return (
