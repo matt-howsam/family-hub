@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CalendarBlank } from '@phosphor-icons/react/ssr';
+import { CalendarBlank, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { PEOPLE } from '@/lib/people';
 
 /* An open sheet closes after 30s idle; the whole view returns to the
@@ -30,7 +30,12 @@ function Row({ entry, onOpen }) {
       <span className="wo-main">
         <span className="wo-titlerow">
           {entry.person !== 'household' && (
-            <span className="wo-mark" style={{ background: `var(--fh-${entry.person}-ink)` }} />
+            <span
+              className="wo-mark"
+              style={{ background: `var(--fh-${entry.person}-disc)`, color: `var(--fh-${entry.person}-ink)` }}
+            >
+              {PEOPLE[entry.person]?.initial}
+            </span>
           )}
           <span className="wo-name">
             {entry.title}
@@ -124,7 +129,7 @@ export default function WhatsOnScreen({ groups, stale, fetchedAt, empty, fridge 
 
   return (
     <main className="wo-page">
-      <Link className="wo-back" href="/">&larr; The wall</Link>
+      <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="wo-header">
         <span className="wo-header__title">What&rsquo;s on</span>
         {updated && (

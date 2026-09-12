@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight } from '@phosphor-icons/react/ssr';
+import { ArrowRight, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { foodIcon, FOOD_ICONS } from '@/lib/foodIcons';
 
 const SHEET_IDLE_MS = 30000;
@@ -249,7 +249,7 @@ export default function PlannerScreen({
 
   return (
     <main className="mp-page">
-      <Link className="wo-back" href="/">&larr; The wall</Link>
+      <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="mp-header">
         <span className="mp-header__title">Dinner</span>
       </div>

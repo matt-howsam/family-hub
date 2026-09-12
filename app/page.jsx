@@ -104,8 +104,11 @@ export default async function Wall() {
           : (<><WaterHero /><Chores /></>)}
       </div>
 
-      <ModuleTiles />
+      {/* Ordered by decay speed: What's on is wrong within hours and read by
+          all four people, so it outranks the module rows, which are stable
+          for months and mostly Matt-and-Renée content. */}
       <WhatsOn items={onWall} />
+      <ModuleTiles />
       <Avatars />
 
       <div className="house">

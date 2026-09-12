@@ -38,6 +38,7 @@ html, body {
                   text-decoration: none; color: inherit; font: var(--fh-text-body); }
 .tonight__label { font-weight: 600; color: var(--fh-ink); }
 .tonight__icon { color: var(--fh-teal-ink); }
+.tonight__chevron { color: var(--fh-ink-label); }
 .tonight__prep { margin-top: var(--fh-space-2); font: var(--fh-text-answer);
                   letter-spacing: var(--fh-track-answer); color: var(--fh-attention-accent); }
 
@@ -141,13 +142,16 @@ html, body {
 .tiles { border-radius: var(--fh-radius-xl); background: var(--fh-surface);
          box-shadow: var(--fh-shadow-card); overflow: hidden;
          margin-top: var(--fh-space-6); }
-.tile { display: grid; grid-template-columns: 24px 1fr auto; align-items: center;
+.tile { display: grid; grid-template-columns: 22px 1fr auto; align-items: center;
         gap: var(--fh-space-4); padding: var(--fh-space-3) var(--fh-space-6);
         border-top: var(--fh-border-hair); }
 .tile:first-child { border-top: 0; }
 .tile__icon { color: var(--fh-teal-ink); flex-shrink: 0; }
-.tile__answer { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
-                font-variant-numeric: tabular-nums; }
+/* A step down from --fh-text-answer on purpose — legible at a metre (the
+   20px floor) but not competing with the hero content above it. Only the
+   amber attention state should pull the eye this far down the wall. */
+.tile__answer { font: 500 19px/1.3 var(--fh-font); letter-spacing: -.005em;
+                color: var(--fh-ink-body); font-variant-numeric: tabular-nums; }
 .tile__accent { color: var(--fh-teal-ink); }
 .tile__name { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
               text-transform: uppercase; color: var(--fh-ink-label); white-space: nowrap; }
@@ -158,14 +162,17 @@ html, body {
 
 /* ---- What's on — a quiet, receding card. Real calendar data. Tapping it
    opens the full listing: navigation, not a write. ---- */
-.whats-on { display: block; border-radius: var(--fh-radius-xl); background: var(--fh-surface-sunken);
-            padding: var(--fh-space-4) var(--fh-space-6) var(--fh-space-5);
+.whats-on { display: block; border-radius: var(--fh-radius-xl); background: var(--fh-surface);
+            box-shadow: var(--fh-shadow-card);
+            padding: var(--fh-space-5) var(--fh-space-6) var(--fh-space-6);
             margin-top: var(--fh-space-4); color: inherit; text-decoration: none; }
+.whats-on__header { display: flex; align-items: center; justify-content: space-between;
+                     margin-bottom: var(--fh-space-4); }
 .whats-on__label { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
-                    text-transform: uppercase; color: var(--fh-ink-label);
-                    margin-bottom: var(--fh-space-3); }
-.whats-on__row { font: 500 19px/1.3 var(--fh-font); letter-spacing: -.01em; }
-.whats-on__row + .whats-on__row { margin-top: var(--fh-space-1); }
+                    text-transform: uppercase; color: var(--fh-ink-label); }
+.whats-on__chevron { color: var(--fh-ink-label); }
+.whats-on__row { font: 700 23px/1.35 var(--fh-font); letter-spacing: -.02em; }
+.whats-on__row + .whats-on__row { margin-top: var(--fh-space-2); }
 .whats-on__when { color: var(--fh-ink-label); font-weight: 400; }
 .whats-on__sep { color: var(--fh-ink-label); }
 
@@ -256,10 +263,14 @@ html, body {
 .wo-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
            background: var(--fh-page-bg);
            padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
-.wo-back { display: inline-flex; align-items: center; gap: var(--fh-space-2);
-           min-height: var(--fh-target-min); padding: var(--fh-space-2) 0;
-           font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
-           text-transform: uppercase; color: var(--fh-ink-label); }
+/* The back control, everywhere it appears. A round icon button rather than
+   a text link — wet hands, 56pt not 44pt, since it's the one control used
+   to leave every non-home screen. */
+.wo-back { display: inline-flex; align-items: center; justify-content: center;
+           width: var(--fh-target-commit); height: var(--fh-target-commit);
+           border-radius: var(--fh-radius-pill); background: var(--fh-surface);
+           box-shadow: var(--fh-shadow-card); color: var(--fh-ink);
+           margin-bottom: var(--fh-space-5); }
 .wo-header { display: flex; justify-content: space-between; align-items: baseline;
              gap: var(--fh-space-4); padding: var(--fh-space-4) var(--fh-space-2) var(--fh-space-6); }
 .wo-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
@@ -274,11 +285,14 @@ html, body {
                   text-transform: uppercase; color: var(--fh-ink-label); }
 .wo-filter__seg--active { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
 
-.wo-group { margin-bottom: var(--fh-space-7); }
-.wo-group__label { padding: 0 var(--fh-space-2) var(--fh-space-3);
+/* Space goes above a date row, never below, so it groups with the rows it
+   introduces rather than floating between two cards. */
+.wo-group { margin-bottom: var(--fh-space-3); }
+.wo-group__label { padding: var(--fh-space-7) var(--fh-space-2) var(--fh-space-3);
                     font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
                     text-transform: uppercase; color: var(--fh-ink-label); }
-.wo-subhead { padding: var(--fh-space-5) var(--fh-space-2) var(--fh-space-2);
+.wo-group:first-child .wo-group__label { padding-top: 0; }
+.wo-subhead { padding: var(--fh-space-7) var(--fh-space-2) var(--fh-space-2);
               font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
               text-transform: uppercase; color: var(--fh-ink-label); }
 .wo-subhead:first-child { padding-top: 0; }
@@ -296,7 +310,12 @@ html, body {
            font-variant-numeric: tabular-nums; }
 .wo-main { min-width: 0; }
 .wo-titlerow { display: flex; align-items: center; gap: var(--fh-space-2); }
-.wo-mark { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+/* An initial chip, not a bare dot — a colour alone at 12px carries no
+   meaning at a metre and there's no legend. Reuses the same avatar colours
+   already established at the bottom of the home screen. */
+.wo-mark { display: inline-flex; align-items: center; justify-content: center;
+           width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+           font: 700 12px/1 var(--fh-font); }
 .wo-name { font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
 .wo-row--around .wo-name { font-weight: 500; color: var(--fh-ink-body); }
 .wo-location { display: block; margin-top: var(--fh-space-1);

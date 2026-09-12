@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { TShirt } from '@phosphor-icons/react/ssr';
+import { TShirt, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
@@ -189,7 +189,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
   return (
     <main className="pv-page">
-      <Link className="wo-back" href="/">&larr; The wall</Link>
+      <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="pv-header">
         <div
           className="pv-header__disc"
