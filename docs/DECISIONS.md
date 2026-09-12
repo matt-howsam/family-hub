@@ -25,6 +25,47 @@ surface with a real write.
 
 ---
 
+## The conditions card
+
+**The water hero was 100% fabricated text until 12 September 2026.**
+"Beach day", the wind, the swell, the tide times — every number in the
+original mockup was static copy, not a computation with a bug. It read as
+a live verdict and was confidently wrong on the first genuinely rainy
+Saturday. `lib/conditions.js` replaced it with two real, keyless sources.
+
+**Rain, cloud and wind come from Open-Meteo's forecast API** (free,
+non-commercial, no account) for South Kingscliff NSW (-28.2598, 153.5782).
+
+**Swell and tide come from the household's own buoy/tide proxy**
+(`offshore-window-finder.vercel.app`, a Vercel deployment Matt runs over
+Queensland Government open data for the Tweed Sand-bypass Jetty gauge and
+Tweed Offshore buoy) rather than Open-Meteo's marine model — a real
+reading beats a forecast model for "right now."
+
+**The tide series has no future predictions — it stops at "now."** Checked
+directly against a live sample: the last entry's timestamp equalled the
+request time to the minute. It's a predicted-vs-actual calibration record,
+not a forecast. So the card shows current level and short-term trend
+(rising/falling from the last ~30 minutes), never a fabricated "High
+4:12pm" — the old mockup's tide times were invented for exactly this
+reason.
+
+**The verdict is deliberately conservative, and the facts always show
+regardless of it.** "Beach day" only appears when rain chance, wind and
+swell all clear a real bar; otherwise the headline states what's actually
+happening ("Rain about", "Changeable") rather than grading a maybe. The
+review's own finding was that the facts underneath were correct and useful
+even when the one-word judgement wasn't — so the stats row never depends
+on which headline won. Thresholds are a first pass; tune them against the
+household's own SeaScore rules if those differ.
+
+**No card beats a stale or fabricated one.** If either source fails,
+`getConditions()` returns `null` and the water hero simply doesn't render
+— consistent with "never a confident guess" everywhere else, and a real
+change from the always-on placeholder it replaced.
+
+---
+
 ## What's On and person views
 
 **What's On and person views are lenses, not modules.** They own no content

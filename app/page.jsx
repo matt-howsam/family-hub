@@ -13,6 +13,7 @@ import { briefing, dayKey } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getTonight } from '@/lib/mealplanner';
+import { getConditions } from '@/lib/conditions';
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';
@@ -33,6 +34,11 @@ export default async function Wall() {
   const kids = w.schoolWeek && day
     ? ['tom', 'rose'].map((id) => briefing(id, w.letter, day)).filter(Boolean)
     : [];
+  const schoolMorning = kids.length > 0;
+
+  /* Only fetch real conditions on the day they're shown — no point paying
+     for two API calls on a school morning nobody sees the water hero on. */
+  const conditions = schoolMorning ? null : await getConditions();
 
   /* One read function behind the wall, the full What's On listing and
      person views (docs/family-hub-whats-on-person-views-brief.md). Absent
@@ -74,7 +80,6 @@ export default async function Wall() {
       when: dayLabel(e.date) + (e.all_day ? '' : ` ${e.display_time}`),
     }));
 
-  const schoolMorning = kids.length > 0;
   const builtAt = new Date()
     .toLocaleTimeString('en-AU', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true })
     .toLowerCase();
@@ -101,7 +106,7 @@ export default async function Wall() {
       <div data-register="family" style={{ marginTop: 'var(--fh-space-8)' }}>
         {schoolMorning
           ? kids.map((b) => <KidCard key={b.id} b={b} />)
-          : (<><WaterHero /><Chores /></>)}
+          : (<><WaterHero conditions={conditions} /><Chores /></>)}
       </div>
 
       {/* Ordered by decay speed: What's on is wrong within hours and read by

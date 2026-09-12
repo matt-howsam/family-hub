@@ -207,8 +207,9 @@ html, body {
                 margin-top: var(--fh-space-5); padding-top: var(--fh-space-4);
                 border-top: 1px solid var(--fh-water-rule);
                 font: 500 20px/1.25 var(--fh-font); font-variant-numeric: tabular-nums; }
-.water__note { font: 400 italic 21px/1.3 var(--fh-font); margin-top: var(--fh-space-4);
-               opacity: .95; }
+.water__generated { display: block; margin-top: var(--fh-space-4);
+                     font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                     text-transform: uppercase; opacity: .75; }
 
 /* ---- Chores — static until the chores module ships. Ticking one is the
    one write the fridge allows, but it happens in a personal view, not here. ---- */
