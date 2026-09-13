@@ -17,12 +17,19 @@ yesterday's meal plan, What's On's Today/Tomorrow split computed against
 the wrong day. This was never a caching bug in the data layer; it was the
 absence of anything that makes an idle tab check again.
 
-**`components/AutoRefresh.jsx` calls `router.refresh()` on two triggers,
-mounted on the wall, What's On and person views:** just after local
-midnight (so day-dependent content is never wrong for hours), and every 15
-minutes regardless — matching the calendar and conditions fetches' own
-`revalidate: 900` window, since refreshing more often than the underlying
-data can change gains nothing.
+**`components/AutoRefresh.jsx` calls `router.refresh()` on daily triggers
+plus a periodic one, mounted on the wall, What's On and person views:**
+00:00 (day-dependent content — today's briefing, today's meal, What's On's
+Today/Tomorrow split — is never wrong for hours) and 06:00 (whatever's
+behind `lib/conditions.js` by the time anyone's up is what they see, not
+what was cached overnight — added once Matt started sourcing a more
+accurate weather feed, but written generically so it doesn't care which
+API is behind it). Plus every 15 minutes regardless, matching the calendar
+and conditions fetches' own `revalidate: 900` window, since refreshing
+more often than the underlying data can change gains nothing. Both daily
+times are DST-safe: re-derived from a fresh wall-clock reading on every
+call rather than accumulating a fixed offset, so a 23- or 25-hour day
+doesn't shift the fire time.
 
 **The planner is deliberately excluded.** `PlannerScreen` copies its props
 into local state for optimistic writes and undo; a refreshed prop

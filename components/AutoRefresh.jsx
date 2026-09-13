@@ -10,44 +10,60 @@ import { useRouter } from 'next/navigation';
    tap" article the router-cache setting in next.config.mjs already uses,
    just triggered by time passing rather than a click.
 
-   Two triggers:
-   - Right after local midnight, so the day-dependent content (today's
-     briefing, today's meal, What's On's Today/Tomorrow split) never has a
-     chance to sit wrong for hours.
-   - Every 15 minutes regardless, matching the calendar/conditions fetch
-     cache's own revalidate window — no point refreshing more often than
-     the underlying data can actually change. */
+   Daily triggers, each independent of what data source is behind them —
+   this doesn't care which weather API lib/conditions.js calls, so a more
+   accurate source can land later without touching this file:
+   - 00:00 — the day boundary. Today's briefing, today's meal and What's
+     On's Today/Tomorrow split are all wrong for hours otherwise.
+   - 06:00 — the morning forecast. Whatever's behind lib/conditions.js by
+     the time anyone's up, they see it, not whatever was cached overnight.
+
+   Plus a 15-minute periodic refresh regardless, matching the calendar and
+   conditions fetches' own revalidate window — no point refreshing more
+   often than the underlying data can actually change. */
 const TZ = 'Australia/Sydney';
 const PERIODIC_MS = 15 * 60 * 1000;
+const DAILY_TRIGGERS = [
+  { hour: 0, minute: 0 },
+  { hour: 6, minute: 0 },
+];
 
-function msUntilNextMidnight(tz = TZ) {
-  const now = new Date();
+/** ms until the next occurrence of this local wall-clock time, always in
+    the future (today if not yet passed, otherwise tomorrow). DST-safe:
+    re-derived from the current wall-clock reading every call, so a 23- or
+    25-hour day doesn't shift the fire time. */
+function msUntilNext(hour, minute, tz = TZ) {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: tz, hour12: false,
     hour: '2-digit', minute: '2-digit', second: '2-digit',
-  }).formatToParts(now);
+  }).formatToParts(new Date());
   const get = (t) => Number(parts.find((p) => p.type === t).value);
-  const msIntoDay = ((get('hour') % 24) * 3600 + get('minute') * 60 + get('second')) * 1000;
-  return 86400000 - msIntoDay + 1000; // +1s past midnight, not exactly on it
+  const nowSecs = (get('hour') % 24) * 3600 + get('minute') * 60 + get('second');
+  const targetSecs = hour * 3600 + minute * 60;
+  const diff = targetSecs - nowSecs;
+  return (diff > 0 ? diff : diff + 86400) * 1000 + 1000; // +1s past the boundary, not exactly on it
 }
 
 export default function AutoRefresh() {
   const router = useRouter();
 
   useEffect(() => {
-    let midnightTimer;
-    const scheduleMidnight = () => {
-      midnightTimer = setTimeout(() => {
-        router.refresh();
-        scheduleMidnight();
-      }, msUntilNextMidnight());
-    };
-    scheduleMidnight();
+    const cancelFns = DAILY_TRIGGERS.map(({ hour, minute }) => {
+      let timer;
+      const schedule = () => {
+        timer = setTimeout(() => {
+          router.refresh();
+          schedule();
+        }, msUntilNext(hour, minute));
+      };
+      schedule();
+      return () => clearTimeout(timer);
+    });
 
     const periodic = setInterval(() => router.refresh(), PERIODIC_MS);
 
     return () => {
-      clearTimeout(midnightTimer);
+      cancelFns.forEach((cancel) => cancel());
       clearInterval(periodic);
     };
   }, [router]);
