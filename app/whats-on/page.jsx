@@ -2,6 +2,7 @@ import { getWhatsOn, groupForListing } from '@/lib/whatson';
 import { today, TZ } from '@/lib/week';
 import { getRole } from '@/lib/role';
 import WhatsOnScreen from '@/components/WhatsOnScreen';
+import AutoRefresh from '@/components/AutoRefresh';
 
 /* Same reasoning as the wall: this never sleeps, so nothing here is cached. */
 export const dynamic = 'force-dynamic';
@@ -15,12 +16,15 @@ export default async function WhatsOnPage() {
   const groups = groupForListing(entries, { calendarToday });
 
   return (
-    <WhatsOnScreen
-      groups={groups}
-      stale={stale}
-      fetchedAt={fetchedAt ? fetchedAt.toISOString() : null}
-      empty={entries.length === 0}
-      fridge={role === 'display'}
-    />
+    <>
+      <AutoRefresh />
+      <WhatsOnScreen
+        groups={groups}
+        stale={stale}
+        fetchedAt={fetchedAt ? fetchedAt.toISOString() : null}
+        empty={entries.length === 0}
+        fridge={role === 'display'}
+      />
+    </>
   );
 }

@@ -7,6 +7,38 @@ arbitrary until you know why.
 
 ---
 
+## Freshness policy
+
+**`force-dynamic` on every page means the server always computes today
+correctly — it does not mean the fridge ever asks it to.** A tab left open
+overnight with nobody navigating never issues a new request, so it kept
+showing the pre-midnight render for hours: yesterday's kid briefing,
+yesterday's meal plan, What's On's Today/Tomorrow split computed against
+the wrong day. This was never a caching bug in the data layer; it was the
+absence of anything that makes an idle tab check again.
+
+**`components/AutoRefresh.jsx` calls `router.refresh()` on two triggers,
+mounted on the wall, What's On and person views:** just after local
+midnight (so day-dependent content is never wrong for hours), and every 15
+minutes regardless — matching the calendar and conditions fetches' own
+`revalidate: 900` window, since refreshing more often than the underlying
+data can change gains nothing.
+
+**The planner is deliberately excluded.** `PlannerScreen` copies its props
+into local state for optimistic writes and undo; a refreshed prop
+wouldn't reach the screen without also syncing that state on prop change,
+which nothing currently does. The planner isn't left open unattended the
+way the wall is — the fridge returns to it after 60 seconds idle regardless
+— so this gap is deliberate, not an oversight, until the planner needs the
+same treatment.
+
+**Any write must call `router.refresh()` itself; a periodic timer doesn't
+substitute for it.** The meal planner's own writes already do this (see
+below). Waiting up to 15 minutes for a write's own screen to reflect it
+would read as broken far sooner than a stale midnight boundary would.
+
+---
+
 ## Interface conventions
 
 **The chevron is the fridge's only affordance.** Every tappable region on a

@@ -7,6 +7,7 @@ import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getRole } from '@/lib/role';
 import PersonScreen from '@/components/PersonScreen';
+import AutoRefresh from '@/components/AutoRefresh';
 
 /* Same reasoning as the wall: this never sleeps, so nothing here is cached. */
 export const dynamic = 'force-dynamic';
@@ -48,7 +49,12 @@ export default async function PersonPage({ params }) {
     // the Register are still placeholders) — an unshipped section renders
     // nothing, not a fake one, per the brief.
     const comingUp = entries.filter((e) => e.date >= tomorrowKey && e.person === id);
-    return <PersonScreen person={p} role={role} comingUp={comingUp} />;
+    return (
+      <>
+        <AutoRefresh />
+        <PersonScreen person={p} role={role} comingUp={comingUp} />
+      </>
+    );
   }
 
   const anchor = await getAnchor();
@@ -74,20 +80,23 @@ export default async function PersonPage({ params }) {
   );
 
   return (
-    <PersonScreen
-      person={p}
-      role={role}
-      today={todaySection}
-      school={{
-        dayKey: schoolDayKey,
-        letter: schoolLetter,
-        isToday: showTodaySchool,
-        timetable: TIMETABLE[id],
-        uniformRules: UNIFORM[id],
-        uniformLabel: UNIFORM_LABEL,
-        tint: p.tint,
-      }}
-      comingUp={comingUp}
-    />
+    <>
+      <AutoRefresh />
+      <PersonScreen
+        person={p}
+        role={role}
+        today={todaySection}
+        school={{
+          dayKey: schoolDayKey,
+          letter: schoolLetter,
+          isToday: showTodaySchool,
+          timetable: TIMETABLE[id],
+          uniformRules: UNIFORM[id],
+          uniformLabel: UNIFORM_LABEL,
+          tint: p.tint,
+        }}
+        comingUp={comingUp}
+      />
+    </>
   );
 }

@@ -7,6 +7,7 @@ import ModuleTiles from '@/components/ModuleTiles';
 import WhatsOn from '@/components/WhatsOn';
 import Avatars from '@/components/Avatars';
 import TonightLine from '@/components/TonightLine';
+import AutoRefresh from '@/components/AutoRefresh';
 import { getAnchor, hasDb } from '@/lib/db';
 import { weekLetter, today, TZ } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
@@ -86,6 +87,7 @@ export default async function Wall() {
 
   return (
     <main className="wall">
+      <AutoRefresh />
       <section className="today">
         <Clock tz={TZ} />
         <WeekLetter
