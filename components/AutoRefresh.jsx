@@ -10,13 +10,19 @@ import { useRouter } from 'next/navigation';
    tap" article the router-cache setting in next.config.mjs already uses,
    just triggered by time passing rather than a click.
 
-   Daily triggers, each independent of what data source is behind them —
-   this doesn't care which weather API lib/conditions.js calls, so a more
-   accurate source can land later without touching this file:
+   Every trigger also pings the conditions refresh endpoint first (see
+   docs/family-hub-conditions-data-spec.md — the fridge must never call
+   Open-Meteo on render, only read a persisted store). That endpoint
+   no-ops when the stored data is under 50 minutes old, so pinging it every
+   15 minutes is cheap and doesn't depend on which weather API is behind
+   it, or on a Vercel Cron Job (Hobby-plan cron is capped at once/day).
+
+   Daily triggers:
    - 00:00 — the day boundary. Today's briefing, today's meal and What's
      On's Today/Tomorrow split are all wrong for hours otherwise.
-   - 06:00 — the morning forecast. Whatever's behind lib/conditions.js by
-     the time anyone's up, they see it, not whatever was cached overnight.
+   - 06:00 — the morning forecast, forced rather than left to the 50-minute
+     freshness check, so the family sees the day's actual forecast first
+     thing rather than whatever happened to be cached overnight.
 
    Plus a 15-minute periodic refresh regardless, matching the calendar and
    conditions fetches' own revalidate window — no point refreshing more
@@ -24,8 +30,8 @@ import { useRouter } from 'next/navigation';
 const TZ = 'Australia/Sydney';
 const PERIODIC_MS = 15 * 60 * 1000;
 const DAILY_TRIGGERS = [
-  { hour: 0, minute: 0 },
-  { hour: 6, minute: 0 },
+  { hour: 0, minute: 0, force: false },
+  { hour: 6, minute: 0, force: true },
 ];
 
 /** ms until the next occurrence of this local wall-clock time, always in
@@ -48,11 +54,24 @@ export default function AutoRefresh() {
   const router = useRouter();
 
   useEffect(() => {
-    const cancelFns = DAILY_TRIGGERS.map(({ hour, minute }) => {
+    const refreshAll = async (force = false) => {
+      try {
+        await fetch('/api/conditions/refresh', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ force }),
+        });
+      } catch {
+        // ignore — router.refresh() below still picks up whatever's stored
+      }
+      router.refresh();
+    };
+
+    const cancelFns = DAILY_TRIGGERS.map(({ hour, minute, force }) => {
       let timer;
       const schedule = () => {
         timer = setTimeout(() => {
-          router.refresh();
+          refreshAll(force);
           schedule();
         }, msUntilNext(hour, minute));
       };
@@ -60,7 +79,7 @@ export default function AutoRefresh() {
       return () => clearTimeout(timer);
     });
 
-    const periodic = setInterval(() => router.refresh(), PERIODIC_MS);
+    const periodic = setInterval(() => refreshAll(false), PERIODIC_MS);
 
     return () => {
       cancelFns.forEach((cancel) => cancel());

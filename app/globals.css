@@ -31,6 +31,13 @@ html, body {
 .date  { font: var(--fh-text-answer); color: var(--fh-ink-body);
          margin-top: var(--fh-space-2); }
 
+/* The always-on weather line, appended to the date rather than stacked —
+   see docs/family-hub-conditions-data-spec.md. Calm by default; rain is
+   the only element that ever takes the attention colour. */
+.date__weather { font: 500 20px/1 var(--fh-font); color: var(--fh-ink-label); }
+.date__weather-icon { vertical-align: -4px; margin: 0 1px; color: var(--fh-ink-label); }
+.date__rain { color: var(--fh-attention-accent); font-weight: 600; }
+
 /* Tonight's dinner — a quiet line under the date, not a tile. Tapping it
    opens the planner. */
 .tonight { padding: 0 var(--fh-space-2) var(--fh-space-6); }

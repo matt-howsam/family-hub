@@ -70,38 +70,97 @@ surface with a real write.
 "Beach day", the wind, the swell, the tide times — every number in the
 original mockup was static copy, not a computation with a bug. It read as
 a live verdict and was confidently wrong on the first genuinely rainy
-Saturday. `lib/conditions.js` replaced it with two real, keyless sources.
+Saturday. `lib/conditions.js` replaced it, twice: first with a live
+Open-Meteo + buoy call on every render, then with the data-spec version
+below once a daylight-window verdict needed real persistence. See
+`docs/family-hub-conditions-data-spec.md` for the full reasoning behind
+this second pass.
 
-**Rain, cloud and wind come from Open-Meteo's forecast API** (free,
-non-commercial, no account) for South Kingscliff NSW (-28.2598, 153.5782).
+**Rain, cloud, wind and temperature come from Open-Meteo's forecast API**
+(free, non-commercial, no account) for South Kingscliff NSW
+(-28.259, 153.579).
 
-**Swell and tide come from the household's own buoy/tide proxy**
-(`offshore-window-finder.vercel.app`, a Vercel deployment Matt runs over
-Queensland Government open data for the Tweed Sand-bypass Jetty gauge and
-Tweed Offshore buoy) rather than Open-Meteo's marine model — a real
-reading beats a forecast model for "right now."
+**Swell, wave and sea-surface temperature now come from Open-Meteo's
+marine API, not the household's buoy proxy.** This reverses the first
+pass's own reasoning — a real buoy reading beats a forecast model for
+"right now" — but the verdict needs a genuine multi-hour daylight window,
+which a single live reading structurally can't answer: it can say what
+the swell is, never what it will be at 2pm. The buoy proxy
+(`offshore-window-finder.vercel.app`) is kept for the one thing Open-Meteo
+explicitly disclaims: tide.
 
-**The tide series has no future predictions — it stops at "now."** Checked
-directly against a live sample: the last entry's timestamp equalled the
-request time to the minute. It's a predicted-vs-actual calibration record,
-not a forecast. So the card shows current level and short-term trend
-(rising/falling from the last ~30 minutes), never a fabricated "High
-4:12pm" — the old mockup's tide times were invented for exactly this
-reason.
+**The buoy's tide series has no future predictions — it stops at "now."**
+Checked directly against a live sample: the last entry's timestamp
+equalled the request time to the minute. It's a predicted-vs-actual
+calibration record, not a forecast. The card shows current level and
+short-term trend only, never a fabricated "High 4:12pm."
 
-**The verdict is deliberately conservative, and the facts always show
-regardless of it.** "Beach day" only appears when rain chance, wind and
-swell all clear a real bar; otherwise the headline states what's actually
+**The verdict is gated in priority order: rain, then cloud, then wind,
+then swell — and evaluated across a named daylight window (9am-5pm), not
+a daily total.** A daily rain sum can be all overnight; a daily dominant
+wind direction averages away a morning change. Wind and swell ran first in
+the original build, which is exactly why an overcast, showery day with
+light south-easterlies scored as a beach day. "Beach day" only appears
+when every gate clears; otherwise the headline states what's actually
 happening ("Rain about", "Changeable") rather than grading a maybe. The
-review's own finding was that the facts underneath were correct and useful
-even when the one-word judgement wasn't — so the stats row never depends
-on which headline won. Thresholds are a first pass; tune them against the
-household's own SeaScore rules if those differ.
+stats row always shows regardless of which headline won. Thresholds are a
+first pass; tune against the household's own SeaScore rules if those
+differ.
 
-**No card beats a stale or fabricated one.** If either source fails,
-`getConditions()` returns `null` and the water hero simply doesn't render
-— consistent with "never a confident guess" everywhere else, and a real
-change from the always-on placeholder it replaced.
+**The daylight window (beach verdict) and the school window (the weather
+line's rain warning) are named separately in code and must not be
+merged.** Daylight is roughly 9am-5pm; school is 8am-3:30pm, since Tom is
+met at 3:10 and Rose finishes 3:20. They answer different questions — is
+today worth the water, versus what do the kids wear and does anything get
+cancelled — for different audiences, and conflating them would eventually
+make one window wrong for both purposes.
+
+**The fridge must never call Open-Meteo (or the buoy) on render.**
+`lib/conditions.js#getStoredConditions()` only ever reads the
+`conditions_cache` table; `refreshConditions()` does the actual fetching
+and persisting, called only from `/api/conditions/refresh`, itself pinged
+by `AutoRefresh`'s client-side timers rather than a Vercel Cron Job —
+Hobby-plan cron is capped at once/day, and this needed roughly hourly.
+`refreshConditions()` no-ops if the stored data is under 50 minutes old
+unless `force` is set, so pinging it every 15 minutes (or on demand at
+6am) is cheap and self-limiting.
+
+**Two sources, two independent failure modes.** Weather and marine are
+fetched with `Promise.allSettled`, not `Promise.all` — a marine outage
+still leaves rain, wind, temperature and the daily weather line intact; it
+just can't show swell or water temperature that day. Only a weather-fetch
+failure blanks the water card entirely, since both surfaces depend on it.
+
+**The weather line in the Today zone is always on, every day — not just
+weekends.** It answers a different question from the water card (what to
+wear, does anything get cancelled, not is it worth going to the water),
+appended to the date row rather than stacked as a second line, and rain
+during school hours is the only element in it that ever takes the
+attention colour.
+
+**The water card is additive on a school-day afternoon, not exclusive
+with the kids' blocks.** After 15:30 there's time to act on it even on a
+school day, so it renders alongside the kids' cards rather than only ever
+replacing them on non-school days. Chores stay tied to non-school days
+only — untouched by this change.
+
+**SeaScore and this card are deliberately duplicated, never shared.** Same
+Open-Meteo endpoints, different questions for different audiences:
+SeaScore is one experienced adult deciding whether to cross a bar, and can
+assume the reader knows what a forecast doesn't cover; this is a household
+including two kids deciding whether the afternoon is worth it, readable at
+a metre by an eleven-year-old. The thresholds genuinely differ — an easy
+yes for a tinny inside the river can be a clear no offshore — and a shared
+module would either force one threshold vocabulary onto both or grow a
+configuration layer bigger than the duplication it avoids. It would also
+let a SeaScore change silently alter what the fridge says. Accepted cost:
+the Open-Meteo request is written twice, and improving one doesn't reach
+the other. Copy findings across, never files.
+
+**No card beats a stale or fabricated one.** If the weather fetch fails
+and nothing has ever been successfully stored, the water card and the
+weather line simply don't render — consistent with "never a confident
+guess" everywhere else in the app.
 
 ---
 

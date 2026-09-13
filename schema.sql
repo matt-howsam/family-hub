@@ -59,3 +59,14 @@ insert into meal_card (title, icon, kind, position) values
   ('Salmon & potato',      'Fish',            'meal',        12),
   ('Pizza',                'Pizza',           'meal',        13)
 on conflict (title) do nothing;
+
+-- Conditions cache — see docs/family-hub-conditions-data-spec.md. The
+-- fridge must never call Open-Meteo on render; a background refresh
+-- (lib/conditions.js#refreshConditions, triggered by AutoRefresh) persists
+-- here, and every page read is a plain row read. Same single-row idiom as
+-- week_anchor — one household, one current forecast.
+create table if not exists conditions_cache (
+  id         boolean     primary key default true check (id),
+  payload    jsonb       not null,
+  fetched_at timestamptz not null default now()
+);

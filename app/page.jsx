@@ -9,12 +9,16 @@ import Avatars from '@/components/Avatars';
 import TonightLine from '@/components/TonightLine';
 import AutoRefresh from '@/components/AutoRefresh';
 import { getAnchor, hasDb } from '@/lib/db';
-import { weekLetter, today, TZ } from '@/lib/week';
+import { weekLetter, today, TZ, hourNow } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getTonight } from '@/lib/mealplanner';
-import { getConditions } from '@/lib/conditions';
+import { getStoredConditions } from '@/lib/conditions';
+
+/* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
+   relevant again even on a school day, per the conditions data spec. */
+const SCHOOL_DAY_END_HOUR = 15.5;
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';
@@ -35,11 +39,14 @@ export default async function Wall() {
   const kids = w.schoolWeek && day
     ? ['tom', 'rose'].map((id) => briefing(id, w.letter, day)).filter(Boolean)
     : [];
-  const schoolMorning = kids.length > 0;
+  const isSchoolDayToday = kids.length > 0;
 
-  /* Only fetch real conditions on the day they're shown — no point paying
-     for two API calls on a school morning nobody sees the water hero on. */
-  const conditions = schoolMorning ? null : await getConditions();
+  /* Reads the persisted store, never Open-Meteo directly — see the
+     conditions data spec. Always fetched: the weather line in the Today
+     zone is always-on, and the water card can now appear on a school-day
+     afternoon too, not just weekends. */
+  const conditions = await getStoredConditions();
+  const showWater = !isSchoolDayToday || hourNow() >= SCHOOL_DAY_END_HOUR;
 
   /* One read function behind the wall, the full What's On listing and
      person views (docs/family-hub-whats-on-person-views-brief.md). Absent
@@ -89,7 +96,7 @@ export default async function Wall() {
     <main className="wall">
       <AutoRefresh />
       <section className="today">
-        <Clock tz={TZ} />
+        <Clock tz={TZ} daily={conditions?.daily} />
         <WeekLetter
           letter={w.letter}
           schoolWeek={w.schoolWeek}
@@ -102,13 +109,14 @@ export default async function Wall() {
 
       <TonightLine tonight={tonight} />
 
-      {/* Family register — people. Softer radius, more air, tinted. The
-          weekday payload is the kids' briefings; the weekend payload is
-          the water hero and the chores in progress. */}
+      {/* Family register — people. Softer radius, more air, tinted. Kid
+          cards run the whole school day; the water card is additive once
+          there's time to act on it — a non-school day, or after pickup —
+          rather than only ever replacing the kids' blocks. */}
       <div data-register="family" style={{ marginTop: 'var(--fh-space-8)' }}>
-        {schoolMorning
-          ? kids.map((b) => <KidCard key={b.id} b={b} />)
-          : (<><WaterHero conditions={conditions} /><Chores /></>)}
+        {isSchoolDayToday && kids.map((b) => <KidCard key={b.id} b={b} />)}
+        {showWater && <WaterHero conditions={conditions} />}
+        {!isSchoolDayToday && <Chores />}
       </div>
 
       {/* Ordered by decay speed: What's on is wrong within hours and read by
@@ -120,12 +128,12 @@ export default async function Wall() {
 
       <div className="house">
         <span>
-          {schoolMorning
+          {isSchoolDayToday
             ? 'Sunrise 5:47 · the pool is 19°, which is a matter of opinion'
             : '103 days until the mango tree does anything at all'}
         </span>
         <span className="house__built">
-          {schoolMorning ? 'Built' : 'Updated'} {builtAt}
+          {isSchoolDayToday ? 'Built' : 'Updated'} {builtAt}
           {hasDb ? '' : ' · no database'}
         </span>
       </div>

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { PEOPLE } from '@/lib/people';
 import { getAnchor } from '@/lib/db';
-import { weekLetter, today, TZ, isSchoolDay, nextSchoolDay } from '@/lib/week';
+import { weekLetter, today, TZ, isSchoolDay, nextSchoolDay, hourNow } from '@/lib/week';
 import { briefing, dayKey, TIMETABLE, UNIFORM, UNIFORM_LABEL } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
@@ -20,15 +20,6 @@ const DAY = 86400000;
    approximate "has today's school day ended" cutoff for both, used only to
    decide which day the School section opens on. */
 const SCHOOL_DAY_END_HOUR = 15.5;
-
-function sydneyHour(instant) {
-  const parts = new Intl.DateTimeFormat('en-AU', {
-    timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false,
-  }).formatToParts(instant);
-  const h = Number(parts.find((p) => p.type === 'hour').value);
-  const m = Number(parts.find((p) => p.type === 'minute').value);
-  return h + m / 60;
-}
 
 export default async function PersonPage({ params }) {
   const { person: id } = await params;
@@ -70,7 +61,7 @@ export default async function PersonPage({ params }) {
     if (own.length) todaySection = { kind: 'attributed', items: own };
   }
 
-  const showTodaySchool = isSchoolDay(now) && sydneyHour(new Date()) < SCHOOL_DAY_END_HOUR;
+  const showTodaySchool = isSchoolDay(now) && hourNow() < SCHOOL_DAY_END_HOUR;
   const schoolDate = showTodaySchool ? now : (nextSchoolDay(now) ?? now);
   const schoolLetter = weekLetter(anchor, schoolDate).letter;
   const schoolDayKey = dayKey(schoolDate);
