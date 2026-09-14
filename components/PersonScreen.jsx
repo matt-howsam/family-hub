@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { TShirt, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
+import { resolveUniform } from '@/lib/timetable';
 import TodoSection from '@/components/TodoSection';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
@@ -85,6 +86,9 @@ function TodaySection({ today, tint }) {
       <div className="pv-card" style={{ '--fh-slab-ink': `var(--fh-${tint}-slab-ink)` }}>
         <TShirt size={32} className="pv-uniform__icon" style={{ color: 'var(--fh-slab-ink)' }} />
         <div className="pv-uniform__word" style={{ color: 'var(--fh-slab-ink)' }}>{b.uniformLabel}</div>
+        {b.uniformChange && (
+          <div className="pv-note">Changes to {b.uniformChange.label.toLowerCase()} during the day</div>
+        )}
         {b.headline && <div className="pv-headline">{b.headline}</div>}
         {b.bring && <div className="pv-note">{b.bring}</div>}
         {b.after && (
@@ -93,7 +97,7 @@ function TodaySection({ today, tint }) {
             <div className="pv-after__value">{b.after}</div>
           </div>
         )}
-        {!b.headline && !b.bring && !b.after && (
+        {!b.headline && !b.bring && !b.after && !b.uniformChange && (
           <div className="pv-note">Ordinary day. Nothing to bring.</div>
         )}
       </div>
@@ -106,7 +110,7 @@ function SchoolSection({ school }) {
   const [selLetter, setSelLetter] = useState(school.letter);
 
   const periods = school.timetable?.[selLetter]?.[selDay] ?? [];
-  const uniform = school.uniformRules?.[selLetter]?.[selDay] ?? 'formal';
+  const { wear: uniform, changeTo } = resolveUniform(school.uniformRules?.[selLetter]?.[selDay]);
 
   // The "next school day" qualifier only means something while looking at
   // the section's own opening view — once someone browses elsewhere with
@@ -127,6 +131,9 @@ function SchoolSection({ school }) {
         <div className="pv-uniform__word" style={{ color: 'var(--fh-slab-ink)' }}>
           {school.uniformLabel[uniform]}
         </div>
+        {changeTo && (
+          <div className="pv-note">Changes to {school.uniformLabel[changeTo].toLowerCase()} during the day</div>
+        )}
       </div>
 
       <div className="pv-switch" style={{ marginTop: 'var(--fh-space-6)' }}>

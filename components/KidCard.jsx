@@ -21,6 +21,9 @@ export default function KidCard({ b }) {
         <div>
           <TShirt size={30} className="kid__icon" />
           <span className="kid__uniform">{b.uniformLabel}</span>
+          {b.uniformChange && (
+            <span className="kid__uniform-change">Changes to {b.uniformChange.label.toLowerCase()}</span>
+          )}
         </div>
       </div>
       <div className="kid__body">

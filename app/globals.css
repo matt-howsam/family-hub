@@ -131,6 +131,8 @@ html, body {
 .kid__icon { display: block; color: var(--fh-slab-ink); margin-bottom: var(--fh-space-2); }
 .kid__uniform { font: var(--fh-text-slab); letter-spacing: var(--fh-track-display);
                 color: var(--fh-slab-ink); }
+.kid__uniform-change { display: block; margin-top: var(--fh-space-1);
+                        font: var(--fh-text-body-sm); color: var(--fh-slab-ink); opacity: .75; }
 .kid__body { flex: 1; padding: var(--fh-r-pad-y) var(--fh-r-pad-x); }
 .kid__answer { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer); }
 .kid__note { font: var(--fh-text-body); color: var(--fh-ink-body);
