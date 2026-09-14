@@ -570,4 +570,24 @@ html, body {
               color: var(--fh-ink-label); font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
               text-transform: uppercase; text-decoration: underline; padding: 0; }
 
+/* ==========================================================================
+   To do — docs/family-hub-todo-brief.md. Reuses .wo-rows/.wo-subhead for the
+   grouped list shell and .pair__* for the add/edit form. */
+.todo-group { margin-bottom: var(--fh-space-5); }
+.todo-row { display: grid; grid-template-columns: 40px 1fr; align-items: center;
+            min-height: var(--fh-target-min); padding: var(--fh-space-3) var(--fh-space-6);
+            border-top: var(--fh-border-hair); }
+.todo-row:first-child { border-top: 0; }
+.todo-row__check { width: 28px; height: 28px; border-radius: var(--fh-radius-pill);
+                    border: 1.5px solid var(--fh-border); background: var(--fh-surface);
+                    color: transparent; display: flex; align-items: center; justify-content: center; }
+.todo-row__check:active { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
+.todo-row__dot { width: 6px; height: 6px; border-radius: var(--fh-radius-pill);
+                  background: var(--fh-border); justify-self: center; }
+.todo-row__main { min-width: 0; }
+.todo-row__title { display: block; font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
+.todo-row__meta { display: flex; align-items: center; gap: var(--fh-space-1);
+                   font: var(--fh-text-body-sm); color: var(--fh-ink-label); margin-top: var(--fh-space-1); }
+.todo-row__meta-icon { flex-shrink: 0; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

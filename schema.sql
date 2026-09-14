@@ -158,6 +158,33 @@ create table if not exists proposed_item (
   created_at      timestamptz not null default now()
 );
 
+-- Rose's own to-do & assignments list — see docs/family-hub-todo-brief.md
+-- (widens design-brief §7.11). `person` is the only write gate: every write
+-- route checks `session.person = person`, never `role`, with one narrow
+-- exception for `role = 'display'` toggling `done_at` from a personal view.
+--
+-- `family_visible` isn't in the brief's own "Data model" block, but the
+-- brief's prose promises it twice ("Visibility is the owner's choice, as
+-- with goals" / "An item Rose has kept to her own view never appears in the
+-- block. No new setting") with no column to back it — added here to make
+-- that acceptance check satisfiable at all.
+create table if not exists todo_item (
+  id                serial primary key,
+  person            text        not null,
+  title             text        not null,
+  description       text,
+  due               date,                 -- optional; no due = no surfacing, sits in its own group
+  subject           text,                 -- key from lib/timetable.js; adults have none
+  type              text        not null check (type in
+                      ('assignment', 'test', 'exam', 'assessment', 'task')),
+  family_visible    boolean     not null default true,
+  done_at           timestamptz,
+  set_from          text        check (set_from in ('display', 'phone')),
+  proposed_item_id  int references proposed_item(id),
+  created_at        timestamptz not null default now()
+);
+create index if not exists todo_item_person_idx on todo_item (person);
+
 -- Approved proposed_item rows — same shape, plus approval metadata.
 create table if not exists item (
   id                serial primary key,

@@ -5,7 +5,8 @@ import { weekLetter, today, TZ, isSchoolDay, nextSchoolDay, hourNow } from '@/li
 import { briefing, dayKey, TIMETABLE, UNIFORM, UNIFORM_LABEL } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
-import { getRole } from '@/lib/role';
+import { getSession } from '@/lib/identity';
+import { listTodos, groupTodos, subjectsFor } from '@/lib/todo';
 import PersonScreen from '@/components/PersonScreen';
 import AutoRefresh from '@/components/AutoRefresh';
 
@@ -30,10 +31,21 @@ export default async function PersonPage({ params }) {
   const todayKey = now.toISOString().slice(0, 10);
   const tomorrowKey = new Date(now.getTime() + DAY).toISOString().slice(0, 10);
 
-  const [{ entries }, role] = await Promise.all([
+  const [{ entries }, session, todos] = await Promise.all([
     getWhatsOn({ from: now, days: 14 }),
-    getRole(),
+    getSession(),
+    listTodos(id),
   ]);
+  const role = session?.role ?? 'display';
+
+  // docs/family-hub-todo-brief.md: ownership is `session.person === person`,
+  // no adult override — Matt viewing Rose's page can read it (same social
+  // model as everything else) but never write to it.
+  const todo = {
+    groups: groupTodos(todos, now),
+    subjects: p.kind === 'child' ? subjectsFor(id) : [],
+    canWrite: session?.person === id,
+  };
 
   if (p.kind !== 'child') {
     // Adults: thin by design. Needs You has no real data yet (Projects and
@@ -43,7 +55,7 @@ export default async function PersonPage({ params }) {
     return (
       <>
         <AutoRefresh />
-        <PersonScreen person={p} role={role} comingUp={comingUp} />
+        <PersonScreen person={p} role={role} todo={todo} comingUp={comingUp} />
       </>
     );
   }
@@ -76,6 +88,7 @@ export default async function PersonPage({ params }) {
       <PersonScreen
         person={p}
         role={role}
+        todo={todo}
         today={todaySection}
         school={{
           dayKey: schoolDayKey,

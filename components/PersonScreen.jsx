@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { TShirt, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
+import TodoSection from '@/components/TodoSection';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
    the fridge should be showing the wall, not one person's day. */
@@ -166,10 +167,11 @@ function SchoolSection({ school }) {
   );
 }
 
-export default function PersonScreen({ person, role, today, school, comingUp = [] }) {
+export default function PersonScreen({ person, role, today, school, comingUp = [], todo }) {
   const router = useRouter();
   const timer = useRef(null);
   const fridge = role === 'display';
+  const todoEmpty = !todo || (todo.groups.thisWeek.length + todo.groups.later.length + todo.groups.undated.length === 0);
 
   useEffect(() => {
     if (!fridge) return undefined;
@@ -185,7 +187,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
     };
   }, [fridge, router]);
 
-  const nothing = !today && (!school) && comingUp.length === 0;
+  const nothing = !today && (!school) && comingUp.length === 0 && todoEmpty;
 
   return (
     <main className="pv-page">
@@ -207,6 +209,16 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
       <TodaySection today={today} tint={person.tint} />
       {school && <SchoolSection school={school} />}
+      {todo && (
+        <TodoSection
+          person={person.id}
+          personKind={person.kind}
+          subjects={todo.subjects}
+          groups={todo.groups}
+          canWrite={todo.canWrite}
+          fridge={fridge}
+        />
+      )}
       <ComingUp entries={comingUp} />
     </main>
   );

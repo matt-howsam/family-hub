@@ -26,6 +26,7 @@ export default function KidCard({ b }) {
       <div className="kid__body">
         {b.headline && <div className="kid__answer">{b.headline}</div>}
         {b.bring && <div className="kid__note">{b.bring}</div>}
+        {b.todoLine && <div className="kid__note">{b.todoLine} tomorrow</div>}
         {b.after && (
           <div className="kid__after">
             <div className="row__meta">After school</div>
@@ -34,7 +35,7 @@ export default function KidCard({ b }) {
             </div>
           </div>
         )}
-        {!b.headline && !b.bring && !b.after && (
+        {!b.headline && !b.bring && !b.todoLine && !b.after && (
           <div className="kid__note">Ordinary day. Nothing to bring.</div>
         )}
       </div>

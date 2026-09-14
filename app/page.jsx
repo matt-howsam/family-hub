@@ -15,6 +15,7 @@ import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getTonight } from '@/lib/mealplanner';
 import { getStoredConditions } from '@/lib/conditions';
+import { eveningLine } from '@/lib/todo';
 
 /* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
    relevant again even on a school day, per the conditions data spec. */
@@ -40,6 +41,15 @@ export default async function Wall() {
     ? ['tom', 'rose'].map((id) => briefing(id, w.letter, day)).filter(Boolean)
     : [];
   const isSchoolDayToday = kids.length > 0;
+
+  // The one evening line from docs/family-hub-todo-brief.md — 17:00-20:30,
+  // an item due tomorrow, never a count. eveningLine() itself no-ops outside
+  // that window, same pattern as getTonight()'s prep line.
+  await Promise.all(
+    kids.map(async (k) => {
+      k.todoLine = await eveningLine(k.id, new Date());
+    })
+  );
 
   /* Reads the persisted store, never Open-Meteo directly — see the
      conditions data spec. Always fetched: the weather line in the Today
