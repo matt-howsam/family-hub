@@ -22,7 +22,10 @@ export async function POST(request) {
     const result = await askSchoolMail(body.question.trim());
     return NextResponse.json(result);
   } catch (err) {
+    // This route is already adult-gated, so the real message is safe to
+    // return rather than forcing a Vercel-log hunt for every failure — same
+    // reasoning as app/api/ingest/poll/route.js.
     console.error('[qa] failed:', err.message);
-    return NextResponse.json({ error: 'Something went wrong answering that.' }, { status: 500 });
+    return NextResponse.json({ error: err.message ?? 'Something went wrong answering that.' }, { status: 500 });
   }
 }
