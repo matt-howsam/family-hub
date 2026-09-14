@@ -388,6 +388,21 @@ any extracted date is trusted.
 
 ---
 
+## Decided since this shipped
+
+**Link content is never auto-fetched during ingestion.** An `action` item's
+`source_url` (a parent-hosted event page, a ticketing link) stays a tappable
+link, exactly as this brief originally specified — the poller doesn't follow
+it. Raised 14 Sep 2026 against a real example (a Humanitix-hosted Year 6
+event with no date in the email body, only behind the link). Fetching
+arbitrary third-party URLs on every cron run adds a failure mode ingestion
+doesn't currently have, and a ticketing SPA often won't hand a date or
+location to a plain fetch anyway — it needs JSON-LD or OpenGraph parsing,
+which works for some platforms and silently fails for others. If a preview
+is ever wanted, it belongs as an on-demand fetch from the review queue
+(step 7) — a human tap, only for links someone cares about, degrading to
+"just the link" when a site doesn't cooperate — not a pipeline stage.
+
 ## Open
 
 - Do parent `action` items belong on the person page, or are they a small module
