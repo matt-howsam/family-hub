@@ -86,10 +86,14 @@ export default async function Wall() {
   };
 
   /* Up to three upcoming entries, dropping whatever the kids' blocks already
-     show today. A multi-day span already counts as one entry — getWhatsOn
-     collapsed it. */
+     show today plus every uniform override regardless of date — per
+     docs/family-hub-whats-on-person-views-brief.md, those never appear on
+     the home slot at all, they merge into the kids' blocks on their own
+     day. `shown` alone only catches TODAY's override (overlayToday only
+     ever looks at today), so a future one needs its own filter here. A
+     multi-day span already counts as one entry — getWhatsOn collapsed it. */
   const onWall = entries
-    .filter((e) => !shown.has(e.id))
+    .filter((e) => !shown.has(e.id) && !e.uniform_override)
     .filter((e) => e.all_day || !e.starts_at || new Date(e.starts_at) >= nowInstant)
     .slice(0, 3)
     .map((e) => ({
