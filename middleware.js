@@ -1,23 +1,24 @@
 import { NextResponse } from 'next/server';
 
-/* The fridge identifies itself once, by URL, and is remembered from then on
-   — no login, no deploy. Visit /?role=display on the kiosk iPad and every
-   later request from it carries the cookie. Everything else (a phone, a
-   laptop reviewing this in a browser) is a person by default. */
-const COOKIE = 'fh_role';
-const YEAR = 60 * 60 * 24 * 365;
+/* Identity now comes from pairing (docs/identity.md), not a URL query param
+   — this replaces the old `/?role=display` cookie-setter. Middleware only
+   does the cheap, Edge-safe part: an unpaired device (no session cookie at
+   all) gets bounced to /pair. The actual role/person lookup — the real
+   boundary — happens server-side per request in lib/identity.js#getSession(),
+   which needs the Node runtime (crypto, the DB driver) and so cannot live
+   here. A revoked device still has a cookie and passes this check; its
+   session simply resolves to null downstream. */
+const COOKIE = 'fh_session';
 
 export function middleware(request) {
-  const role = request.nextUrl.searchParams.get('role');
-  if (role !== 'display' && role !== 'person') return NextResponse.next();
+  if (request.cookies.get(COOKIE)?.value) return NextResponse.next();
 
   const url = request.nextUrl.clone();
-  url.searchParams.delete('role');
-  const res = NextResponse.redirect(url);
-  res.cookies.set(COOKIE, role, { maxAge: YEAR, sameSite: 'lax' });
-  return res;
+  url.pathname = '/pair';
+  url.search = '';
+  return NextResponse.redirect(url);
 }
 
 export const config = {
-  matcher: '/((?!_next|api).*)',
+  matcher: ['/((?!_next|api|pair|icons|manifest|favicon).*)'],
 };

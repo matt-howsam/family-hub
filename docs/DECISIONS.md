@@ -189,12 +189,20 @@ static placeholders. A section for a module that hasn't shipped renders
 nothing, not a fake one; Matt and Renée's person views currently show
 Coming up only.
 
-**A device identifies itself once, by URL.** Visit `/?role=display` on the
-kiosk iPad and a cookie remembers it from then on — no login, no deploy.
-Everything else defaults to a person. Read-only surfaces use it for
-idle-timeout behaviour (What's On, person views); a future write (chore
-ticks, the meal planner) will gate on the same cookie rather than building
-a second mechanism.
+**A device identifies itself once, by URL — superseded by `docs/identity.md`.**
+`/?role=display` and the `fh_role` cookie were the whole identity system
+through the meal planner build. `docs/identity.md` replaces this with pairing
+codes and a `person_device` table (role *and* person, not just role); once
+built, `getRole()` and its callers (`lib/role.js`, `app/api/planner/route.js`)
+move onto the new cookie instead of `fh_role`. Not yet built as of 13
+September 2026.
+
+**Q&A is adults-only, and the route check is the whole boundary.** The school
+mail search index carries `pastoral_record` rows unfiltered — nothing in
+school mail so far is sensitive enough to warrant excluding it, revisit if
+that changes. `role = 'adult'` and not `display`, checked before retrieval,
+is what keeps that content off a child's phone or the fridge. See
+`docs/identity.md` and `docs/family-hub-gmail-ingestion-brief.md`.
 
 **The School section's day-end cutoff is a fixed 3:30pm, not each child's
 real last bell.** Per-period bell times aren't in the data model yet — only

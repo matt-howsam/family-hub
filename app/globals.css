@@ -539,4 +539,35 @@ html, body {
   .mp-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ==========================================================================
+   Pairing — docs/identity.md. Deliberately the plainest screen in the
+   product: no nav, no chrome, one card. An unpaired device has nothing else
+   to show. */
+.pair { min-height: 100dvh; display: flex; align-items: center; justify-content: center;
+        padding: var(--fh-gutter-phone); background: var(--fh-page-bg); }
+.pair__card { width: 100%; max-width: 380px; border-radius: var(--fh-radius-xl);
+              background: var(--fh-surface); box-shadow: var(--fh-shadow-card);
+              padding: var(--fh-space-8) var(--fh-space-6); }
+.pair__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title);
+               color: var(--fh-ink); margin: 0 0 var(--fh-space-5); }
+.pair__note { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin: 0 0 var(--fh-space-4); }
+.pair__form { display: flex; flex-direction: column; gap: var(--fh-space-3); }
+.pair__form--bootstrap { margin-top: var(--fh-space-6); padding-top: var(--fh-space-5);
+                          border-top: var(--fh-border-hair); }
+.pair__input { display: block; width: 100%; min-height: var(--fh-target-min); box-sizing: border-box;
+               border-radius: var(--fh-radius-md); border: var(--fh-border-input);
+               padding: 0 var(--fh-space-4); font: var(--fh-text-body); font-family: var(--fh-font);
+               background: var(--fh-surface); color: var(--fh-ink); }
+.pair__input--code { font: var(--fh-text-display); letter-spacing: .3em; text-align: center;
+                      font-family: var(--fh-font-mono); }
+.pair__button { min-height: var(--fh-target-commit); border: 0; border-radius: var(--fh-radius-btn);
+                background: var(--fh-teal); color: var(--fh-ink-inverse);
+                font: var(--fh-text-row); }
+.pair__button:disabled { opacity: .5; }
+.pair__button--secondary { background: var(--fh-ink-label); }
+.pair__error { color: var(--fh-attention-accent); font: var(--fh-text-body-sm); margin-top: var(--fh-space-3); }
+.pair__link { display: block; margin-top: var(--fh-space-6); border: 0; background: none;
+              color: var(--fh-ink-label); font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+              text-transform: uppercase; text-decoration: underline; padding: 0; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

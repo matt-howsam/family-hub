@@ -70,3 +70,113 @@ create table if not exists conditions_cache (
   payload    jsonb       not null,
   fetched_at timestamptz not null default now()
 );
+
+-- Identity & device pairing — see docs/identity.md. Replaces the old
+-- `fh_role` query-param cookie: a device now carries a role AND a person,
+-- issued by pairing rather than a URL.
+create table if not exists person_device (
+  id           serial primary key,
+  person       text,                  -- null when role = 'display'
+  role         text        not null check (role in ('adult', 'child', 'display')),
+  token_hash   text        not null unique, -- sha256 of the cookie value; plaintext never stored
+  label        text,                  -- "Rose's iPhone", "Fridge iPad"
+  created_at   timestamptz not null default now(),
+  last_seen_at timestamptz,
+  revoked_at   timestamptz,
+  check ((role = 'display') = (person is null))
+);
+
+create table if not exists pairing_code (
+  id          serial primary key,
+  code_hash   text        not null,   -- sha256 of the 6-digit code
+  person      text,                   -- null for a display pairing
+  role        text        not null check (role in ('adult', 'child', 'display')),
+  issued_by   text        not null,   -- the adult who generated it
+  attempts    int         not null default 0,
+  expires_at  timestamptz not null,
+  redeemed_at timestamptz,
+  created_at  timestamptz not null default now(),
+  check ((role = 'display') = (person is null))
+);
+
+-- Small settings/flags table. First row: 'bootstrap_complete', set once
+-- SETUP_TOKEN claims the first adult identity — see docs/identity.md.
+create table if not exists app_state (
+  key   text  primary key,
+  value jsonb not null
+);
+
+-- Gmail ingestion — see docs/ingestion.md and
+-- docs/family-hub-gmail-ingestion-brief.md. The raw store is kept forever:
+-- prompts get re-run and Q&A depends on it. `cleaned_body` and
+-- `search_vector` back full-text Q&A; extraction (proposed_item) is a
+-- separate, later pass over the same rows.
+create table if not exists raw_message (
+  id              serial primary key,
+  source          text        not null check (source in ('seqta', 'bulletin', 'other')),
+  message_id      text        not null unique,  -- RFC Message-ID, the dedupe key
+  subject         text,
+  sender          text,
+  to_header       text,
+  received_at     timestamptz,
+  raw_body        text,
+  cleaned_body    text,
+  search_vector   tsvector generated always as (
+                    to_tsvector('english', coalesce(subject, '') || ' ' || coalesce(cleaned_body, ''))
+                  ) stored,
+  processed_at    timestamptz
+);
+create index if not exists raw_message_search_idx on raw_message using gin (search_vector);
+
+-- One row per extracted candidate. Always a proposal — see invariant 1 in
+-- docs/ingestion.md: nothing reaches the fridge unreviewed.
+create table if not exists proposed_item (
+  id              serial primary key,
+  raw_message_id  int references raw_message(id),
+  kind            text        not null check (kind in
+                    ('event', 'assessment', 'deadline', 'notice', 'commendation',
+                     'pastoral_record', 'action', 'uniform_override')),
+  persons         text[]      not null default '{}', -- 'household' is the sentinel for whole-school
+  title           text        not null,
+  starts_at       timestamptz,
+  ends_at         timestamptz,
+  all_day         boolean     not null default false,
+  time_zone       text,
+  location        text,
+  uniform         text        check (uniform in ('formal', 'sport', 'house')),
+  action_required boolean     not null default false,
+  source_quote    text,
+  source_url      text,
+  confidence      numeric     not null default 1.0,
+  duplicate_of    text,       -- the Home calendar event's `uid` string, if this
+                               -- proposal is dedupeAgainstCalendar()'s match.
+                               -- calendar_event isn't a persisted table yet
+                               -- (see docs/ingestion.md), so no FK here.
+  needs_review    boolean     not null default true,
+  approver_role   text        check (approver_role in ('child', 'adult')),
+  completed_at    timestamptz,           -- action items only
+  created_at      timestamptz not null default now()
+);
+
+-- Approved proposed_item rows — same shape, plus approval metadata.
+create table if not exists item (
+  id                serial primary key,
+  proposed_item_id  int references proposed_item(id),
+  kind              text        not null,
+  persons           text[]      not null default '{}',
+  title             text        not null,
+  starts_at         timestamptz,
+  ends_at           timestamptz,
+  all_day           boolean     not null default false,
+  time_zone         text,
+  location          text,
+  uniform           text,
+  action_required   boolean     not null default false,
+  source_quote      text,
+  source_url        text,
+  display_eligible  boolean     not null default false,
+  display_until     timestamptz,
+  approved_by       text        not null,
+  approved_at       timestamptz not null default now(),
+  completed_at      timestamptz
+);
