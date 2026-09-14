@@ -158,6 +158,18 @@ create table if not exists proposed_item (
   created_at      timestamptz not null default now()
 );
 
+-- The review queue — see docs/family-hub-gmail-ingestion-brief.md. `ALTER
+-- ... ADD COLUMN IF NOT EXISTS` rather than editing the CREATE TABLE above:
+-- proposed_item already exists in production from the ingestion build, and
+-- `create table if not exists` is a no-op against an existing table, so it
+-- would silently never add these. Kept on proposed_item itself, not a
+-- separate table, so "handled" is one fact regardless of whether the
+-- decision lands in `item`, `todo_item`, or nowhere (discarded).
+alter table proposed_item add column if not exists reviewed_at timestamptz;
+alter table proposed_item add column if not exists reviewed_by text;
+alter table proposed_item add column if not exists decision text
+  check (decision in ('approved', 'discarded'));
+
 -- Rose's own to-do & assignments list — see docs/family-hub-todo-brief.md
 -- (widens design-brief §7.11). `person` is the only write gate: every write
 -- route checks `session.person = person`, never `role`, with one narrow
