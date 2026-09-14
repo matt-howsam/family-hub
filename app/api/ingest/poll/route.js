@@ -16,7 +16,23 @@ export async function GET(request) {
     const result = await pollMailbox();
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
-    console.error('[ingest] poll failed:', err.message);
-    return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
+    // imapflow's own error is a generic "Command failed" for any server
+    // NO/BAD — the useful detail is on these extra fields it attaches, not
+    // the message. Surface them so a credential problem doesn't look
+    // identical to a bad IMAP command.
+    console.error('[ingest] poll failed:', err.message, err.response, err.responseStatus, err.executedCommand);
+    return NextResponse.json(
+      {
+        ok: false,
+        error: err.message,
+        responseStatus: err.responseStatus ?? null,
+        executedCommand: err.executedCommand ?? null,
+        responseText: err.response?.attributes
+          ?.filter((a) => a.type === 'TEXT')
+          .map((a) => a.value)
+          .join(' ') ?? null,
+      },
+      { status: 500 }
+    );
   }
 }
