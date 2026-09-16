@@ -585,9 +585,11 @@ html, body {
                     border: 1.5px solid var(--fh-border); background: var(--fh-surface);
                     color: transparent; display: flex; align-items: center; justify-content: center; }
 .todo-row__check:active { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
+.todo-row__check--done { background: var(--fh-teal); border-color: var(--fh-teal); color: var(--fh-ink-inverse); }
 .todo-row__dot { width: 6px; height: 6px; border-radius: var(--fh-radius-pill);
                   background: var(--fh-border); justify-self: center; }
 .todo-row__main { min-width: 0; }
+.todo-row__main--done .todo-row__title { color: var(--fh-ink-label); text-decoration: line-through; }
 .todo-row__title { display: block; font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
 .todo-row__meta { display: flex; align-items: center; gap: var(--fh-space-1);
                    font: var(--fh-text-body-sm); color: var(--fh-ink-label); margin-top: var(--fh-space-1); }

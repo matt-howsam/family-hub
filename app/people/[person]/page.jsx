@@ -6,7 +6,7 @@ import { briefing, dayKey, TIMETABLE, UNIFORM, UNIFORM_LABEL } from '@/lib/timet
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getSession } from '@/lib/identity';
-import { listTodos, groupTodos, subjectsFor } from '@/lib/todo';
+import { listTodos, subjectsFor } from '@/lib/todo';
 import PersonScreen from '@/components/PersonScreen';
 import AutoRefresh from '@/components/AutoRefresh';
 
@@ -40,9 +40,13 @@ export default async function PersonPage({ params }) {
 
   // docs/family-hub-todo-brief.md: ownership is `session.person === person`,
   // no adult override — Matt viewing Rose's page can read it (same social
-  // model as everything else) but never write to it.
+  // model as everything else) but never write to it. Passed as a flat list,
+  // not pre-grouped: components/TodoSection.jsx groups it client-side (with
+  // the identical, DB-free lib/todoGrouping.js#groupTodos also used here),
+  // so a tick can re-group instantly without a full page reload.
   const todo = {
-    groups: groupTodos(todos, now),
+    items: todos,
+    now: now.toISOString(),
     subjects: p.kind === 'child' ? subjectsFor(id) : [],
     canWrite: session?.person === id,
   };

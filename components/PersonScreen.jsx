@@ -178,7 +178,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
   const router = useRouter();
   const timer = useRef(null);
   const fridge = role === 'display';
-  const todoEmpty = !todo || (todo.groups.thisWeek.length + todo.groups.later.length + todo.groups.undated.length === 0);
+  const todoEmpty = !todo || todo.items.length === 0;
 
   useEffect(() => {
     if (!fridge) return undefined;
@@ -221,7 +221,8 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
           person={person.id}
           personKind={person.kind}
           subjects={todo.subjects}
-          groups={todo.groups}
+          items={todo.items}
+          now={todo.now}
           canWrite={todo.canWrite}
           fridge={fridge}
         />

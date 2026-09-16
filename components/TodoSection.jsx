@@ -1,25 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Check } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
+import { groupTodos } from '@/lib/todoGrouping';
 
 const TYPE_LABEL = {
   assignment: 'Assignment', test: 'Test', exam: 'Exam',
   assessment: 'Assessment task', task: 'Task',
 };
-const GROUP_LABEL = { thisWeek: 'This week', later: 'Later', undated: 'No due date' };
+const GROUP_LABEL = { thisWeek: 'This week', later: 'Later', undated: 'No due date', done: 'Done this week' };
+const GROUP_ORDER = ['thisWeek', 'later', 'undated', 'done'];
 
 const emptyForm = { id: null, title: '', description: '', due: '', subject: '', type: 'task', familyVisible: true };
 
 function Row({ item, canToggle, canWrite, onToggle, onEdit }) {
+  const done = Boolean(item.done_at);
   const Icon = item.subject ? subjectIcon(item.subject) : null;
   return (
     <div className="todo-row">
       {canToggle ? (
         <button
-          className="todo-row__check"
-          aria-label={item.done_at ? 'Mark not done' : 'Mark done'}
+          className={`todo-row__check${done ? ' todo-row__check--done' : ''}`}
+          aria-label={done ? 'Mark not done' : 'Mark done'}
           onClick={() => onToggle(item)}
         >
           <Check size={16} />
@@ -27,7 +30,7 @@ function Row({ item, canToggle, canWrite, onToggle, onEdit }) {
       ) : (
         <span className="todo-row__dot" />
       )}
-      <div className="todo-row__main" onClick={canWrite ? () => onEdit(item) : undefined}>
+      <div className={`todo-row__main${done ? ' todo-row__main--done' : ''}`} onClick={canWrite ? () => onEdit(item) : undefined}>
         <span className="todo-row__title">{item.title}</span>
         <span className="todo-row__meta">
           {Icon && <Icon size={14} className="todo-row__meta-icon" />}
@@ -41,13 +44,16 @@ function Row({ item, canToggle, canWrite, onToggle, onEdit }) {
   );
 }
 
-export default function TodoSection({ person, personKind, subjects, groups: initialGroups, canWrite, fridge }) {
-  const [groups, setGroups] = useState(initialGroups);
+export default function TodoSection({ person, personKind, subjects, items: initialItems, now, canWrite, fridge }) {
+  const [items, setItems] = useState(initialItems);
   const [form, setForm] = useState(null); // null = closed
   const [busy, setBusy] = useState(false);
 
+  const nowDate = useMemo(() => new Date(now), [now]);
+  const groups = useMemo(() => groupTodos(items, nowDate), [items, nowDate]);
+
   const canToggle = canWrite || fridge;
-  const allEmpty = groups.thisWeek.length + groups.later.length + groups.undated.length === 0;
+  const allEmpty = items.length === 0;
 
   async function call(body) {
     const res = await fetch('/api/todo', {
@@ -61,17 +67,22 @@ export default function TodoSection({ person, personKind, subjects, groups: init
 
   async function onToggle(item) {
     const done = !item.done_at;
-    // Optimistic: an undone item leaves the list entirely (open items only),
-    // a re-opened item isn't shown here at all since it can't happen from
-    // this view — ticking only ever marks done.
-    setGroups((g) => {
-      const strip = (arr) => arr.filter((x) => x.id !== item.id);
-      return { thisWeek: strip(g.thisWeek), later: strip(g.later), undated: strip(g.undated) };
-    });
+    // Optimistic: ticking moves the item into "Done this week" (it stays
+    // visible, un-tickable) rather than removing it — per Matt, 16 Sept
+    // 2026: silently vanishing with no undo isn't what the brief's own
+    // "un-ticking is equally available" actually asked for. Re-grouped
+    // with the same pure function the server used, so this can't drift
+    // from how a fresh page load would show it.
+    setItems((cur) =>
+      cur.map((x) => (x.id === item.id ? { ...x, done_at: done ? new Date().toISOString() : null } : x))
+    );
     try {
       await call({ action: 'toggle', id: item.id, done });
     } catch {
-      // best-effort — a failed toggle just means it reappears next load
+      // revert — the API call is the source of truth
+      setItems((cur) =>
+        cur.map((x) => (x.id === item.id ? { ...x, done_at: item.done_at } : x))
+      );
     }
   }
 
@@ -124,7 +135,7 @@ export default function TodoSection({ person, personKind, subjects, groups: init
 
       {allEmpty && <div className="pv-note">Nothing due.</div>}
 
-      {['thisWeek', 'later', 'undated'].map((key) =>
+      {GROUP_ORDER.map((key) =>
         groups[key].length > 0 ? (
           <div key={key} className="todo-group">
             <div className="wo-subhead">{GROUP_LABEL[key]}</div>
