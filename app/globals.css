@@ -37,6 +37,7 @@ html, body {
 .date__weather { font: 500 20px/1 var(--fh-font); color: var(--fh-ink-label); }
 .date__weather-icon { vertical-align: -4px; margin: 0 1px; color: var(--fh-ink-label); }
 .date__rain { color: var(--fh-attention-accent); font-weight: 600; }
+.date__stale { color: var(--fh-ink-label); font-weight: 500; }
 
 /* Tonight's dinner — a quiet line under the date, not a tile. Tapping it
    opens the planner. */
@@ -613,5 +614,23 @@ html, body {
                       font: var(--fh-text-body-sm); color: var(--fh-teal-ink); }
 .review-card__actions { display: flex; gap: var(--fh-space-3); margin-top: var(--fh-space-4); }
 .review-card__actions .pair__button { flex: 1; min-height: var(--fh-target-min); }
+
+/* ==========================================================================
+   Stale-data fallback — components/StaleGuard.jsx. A full blocking overlay,
+   not a dismissible banner: per Matt, showing a possibly-wrong number is
+   worse than the screen going quiet and asking to be woken up. */
+.stale-guard { position: fixed; inset: 0; z-index: 50; display: flex;
+               align-items: center; justify-content: center;
+               background: rgba(20,69,74,.55); backdrop-filter: blur(2px); }
+.stale-guard__card { width: 100%; max-width: 380px; margin: var(--fh-gutter-phone);
+                      border-radius: var(--fh-radius-xl); background: var(--fh-surface);
+                      box-shadow: var(--fh-shadow-frame); padding: var(--fh-space-8) var(--fh-space-6);
+                      text-align: center; }
+.stale-guard__title { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
+                       color: var(--fh-ink); margin: 0 0 var(--fh-space-2); }
+.stale-guard__note { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin: 0 0 var(--fh-space-6); }
+.stale-guard__button { width: 100%; min-height: var(--fh-target-commit); border: 0;
+                        border-radius: var(--fh-radius-btn); background: var(--fh-teal);
+                        color: var(--fh-ink-inverse); font: var(--fh-text-row); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

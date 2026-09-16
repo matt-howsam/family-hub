@@ -13,7 +13,7 @@ import { weatherIcon } from '@/lib/weatherIcons';
    already carries the Tonight line beneath the date, and a second one
    starts to read as a list. Rain is the only element that can take the
    attention colour; nothing else in this line ever does. */
-export default function Clock({ tz, daily }) {
+export default function Clock({ tz, daily, stale }) {
   const [now, setNow] = useState(null);
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function Clock({ tz, daily }) {
             {daily.tempNow != null && <span> {daily.tempNow}° now</span>}
             {daily.tempMax != null && <span> · {daily.tempMax}°</span>}
             {daily.rainFrom && <span className="date__rain"> · Rain from {daily.rainFrom}</span>}
+            {stale && <span className="date__stale"> · stale</span>}
           </span>
         )}
       </div>

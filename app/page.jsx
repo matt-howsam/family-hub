@@ -8,6 +8,7 @@ import WhatsOn from '@/components/WhatsOn';
 import Avatars from '@/components/Avatars';
 import TonightLine from '@/components/TonightLine';
 import AutoRefresh from '@/components/AutoRefresh';
+import StaleGuard from '@/components/StaleGuard';
 import { getAnchor, hasDb } from '@/lib/db';
 import { weekLetter, today, TZ, hourNow } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
@@ -102,15 +103,17 @@ export default async function Wall() {
       when: dayLabel(e.date) + (e.all_day ? '' : ` ${e.display_time}`),
     }));
 
-  const builtAt = new Date()
+  const builtAt = nowInstant
     .toLocaleTimeString('en-AU', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true })
     .toLowerCase();
+  const builtAtIso = nowInstant.toISOString();
 
   return (
     <main className="wall">
       <AutoRefresh />
+      <StaleGuard builtAt={builtAtIso} />
       <section className="today">
-        <Clock tz={TZ} daily={conditions?.daily} />
+        <Clock tz={TZ} daily={conditions?.daily} stale={conditions?.stale} />
         <WeekLetter
           letter={w.letter}
           schoolWeek={w.schoolWeek}

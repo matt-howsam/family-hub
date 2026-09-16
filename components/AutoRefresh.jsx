@@ -81,9 +81,26 @@ export default function AutoRefresh() {
 
     const periodic = setInterval(() => refreshAll(false), PERIODIC_MS);
 
+    // Catch-up path: a long-lived setTimeout/setInterval in a tab that's
+    // been open for hours is exactly what iOS Safari throttles or silently
+    // drops under memory pressure — no error, the timer just stops firing.
+    // Nothing above catches that; the tab has to wake up and check for
+    // itself. `visibilitychange` fires whenever the fridge's screen wakes
+    // (touch, or coming back from the night dim); `pageshow` catches a
+    // bfcache restore, which resets nothing about page state but also
+    // fires no mount effects, so the timers above wouldn't otherwise know
+    // time has passed at all.
+    const onWake = () => {
+      if (document.visibilityState === 'visible') refreshAll(false);
+    };
+    document.addEventListener('visibilitychange', onWake);
+    window.addEventListener('pageshow', onWake);
+
     return () => {
       cancelFns.forEach((cancel) => cancel());
       clearInterval(periodic);
+      document.removeEventListener('visibilitychange', onWake);
+      window.removeEventListener('pageshow', onWake);
     };
   }, [router]);
 
