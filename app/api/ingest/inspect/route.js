@@ -3,6 +3,10 @@ import { sql, hasDb } from '@/lib/db';
 import { extractItems } from '@/lib/ingest/bulletin';
 import { getSession } from '@/lib/identity';
 
+// dryRun makes one LLM call — see app/api/ingest/poll/route.js for why the
+// default 10s isn't reliably enough.
+export const maxDuration = 60;
+
 /* Read-only diagnostics for the ingestion pipeline — not part of any brief,
    built purely to answer "why didn't this email produce anything" without
    guessing. Exposes raw email content (a safety notice, anything else that
