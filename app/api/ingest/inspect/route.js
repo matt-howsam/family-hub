@@ -81,3 +81,31 @@ export async function GET(request) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
+
+/* Deletes one raw_message row so the next poll treats it as genuinely new
+   and re-fetches it from IMAP from scratch — dedup runs on message_id, so
+   an already-stored row is otherwise never re-pulled even after a pipeline
+   fix (like PDF attachment extraction) that would change the outcome.
+   Refuses if the row has any proposed_item children: those are real
+   history, and this is a re-fetch tool, not a general delete. */
+export async function POST(request) {
+  const session = await getSession();
+  if (session?.role !== 'adult') {
+    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  }
+  if (!hasDb) return NextResponse.json({ error: 'no database configured' }, { status: 500 });
+
+  const body = await request.json().catch(() => ({}));
+  if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
+
+  const proposed = await sql`select id from proposed_item where raw_message_id = ${body.id}`;
+  if (proposed.length > 0) {
+    return NextResponse.json(
+      { error: `refusing: ${proposed.length} proposed_item row(s) reference this message` },
+      { status: 409 }
+    );
+  }
+
+  const deleted = await sql`delete from raw_message where id = ${body.id} returning id`;
+  return NextResponse.json({ ok: true, deleted: deleted.length > 0 });
+}
