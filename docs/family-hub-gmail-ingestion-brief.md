@@ -403,6 +403,33 @@ is ever wanted, it belongs as an on-demand fetch from the review queue
 (step 7) — a human tap, only for links someone cares about, degrading to
 "just the link" when a site doesn't cooperate — not a pipeline stage.
 
+**An undated notice with no specific parent action stays Q&A-only — no
+proactive surface.** Raised 17 Sep 2026 against a real example: a school
+safety notice (a principal's email about a police response near Arkinstall
+Park) extracts to nothing, correctly — it fails both the dated-item test
+and the `action` kind's "needs a parent to do something" test, by design.
+Its content is still fully searchable (the PDF text — see below — lands in
+`cleaned_body`, which Q&A's full-text search reads), so "any recent safety
+notices?" finds and cites it. Decided this is sufficient rather than adding
+a push-style surface for this content: ask-when-curious matches the
+product's deliberately calm, no-alerts posture everywhere else. Revisit
+only if genuinely time-sensitive safety content (not just this one example)
+turns out to need faster-than-Q&A visibility.
+
+**PDF attachments are extracted, not just the email body.** Raised the same
+day: Lindisfarne's admin office routinely sends the actual content as a PDF
+with a near-empty cover email ("Please find attached correspondence...") —
+both the safety notice above and a 2027 Ad Astra program email (which,
+once its PDF was read, correctly produced four real items: an information
+session, an application deadline, testing, and a special-provisions-evidence
+deadline) arrived this way. `lib/ingest/attachments.js` extracts PDF text
+only — everything else (signature images, logos) is the "chrome" this brief
+already says to filter — and appends it to `cleaned_body` before both
+extraction and storage, so Q&A benefits too. Deliberately pdf-parse@1, not
+the current major version: v2 added screenshot/image features this never
+uses and pulled in a native binary dependency to do it, which broke the
+route module outright on Vercel.
+
 ## Open
 
 - Do parent `action` items belong on the person page, or are they a small module
