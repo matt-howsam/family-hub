@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 import { getSession } from '@/lib/identity';
 import { listQueue } from '@/lib/review';
 import ReviewQueue from '@/components/ReviewQueue';
@@ -15,6 +17,7 @@ export default async function ReviewPage() {
     return (
       <main className="pair">
         <div className="pair__card">
+          <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
           <h1 className="pair__title">Review queue</h1>
           <p className="pair__note">Pair this device as a person to review proposals.</p>
         </div>

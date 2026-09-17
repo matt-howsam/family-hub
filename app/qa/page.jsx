@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 import { getSession } from '@/lib/identity';
 import QaScreen from '@/components/QaScreen';
 
@@ -14,6 +16,7 @@ export default async function QaPage() {
     return (
       <main className="pair">
         <div className="pair__card">
+          <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
           <h1 className="pair__title">Ask about school mail</h1>
           <p className="pair__note">Only Matt or Renée can use this.</p>
         </div>

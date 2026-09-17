@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 import { getSession, listDevices } from '@/lib/identity';
 import { PEOPLE } from '@/lib/people';
 import DeviceManager from '@/components/DeviceManager';
@@ -14,6 +16,7 @@ export default async function DevicesPage() {
     return (
       <main className="pair">
         <div className="pair__card">
+          <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
           <h1 className="pair__title">Pair a device</h1>
           <p className="pair__note">Only Matt or Renée can pair or manage devices.</p>
         </div>

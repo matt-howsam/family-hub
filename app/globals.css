@@ -563,6 +563,13 @@ html, body {
 .pair__card { width: 100%; max-width: 380px; border-radius: var(--fh-radius-xl);
               background: var(--fh-surface); box-shadow: var(--fh-shadow-card);
               padding: var(--fh-space-8) var(--fh-space-6); }
+/* Only on the settings menu's own sub-pages (Q&A, review queue, device
+   pairing) — never on /pair itself, which is deliberately chrome-less: an
+   unpaired device has nowhere else to go. */
+.pair__back { display: inline-flex; align-items: center; gap: var(--fh-space-2);
+              margin: 0 0 var(--fh-space-5); text-decoration: none;
+              font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+              text-transform: uppercase; color: var(--fh-ink-label); }
 .pair__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title);
                color: var(--fh-ink); margin: 0 0 var(--fh-space-5); }
 .pair__note { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin: 0 0 var(--fh-space-4); }

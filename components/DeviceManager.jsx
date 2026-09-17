@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 
 export default function DeviceManager({ devices: initialDevices, people }) {
   const [devices, setDevices] = useState(initialDevices);
@@ -45,6 +47,7 @@ export default function DeviceManager({ devices: initialDevices, people }) {
 
   return (
     <div className="pair__card">
+      <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
       <h1 className="pair__title">Pair a device</h1>
 
       <div className="pair__form">

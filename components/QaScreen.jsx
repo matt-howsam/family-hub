@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 
 export default function QaScreen() {
   const [question, setQuestion] = useState('');
@@ -32,6 +34,7 @@ export default function QaScreen() {
 
   return (
     <div className="pair__card" style={{ maxWidth: 480 }}>
+      <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
       <h1 className="pair__title">Ask about school mail</h1>
 
       <form onSubmit={ask} className="pair__form">

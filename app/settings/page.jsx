@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 import { getSession } from '@/lib/identity';
 
 /* One consolidated stop for every adult-only utility — Q&A, the review
@@ -21,6 +22,7 @@ export default async function SettingsPage() {
     return (
       <main className="pair">
         <div className="pair__card">
+          <Link href="/" className="pair__back"><ArrowLeft size={16} weight="bold" />Wall</Link>
           <h1 className="pair__title">Settings</h1>
           <p className="pair__note">Only Matt or Renée can use this.</p>
         </div>
@@ -31,6 +33,7 @@ export default async function SettingsPage() {
   return (
     <main className="pair">
       <div className="pair__card">
+        <Link href="/" className="pair__back"><ArrowLeft size={16} weight="bold" />Wall</Link>
         <h1 className="pair__title">Settings</h1>
         <div data-register="household">
           {LINKS.map((l) => (

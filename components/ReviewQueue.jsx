@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from '@phosphor-icons/react/ssr';
 
 const KIND_LABEL = {
   event: 'Event', assessment: 'Assessment', deadline: 'Deadline', notice: 'Notice',
@@ -92,6 +94,7 @@ export default function ReviewQueue({ items: initial }) {
 
   return (
     <div className="pair__card" style={{ maxWidth: 480 }}>
+      <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
       <h1 className="pair__title">Review queue</h1>
 
       {items.length === 0 && <p className="pair__note">Nothing to review.</p>}
