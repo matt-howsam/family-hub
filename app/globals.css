@@ -208,6 +208,8 @@ html, body {
                 color: var(--fh-ink-label); margin-top: var(--fh-space-3); }
 .avatar__rule { width: 22px; height: 3px; border-radius: var(--fh-radius-pill);
                 background: var(--fh-teal-ink); margin: var(--fh-space-2) auto 0; }
+.avatar__disc--utility { background: var(--fh-surface-sunken); color: var(--fh-ink-label);
+                          box-shadow: var(--fh-shadow-inset); }
 
 /* ---- Water hero — the non-school-day family lead. Static until a surf or
    weather source is wired in. ---- */

@@ -17,6 +17,7 @@ import { getWhatsOn } from '@/lib/whatson';
 import { getTonight } from '@/lib/mealplanner';
 import { getStoredConditions } from '@/lib/conditions';
 import { eveningLine } from '@/lib/todo';
+import { getSession } from '@/lib/identity';
 
 /* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
    relevant again even on a school day, per the conditions data spec. */
@@ -29,6 +30,7 @@ const DAY = 86400000;
 const fmt = (d, o) => d.toLocaleDateString('en-AU', { timeZone: 'UTC', ...o });
 
 export default async function Wall() {
+  const session = await getSession();
   const anchor = await getAnchor();
   const now = today(TZ);
   const w = weekLetter(anchor, now);
@@ -141,7 +143,7 @@ export default async function Wall() {
           for months and mostly Matt-and-Renée content. */}
       <WhatsOn items={onWall} />
       <ModuleTiles />
-      <Avatars />
+      <Avatars showSettings={session?.role === 'adult'} />
 
       <div className="house">
         <span>
