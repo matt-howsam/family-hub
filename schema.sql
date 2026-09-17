@@ -219,3 +219,201 @@ create table if not exists item (
   approved_at       timestamptz not null default now(),
   completed_at      timestamptz
 );
+
+-- Spending scorecard — see docs/family-hub-spending-scorecard-brief.md.
+-- Digitises the Howsam Discretionary Spending Scorecard. Numbers only, never
+-- transactions: categorisation happens outside the app and eleven weekly
+-- figures arrive already sorted.
+create table if not exists spend_category (
+  key         text primary key,
+  label       text        not null,
+  description text,                 -- the card's own subtitle line
+  position    int         not null, -- display order, set by hand — not `order`, reserved
+  archived_at timestamptz
+);
+
+insert into spend_category (key, label, description, position) values
+  ('groceries',              'Groceries',              'Aldi, Coles, Woolworths, butcher, fruit & veg',        1),
+  ('fuel',                   'Fuel',                    'Petrol & diesel — incl. Renée''s Brisbane travel',     2),
+  ('cafes_takeaway',         'Cafés & Takeaway',        'Cafes, restaurants, takeaway, bakeries, Brisbane meals', 3),
+  ('alcohol',                'Alcohol',                 'Liquorland, Dan Murphy''s, BWS, Taphouse',             4),
+  ('shopping',               'Shopping',                'Clothes, gifts, beauty, Kmart, Big W, homewares',      5),
+  ('home_projects',          'Home Projects',           'Bunnings, hardware, appliances, improvements',         6),
+  ('hobbies_entertainment',  'Hobbies & Entertainment', 'BCF, tackle, bikes, movies, outings, experiences',     7),
+  ('school_kids_extras',     'School & Kids Extras',    'Excursions, uniforms, camps, resources, books',        8),
+  ('medical_pharmacy',       'Medical & Pharmacy',      'Chemist, doctor, prescriptions, health & beauty',      9),
+  ('work_accommodation',     'Work Accommodation',      'Renée — Brisbane overnight, ~$150 × 4 nights',         10),
+  ('unplanned_spending',     'Unplanned Spending',      'Genuine one-offs, impulse buys, Amazon, eBay',         11)
+on conflict (key) do nothing;
+
+-- One row per calendar month. `locked_at` freezes budget_event entries for
+-- that month — see "Budget events are frozen when the month opens" in the
+-- brief. Amendments after lock are permitted but render as amendments.
+create table if not exists spend_period (
+  id         serial primary key,
+  year       int         not null,
+  month      int         not null check (month between 1 and 12),
+  locked_at  timestamptz,
+  created_at timestamptz not null default now(),
+  unique (year, month)
+);
+
+-- Stored, not computed, so an unusual cut (a long Week 4, a deliberate
+-- re-cut) survives and stays auditable. Weeks are day-of-month ranges, never
+-- ISO weeks: 1–7, 8–14, 15–21, 22–end. `ends_on` is a date, never a
+-- timestamptz, computed in Australia/Sydney — see lib/week.js.
+create table if not exists spend_week (
+  period_id int  not null references spend_period(id),
+  week_no   int  not null check (week_no between 1 and 4),
+  starts_on date not null,
+  ends_on   date not null,
+  primary key (period_id, week_no)
+);
+
+-- Base budget per category, edited rarely, plus the sum of any budget_event
+-- rows landing in that category and month. `event_amount` is a cached sum,
+-- not a join target — see budget_event below.
+create table if not exists spend_budget (
+  period_id     int  not null references spend_period(id),
+  category_key  text not null references spend_category(key),
+  base_amount   int  not null,           -- cents
+  event_amount  int  not null default 0, -- cents; sum of budget_event for this period+category
+  primary key (period_id, category_key)
+);
+
+-- Known events — birthdays, Christmas, school holidays, back to school —
+-- that raise specific categories in specific months, funded by lowering
+-- quiet months. `amount` is signed: school holidays move spending both
+-- ways (Groceries up, School & Kids Extras down), and an unsigned allowance
+-- only models half the effect. `amended_at` is set once the period is
+-- locked, so a change after the freeze is visibly an amendment.
+create table if not exists budget_event (
+  id           serial primary key,
+  name         text        not null,   -- 'Rose birthday'
+  year         int         not null,
+  month        int         not null check (month between 1 and 12),
+  category_key text        not null references spend_category(key),
+  amount       int         not null,   -- cents, signed
+  note         text,
+  created_at   timestamptz not null default now(),
+  amended_at   timestamptz             -- non-null once the period is locked
+);
+
+-- The eleven weekly figures. An absent row is "not entered"; a row with
+-- amount = 0 is "spent nothing" — the two must never be coalesced, or a
+-- partial month silently reads as an under-spend.
+create table if not exists spend_entry (
+  period_id    int         not null references spend_period(id),
+  week_no      int         not null check (week_no between 1 and 4),
+  category_key text        not null references spend_category(key),
+  amount       int         not null,   -- cents; 0 is meaningful, absent row is not
+  entered_at   timestamptz not null default now(),
+  entered_by   text,                   -- person enum
+  primary key (period_id, week_no, category_key)
+);
+
+-- The Sunday Night Review — three sentences, the ritual that makes the
+-- numbers matter. Nothing here is required; a week with numbers and no
+-- sentences is a normal week.
+create table if not exists sunday_review (
+  period_id   int  not null references spend_period(id),
+  week_no     int  not null check (week_no between 1 and 4),
+  win                 text,
+  biggest_unnecessary text,
+  one_change          text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  primary key (period_id, week_no)
+);
+
+-- Categorisation ruleset, shipped as data even though nothing reads it yet
+-- — see "How the data arrives" in the brief. Not seeded: the household's
+-- merchant rules live in spending-rules-and-aug-w4.md, which is not yet in
+-- this repo. Seed it from that document when in-app categorisation is built,
+-- rather than starting the rule table over.
+create table if not exists merchant_rule (
+  id           serial primary key,
+  pattern      text        not null,
+  category_key text        not null references spend_category(key),
+  priority     int         not null default 0,
+  created_at   timestamptz not null default now()
+);
+
+-- September 2026: the live period. $4,650 total, Alcohol raised to $300
+-- from August's $160 — see the photographed card,
+-- docs/designs/Family Hub_ tablet and mobile/scraps/scorecard.txt.
+insert into spend_period (year, month, locked_at) values
+  (2026, 9, '2026-09-01T00:00:00+10:00')
+on conflict (year, month) do nothing;
+
+insert into spend_week (period_id, week_no, starts_on, ends_on)
+select id, week_no, starts_on::date, ends_on::date
+from spend_period, (values
+  (1, '2026-09-01', '2026-09-07'),
+  (2, '2026-09-08', '2026-09-14'),
+  (3, '2026-09-15', '2026-09-21'),
+  (4, '2026-09-22', '2026-09-30')
+) as w(week_no, starts_on, ends_on)
+where spend_period.year = 2026 and spend_period.month = 9
+on conflict (period_id, week_no) do nothing;
+
+insert into spend_budget (period_id, category_key, base_amount)
+select id, c.category_key, c.base_amount
+from spend_period, (values
+  ('groceries',             120000),
+  ('fuel',                   35000),
+  ('cafes_takeaway',         70000),
+  ('alcohol',                30000),
+  ('shopping',               40000),
+  ('home_projects',          20000),
+  ('hobbies_entertainment',  20000),
+  ('school_kids_extras',     25000),
+  ('medical_pharmacy',       20000),
+  ('work_accommodation',     60000),
+  ('unplanned_spending',     25000)
+) as c(category_key, base_amount)
+where spend_period.year = 2026 and spend_period.month = 9
+on conflict (period_id, category_key) do nothing;
+
+-- August 2026: the first comparison month, closed and read-only. Same
+-- category budgets as September except Alcohol, which was $160 before the
+-- September raise — the $140 difference accounts for the full
+-- $4,510 → $4,650 change, per the card's own note.
+-- Per-category, per-week actuals are NOT seeded here: the repo holds only
+-- the photographed card's total ($5,535 actual vs $4,510 budget, $1,025
+-- over, driven by two birthdays and Father's Day inside Cafés and
+-- Shopping). The real weekly-by-category figures from the photographed
+-- August card still need to be entered before this month can render as a
+-- true comparison month rather than an all-unentered one.
+insert into spend_period (year, month, locked_at) values
+  (2026, 8, '2026-08-01T00:00:00+10:00')
+on conflict (year, month) do nothing;
+
+insert into spend_week (period_id, week_no, starts_on, ends_on)
+select id, week_no, starts_on::date, ends_on::date
+from spend_period, (values
+  (1, '2026-08-01', '2026-08-07'),
+  (2, '2026-08-08', '2026-08-14'),
+  (3, '2026-08-15', '2026-08-21'),
+  (4, '2026-08-22', '2026-08-31')
+) as w(week_no, starts_on, ends_on)
+where spend_period.year = 2026 and spend_period.month = 8
+on conflict (period_id, week_no) do nothing;
+
+insert into spend_budget (period_id, category_key, base_amount)
+select id, c.category_key, c.base_amount
+from spend_period, (values
+  ('groceries',             120000),
+  ('fuel',                   35000),
+  ('cafes_takeaway',         70000),
+  ('alcohol',                16000),
+  ('shopping',               40000),
+  ('home_projects',          20000),
+  ('hobbies_entertainment',  20000),
+  ('school_kids_extras',     25000),
+  ('medical_pharmacy',       20000),
+  ('work_accommodation',     60000),
+  ('unplanned_spending',     25000)
+) as c(category_key, base_amount)
+where spend_period.year = 2026 and spend_period.month = 8
+on conflict (period_id, category_key) do nothing;

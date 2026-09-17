@@ -1,6 +1,8 @@
 # Family Hub — Identity & Device Pairing
 
-**Status:** proposed, not built.
+**Status:** built. `person_device`, `pairing_code` and `app_state` are in
+`schema.sql`; `lib/identity.js`, `middleware.js` and the `/api/pair/*` routes
+implement the flow below.
 **Last updated:** 13 September 2026
 
 Not a module. Infrastructure, closer to `lib/week.js` than to the meal planner

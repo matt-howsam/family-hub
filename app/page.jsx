@@ -18,6 +18,7 @@ import { getTonight } from '@/lib/mealplanner';
 import { getStoredConditions } from '@/lib/conditions';
 import { eveningLine } from '@/lib/todo';
 import { getSession } from '@/lib/identity';
+import { getSpendingTile } from '@/lib/scorecard';
 
 /* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
    relevant again even on a school day, per the conditions data spec. */
@@ -35,6 +36,7 @@ export default async function Wall() {
   const now = today(TZ);
   const w = weekLetter(anchor, now);
   const tonight = await getTonight();
+  const spendingTile = await getSpendingTile();
 
   /* Only build briefings on a school weekday. At the weekend or in the
      holidays the children's blocks have nothing true to say, so they are
@@ -142,7 +144,7 @@ export default async function Wall() {
           all four people, so it outranks the module rows, which are stable
           for months and mostly Matt-and-Renée content. */}
       <WhatsOn items={onWall} />
-      <ModuleTiles />
+      <ModuleTiles spendingTile={spendingTile} />
       <Avatars showSettings={session?.role === 'adult'} />
 
       <div className="house">

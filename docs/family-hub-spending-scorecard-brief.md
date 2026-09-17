@@ -360,7 +360,9 @@ to the repository.
 ## Acceptance checks
 
 - [ ] September 2026 shows weeks 1–7, 8–14, 15–21, 22–30
-- [ ] Week 4's target renders as $1,495, not $1,163
+- [ ] Week 4's target renders as $1,395 (9/30 of $4,650), not $1,163 (flat
+      `budget/4`) — the four weekly targets for a month always sum to the
+      monthly total; a target derived from the flat figure wouldn't
 - [ ] A category entered as `0` and a category not yet entered render
       differently, and the month total is marked partial while any week is
       unentered

@@ -170,6 +170,16 @@ html, body {
 .tile--attention .tile__answer,
 .tile--attention .tile__name { color: var(--fh-attention-accent); }
 
+/* The one tile with somewhere to go — a chevron and a second, quieter
+   line for pace, once the month is far enough in to mean anything
+   (suppressed before day 7 upstream in lib/scorecard.js#getSpendingTile). */
+.tile--live { grid-template-columns: 22px 1fr auto 16px; text-decoration: none; color: inherit; }
+.tile__answer2 { display: block; font: 500 15px/1.3 var(--fh-font); color: var(--fh-ink-label);
+                  margin-top: 1px; }
+.tile__chevron { color: var(--fh-ink-label); }
+.tile--attention .tile__answer2,
+.tile--attention .tile__chevron { color: var(--fh-attention-accent); }
+
 /* ---- What's on — a quiet, receding card. Real calendar data. Tapping it
    opens the full listing: navigation, not a write. ---- */
 .whats-on { display: block; border-radius: var(--fh-radius-xl); background: var(--fh-surface);
@@ -636,5 +646,187 @@ html, body {
 .stale-guard__button { width: 100%; min-height: var(--fh-target-commit); border: 0;
                         border-radius: var(--fh-radius-btn); background: var(--fh-teal);
                         color: var(--fh-ink-inverse); font: var(--fh-text-row); }
+
+/* ==========================================================================
+   Spending scorecard (/scorecard) — docs/family-hub-spending-scorecard-brief.md.
+   Household register throughout: this sits closer to the operations
+   register than the family register, per the brief's own instruction —
+   tighter radius, denser padding, flat white, no person tint. Deliberately
+   the least colourful screen in the product: no red, no amber, no
+   colour-coded variance — "spending is level," stated once, never escalated.
+   ========================================================================== */
+
+.sc-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
+           background: var(--fh-page-bg);
+           padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+.sc-header { display: flex; align-items: flex-start; gap: var(--fh-space-4);
+             padding: var(--fh-space-2) var(--fh-space-2) var(--fh-space-5); }
+.sc-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
+.sc-header__note { margin-top: var(--fh-space-2); font: var(--fh-text-body-sm);
+                    color: var(--fh-ink-label); max-width: 46ch; }
+
+.sc-nav { display: flex; align-items: center; justify-content: center; gap: var(--fh-space-5);
+          margin: 0 var(--fh-space-2) var(--fh-space-6); }
+.sc-nav__btn { display: flex; align-items: center; justify-content: center;
+               width: var(--fh-target-min); height: var(--fh-target-min);
+               border-radius: var(--fh-radius-pill); background: var(--fh-surface);
+               box-shadow: var(--fh-shadow-card); color: var(--fh-ink); }
+.sc-nav__btn--disabled { opacity: .35; box-shadow: none; }
+.sc-nav__label { font: var(--fh-text-row); letter-spacing: var(--fh-track-answer);
+                  min-width: 168px; text-align: center; }
+.sc-nav__label--fridge { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
+                          text-align: left; margin: 0 0 var(--fh-space-6) var(--fh-space-2); }
+
+.sc-compare { padding: 0 var(--fh-space-2); margin: 0 0 var(--fh-space-5);
+              font: var(--fh-text-body); color: var(--fh-ink-body); font-variant-numeric: tabular-nums; }
+.sc-compare strong { color: var(--fh-ink); }
+
+.sc-empty { padding: var(--fh-space-6) var(--fh-space-2); font: var(--fh-text-body); color: var(--fh-ink-label); }
+
+/* A figure with its pro-rata target riding underneath — the wall's own
+   two-column reduction of the full table (current week, month-to-date). */
+.sc-fig { display: flex; flex-direction: column; align-items: flex-end; min-width: 84px; }
+.sc-fig__amount { font: var(--fh-text-figure); letter-spacing: var(--fh-track-title);
+                   font-variant-numeric: tabular-nums; color: var(--fh-ink); }
+.sc-fig__amount--empty { color: var(--fh-ink-label); font-weight: 500; }
+.sc-fig__target { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                   text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
+
+/* ---- Fridge: eleven rows, two figures each — never the four-week grid. */
+.sc-wall { border-radius: var(--fh-r-radius); background: var(--fh-r-surface);
+           box-shadow: var(--fh-r-shadow); overflow: hidden; }
+.sc-wall-row { display: flex; align-items: center; justify-content: space-between;
+               gap: var(--fh-space-4); padding: var(--fh-r-pad-y) var(--fh-r-pad-x);
+               border-top: var(--fh-border-hair); }
+.sc-wall-row:first-child { border-top: 0; }
+.sc-wall-row__label { font: var(--fh-r-title); color: var(--fh-r-title-color); }
+.sc-wall-row__figs { display: flex; gap: var(--fh-space-7); }
+.sc-wall-row--total { border-top: 2px solid var(--fh-hairline); }
+.sc-wall-row--total .sc-wall-row__label { font-weight: 800; }
+
+/* ---- Phone: the full paper card as a scrollable grid — 7 numeric columns
+   never fit a phone width, so the table scrolls horizontally inside its
+   own frame rather than truncating a category's own numbers. */
+.sc-table-wrap { border-radius: var(--fh-r-radius); background: var(--fh-r-surface);
+                  box-shadow: var(--fh-r-shadow); overflow-x: auto; }
+.sc-table { display: grid; grid-template-columns: minmax(148px,1.4fr) repeat(6, minmax(66px,1fr));
+            min-width: 600px; }
+.sc-table__head { display: contents; }
+.sc-table__hcell { padding: var(--fh-space-3) var(--fh-space-3) var(--fh-space-2);
+                    font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                    text-transform: uppercase; color: var(--fh-ink-label); text-align: right;
+                    border-bottom: var(--fh-border-hair); }
+.sc-table__hcell--cat { text-align: left; }
+.sc-row { display: contents; }
+.sc-row__cat { padding: var(--fh-r-pad-y) var(--fh-space-3) var(--fh-r-pad-y) var(--fh-r-pad-x);
+               border-top: var(--fh-border-hair); display: flex; flex-direction: column; justify-content: center; }
+.sc-row__cat-label { font: var(--fh-r-title); color: var(--fh-r-title-color); }
+.sc-row__cat-desc { font: var(--fh-text-meta); color: var(--fh-ink-label); margin-top: 2px;
+                     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.sc-cell { display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+           padding: var(--fh-r-pad-y) var(--fh-space-3); border-top: var(--fh-border-hair);
+           font: var(--fh-text-body); font-variant-numeric: tabular-nums; color: var(--fh-ink); text-align: right; }
+.sc-cell--empty { color: var(--fh-ink-label); }
+.sc-cell--budget { color: var(--fh-ink-body); }
+.sc-cell--month { font-weight: 700; }
+.sc-partial-flag { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                    text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
+.sc-variance { display: block; font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+               color: var(--fh-ink-body); margin-top: 2px; }
+.sc-row--total .sc-row__cat, .sc-row--total .sc-cell { border-top: 2px solid var(--fh-hairline); }
+.sc-row--total .sc-row__cat-label { font-weight: 800; }
+.sc-row--total .sc-cell { font-weight: 800; }
+
+@media (max-width: 560px) {
+  .sc-page { padding: var(--fh-gutter-phone); }
+}
+
+/* ---- Sunday entry (/scorecard/entry) — surface 3 of the same brief. One
+   screen, eleven fields, three questions; nothing required, autosaves per
+   field on blur so a half-finished week reopens where it was. */
+.sc-week-strip { display: flex; gap: var(--fh-space-2); margin: 0 var(--fh-space-2) var(--fh-space-5); }
+.sc-week-strip__seg { flex: 1; min-height: var(--fh-target-min); border-radius: var(--fh-radius-md);
+                       background: var(--fh-surface-sunken); text-align: center; text-decoration: none;
+                       display: flex; flex-direction: column; align-items: center; justify-content: center;
+                       font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                       text-transform: uppercase; color: var(--fh-ink-label); padding: var(--fh-space-2) 0; }
+.sc-week-strip__seg--active { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
+.sc-week-strip__dates { font: var(--fh-text-meta); letter-spacing: 0; text-transform: none; margin-top: 2px; }
+
+.sc-entry-list { border-radius: var(--fh-r-radius); background: var(--fh-r-surface);
+                  box-shadow: var(--fh-r-shadow); overflow: hidden; margin: 0 var(--fh-space-2); }
+.sc-entry-row { display: flex; align-items: center; justify-content: space-between; gap: var(--fh-space-4);
+                padding: var(--fh-r-pad-y) var(--fh-r-pad-x); border-top: var(--fh-border-hair); }
+.sc-entry-row:first-child { border-top: 0; }
+.sc-entry-row__label { display: flex; flex-direction: column; }
+.sc-entry-row__title { font: var(--fh-r-title); color: var(--fh-r-title-color); }
+.sc-entry-row__flag { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                       text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
+.sc-entry-row__input { width: 108px; min-height: var(--fh-target-min); box-sizing: border-box;
+                        border: var(--fh-border-input); border-radius: var(--fh-radius-md);
+                        background: var(--fh-surface); text-align: right; padding: 0 var(--fh-space-4);
+                        font: var(--fh-text-figure); font-variant-numeric: tabular-nums;
+                        letter-spacing: 0; color: var(--fh-ink); font-family: var(--fh-font); }
+.sc-entry-row__input::placeholder { color: var(--fh-ink-label); font-weight: 500; }
+
+.sc-entry-total { display: flex; align-items: baseline; justify-content: space-between;
+                   margin: var(--fh-space-5) var(--fh-space-2) var(--fh-space-8);
+                   font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                   text-transform: uppercase; color: var(--fh-ink-label); }
+.sc-entry-total__figure { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
+                           text-transform: none; color: var(--fh-ink); font-variant-numeric: tabular-nums; }
+
+.sc-review { margin: 0 var(--fh-space-2); }
+.sc-review__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title);
+                     margin: 0 0 var(--fh-space-5); }
+.sc-review__field { display: block; margin-bottom: var(--fh-space-5); }
+.sc-review__label { display: block; font: var(--fh-text-row); letter-spacing: var(--fh-track-answer);
+                     margin-bottom: var(--fh-space-2); }
+.sc-review__input { display: block; width: 100%; box-sizing: border-box; border: var(--fh-border-input);
+                     border-radius: var(--fh-radius-md); background: var(--fh-surface); resize: vertical;
+                     padding: var(--fh-space-4); font: var(--fh-text-body); font-family: var(--fh-font);
+                     color: var(--fh-ink); }
+
+.sc-history { margin: var(--fh-space-8) var(--fh-space-2) 0; padding-top: var(--fh-space-6);
+              border-top: var(--fh-border-hair); }
+.sc-history__title { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                      text-transform: uppercase; color: var(--fh-ink-label); margin: 0 0 var(--fh-space-4); }
+.sc-history__week { margin-bottom: var(--fh-space-5); }
+.sc-history__label { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                      text-transform: uppercase; color: var(--fh-ink-label); margin: 0 0 var(--fh-space-1); }
+.sc-history__line { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin: 0 0 var(--fh-space-1); }
+.sc-history__line strong { color: var(--fh-ink); font-weight: 700; }
+
+.sc-entry-cta { display: block; text-align: center; text-decoration: none;
+                min-height: var(--fh-target-commit); line-height: var(--fh-target-commit);
+                margin: 0 var(--fh-space-2) var(--fh-space-6); border-radius: var(--fh-radius-btn);
+                background: var(--fh-teal); color: var(--fh-ink-inverse);
+                font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
+
+/* ---- Budget & events (/scorecard/budget) — surface 4 of the same brief.
+   The annual envelope is the one figure this screen is built around: a
+   plain fact, stated once, same as the rest of the module's tone. */
+.sc-envelope { border-radius: var(--fh-radius-xl); background: var(--fh-surface);
+               box-shadow: var(--fh-shadow-card); padding: var(--fh-space-6); margin: 0 var(--fh-space-2); }
+.sc-envelope__row { display: flex; align-items: baseline; justify-content: space-between;
+                     padding: var(--fh-space-2) 0; }
+.sc-envelope__label { font: var(--fh-text-body); color: var(--fh-ink-body); }
+.sc-envelope__figure { font: var(--fh-text-answer); letter-spacing: var(--fh-track-answer);
+                        color: var(--fh-ink); font-variant-numeric: tabular-nums; }
+.sc-envelope__note { font: var(--fh-text-body-sm); color: var(--fh-ink-label);
+                      margin: var(--fh-space-3) 0 0; }
+
+.sc-events-list { margin: 0 var(--fh-space-2); }
+.sc-event-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--fh-space-4);
+                padding: var(--fh-space-4) 0; border-top: var(--fh-border-hair); }
+.sc-event-row:first-child { border-top: 0; }
+.sc-event-row__main { display: flex; flex-direction: column; min-width: 0; }
+.sc-event-row__name { font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
+.sc-event-row__meta { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                       text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
+.sc-event-row__amended { text-transform: none; letter-spacing: 0; }
+.sc-event-row__note { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin-top: var(--fh-space-1); }
+.sc-event-row__amount { font: var(--fh-text-row); font-variant-numeric: tabular-nums;
+                         color: var(--fh-ink); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

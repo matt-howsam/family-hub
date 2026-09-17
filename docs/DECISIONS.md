@@ -192,10 +192,9 @@ Coming up only.
 **A device identifies itself once, by URL — superseded by `docs/identity.md`.**
 `/?role=display` and the `fh_role` cookie were the whole identity system
 through the meal planner build. `docs/identity.md` replaces this with pairing
-codes and a `person_device` table (role *and* person, not just role); once
-built, `getRole()` and its callers (`lib/role.js`, `app/api/planner/route.js`)
-move onto the new cookie instead of `fh_role`. Not yet built as of 13
-September 2026.
+codes and a `person_device` table (role *and* person, not just role);
+`getRole()` and its callers (`lib/role.js`, `app/api/planner/route.js`) now
+read the new cookie instead of `fh_role`. Built.
 
 **Q&A is adults-only, and the route check is the whole boundary.** The school
 mail search index carries `pastoral_record` rows unfiltered — nothing in
