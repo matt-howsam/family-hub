@@ -27,5 +27,12 @@ export default async function EntryPage({ searchParams }) {
   const weekNo = Number(params?.week) || currentWeekNoOf(today(TZ));
   const data = await getEntryData(weekNo);
 
-  return <EntryScreen data={data} weekNo={weekNo} />;
+  // `key` forces a fresh EntryScreen instance per week. Without it, tapping
+  // between week-strip tabs keeps the same component mounted and only
+  // swaps its `data` prop — but EntryScreen's amounts/review state is set
+  // up with useState(() => ...), whose initialiser only ever runs on first
+  // mount, so a week switched to via the tabs would keep showing whichever
+  // week's numbers happened to load first. A full page reload always hits
+  // this fresh anyway, which is exactly why that path never showed the bug.
+  return <EntryScreen key={weekNo} data={data} weekNo={weekNo} />;
 }
