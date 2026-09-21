@@ -28,7 +28,6 @@ const SCHOOL_DAY_END_HOUR = 15.5;
 export const dynamic = 'force-dynamic';
 
 const DAY = 86400000;
-const fmt = (d, o) => d.toLocaleDateString('en-AU', { timeZone: 'UTC', ...o });
 
 export default async function Wall() {
   const session = await getSession();
@@ -118,14 +117,7 @@ export default async function Wall() {
       <StaleGuard builtAt={builtAtIso} />
       <section className="today">
         <Clock tz={TZ} daily={conditions?.daily} stale={conditions?.stale} />
-        <WeekLetter
-          letter={w.letter}
-          schoolWeek={w.schoolWeek}
-          setBy={anchor.setBy}
-          since={fmt(new Date(anchor.monday + 'T00:00:00Z'), { day: 'numeric', month: 'short' })}
-          resumes={w.resumesOn ? fmt(w.resumesOn, { day: 'numeric', month: 'short' }) : ''}
-          canWrite={hasDb}
-        />
+        <WeekLetter letter={w.letter} schoolWeek={w.schoolWeek} canWrite={hasDb} />
       </section>
 
       <TonightLine tonight={tonight} />

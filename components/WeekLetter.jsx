@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 /* One touch to correct. The school shifts the cycle occasionally and a
    confidently wrong letter is worse than no letter, so this is the one write
    the fridge is allowed to make. The correction becomes the new anchor. */
-export default function WeekLetter({ letter, schoolWeek, setBy, since, resumes, canWrite }) {
+export default function WeekLetter({ letter, schoolWeek, canWrite }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [busy, setBusy] = useState(false);
@@ -36,9 +36,6 @@ export default function WeekLetter({ letter, schoolWeek, setBy, since, resumes, 
       <span className="week__label">Week</span>
       <span className="week__letter">{schoolWeek ? letter : '\u2014'}</span>
       <span className="week__rule" />
-      <span className="week__set">
-        {schoolWeek ? `Set by ${setBy} \u00B7 ${since}` : `Week ${letter} resumes ${resumes}`}
-      </span>
     </button>
   );
 }

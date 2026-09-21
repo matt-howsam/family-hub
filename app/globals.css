@@ -68,9 +68,6 @@ html, body {
                 color: var(--fh-teal-ink); margin-top: var(--fh-space-1); }
 .week__rule { height: 3px; width: 44px; margin: var(--fh-space-3) auto 0;
               background: var(--fh-teal-ink); border-radius: var(--fh-radius-pill); }
-.week__set { display: block; margin-top: var(--fh-space-3);
-             font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
-             text-transform: uppercase; color: var(--fh-ink-label); }
 .week--out .week__letter { color: var(--fh-ink-body); }
 
 .card {
