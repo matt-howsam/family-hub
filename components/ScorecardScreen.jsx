@@ -20,15 +20,25 @@ function nextYm(year, month) {
   return month === 12 ? { year: year + 1, month: 1 } : { year, month: month + 1 };
 }
 
+function dayShort(dateStr) {
+  return new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('en-AU', {
+    timeZone: 'UTC', day: 'numeric', month: 'short',
+  });
+}
+
 /** `$610` with a smaller `of $1,128` suffix — used everywhere a figure
-    needs its pro-rata target alongside it without a second column. */
-function Fig({ amount, target, entered }) {
+    needs its pro-rata target alongside it without a second column.
+    `variance` is optional: when given, a plain +/− figure rides under the
+    target, same as the phone table's month column — no colour, stated
+    once, per the brief's tone. */
+function Fig({ amount, target, entered, variance }) {
   return (
     <span className="sc-fig">
       <span className={`sc-fig__amount${entered ? '' : ' sc-fig__amount--empty'}`}>
         {entered ? formatDollars(amount) : '—'}
       </span>
       {target != null && <span className="sc-fig__target">of {formatDollars(target)}</span>}
+      {variance != null && <Variance variance={variance} />}
     </span>
   );
 }
@@ -47,26 +57,48 @@ function Variance({ variance }) {
 }
 
 function WallRows({ view }) {
+  // Never the calendar's "current" week — the household leaves a week
+  // empty for ~4 days to let late transactions land, so "current" is
+  // empty by design. This is whatever was actually last entered.
+  const latestWeekMeta = view.weekMeta.find((w) => w.weekNo === view.latestEnteredWeekNo);
+  const latestWeekTotal = view.weekTotals.find((w) => w.weekNo === view.latestEnteredWeekNo);
+  const latestLabel = latestWeekMeta
+    ? `Week ${latestWeekMeta.weekNo} · ${dayShort(latestWeekMeta.startsOn)}–${dayShort(latestWeekMeta.endsOn)}`
+    : 'Latest week';
+
   return (
     <div className="sc-wall" data-register="household">
-      {view.categories.map((c) => (
-        <div className="sc-wall-row" key={c.key}>
-          <span className="sc-wall-row__label">{c.label}</span>
-          <span className="sc-wall-row__figs">
-            <Fig amount={c.currentWeek?.amount} target={c.currentWeek?.target} entered={c.currentWeek?.entered} />
-            <Fig amount={c.monthToDate} target={c.mtdTarget} entered={c.monthToDate != null} />
-          </span>
-        </div>
-      ))}
+      <div className="sc-wall-head">
+        <span className="sc-wall-head__col">{latestLabel}</span>
+        <span className="sc-wall-head__col">Month to date</span>
+      </div>
+      {view.categories.map((c) => {
+        const latestCell = c.weeks.find((w) => w.weekNo === view.latestEnteredWeekNo);
+        const mtdVariance = c.monthToDate != null ? c.monthToDate - c.mtdTarget : null;
+        return (
+          <div className="sc-wall-row" key={c.key}>
+            <span className="sc-wall-row__label">{c.label}</span>
+            <span className="sc-wall-row__figs">
+              <Fig amount={latestCell?.amount} target={latestCell?.target} entered={latestCell?.entered} />
+              <Fig amount={c.monthToDate} target={c.mtdTarget} entered={c.monthToDate != null} variance={mtdVariance} />
+            </span>
+          </div>
+        );
+      })}
       <div className="sc-wall-row sc-wall-row--total">
         <span className="sc-wall-row__label">Total</span>
         <span className="sc-wall-row__figs">
           <Fig
-            amount={view.weekTotals.find((w) => w.weekNo === view.currentWeekNo)?.amount}
-            target={view.currentWeekTargetTotal}
-            entered={Boolean(view.currentWeekNo)}
+            amount={latestWeekTotal?.amount}
+            target={latestWeekTotal?.target}
+            entered={Boolean(view.latestEnteredWeekNo)}
           />
-          <Fig amount={view.mtdTotal} target={view.mtdTargetTotal} entered={Boolean(view.currentWeekNo)} />
+          <Fig
+            amount={view.mtdTotal}
+            target={view.mtdTargetTotal}
+            entered={Boolean(view.latestEnteredWeekNo)}
+            variance={view.latestEnteredWeekNo ? view.mtdTotal - view.mtdTargetTotal : null}
+          />
         </span>
       </div>
     </div>
@@ -154,11 +186,9 @@ export default function ScorecardScreen({ view, fridge, currentYear, currentMont
   return (
     <div className="sc-page">
       <div className="sc-header">
-        {!fridge && (
-          <Link href="/" className="wo-back" aria-label="Back to the wall">
-            <ArrowLeft size={24} />
-          </Link>
-        )}
+        <Link href="/" className="wo-back" aria-label="Back to the wall">
+          <ArrowLeft size={24} />
+        </Link>
         <div>
           <h1 className="sc-header__title">Spending</h1>
           <p className="sc-header__note">Discretionary only — mortgage, rates, utilities, school fees,

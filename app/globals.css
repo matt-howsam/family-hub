@@ -699,7 +699,15 @@ html, body {
 .sc-fig__target { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
                    text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
 
-/* ---- Fridge: eleven rows, two figures each — never the four-week grid. */
+/* ---- Fridge: eleven rows, two figures each — never the four-week grid.
+   Column 1 is labelled with whichever week was actually last entered, not
+   the calendar's current week — see latestEnteredWeekNo in
+   lib/scorecard.js#getMonthView. */
+.sc-wall-head { display: flex; justify-content: flex-end; gap: var(--fh-space-7);
+                padding: var(--fh-space-4) var(--fh-r-pad-x) var(--fh-space-2); }
+.sc-wall-head__col { min-width: 84px; text-align: right; font: var(--fh-text-meta);
+                      letter-spacing: var(--fh-track-meta); text-transform: uppercase;
+                      color: var(--fh-ink-label); }
 .sc-wall { border-radius: var(--fh-r-radius); background: var(--fh-r-surface);
            box-shadow: var(--fh-r-shadow); overflow: hidden; }
 .sc-wall-row { display: flex; align-items: center; justify-content: space-between;
