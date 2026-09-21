@@ -2,7 +2,7 @@
 import { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from '@phosphor-icons/react/ssr';
-import { formatDollars } from '@/lib/scorecard';
+import { formatDollars, parseSpendBlock } from '@/lib/scorecard';
 
 const RETRY_MS = 4000;
 const SHOW_FAILED_AFTER_MS = 10000;
@@ -40,6 +40,10 @@ export default function EntryScreen({ data, weekNo }) {
     oneChange: data?.review?.oneChange ?? '',
   });
   const [reviewStatus, setReviewStatus] = useState('idle');
+
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasteText, setPasteText] = useState('');
+  const [pasteFeedback, setPasteFeedback] = useState(null);
 
   const inputRefs = useRef([]);
 
@@ -79,6 +83,46 @@ export default function EntryScreen({ data, weekNo }) {
       }
     };
     attempt();
+  };
+
+  /* Pasting a HOWSAM-SPEND block fills and saves the same way typing does
+     — one commitAmount per recognised line, reusing the exact save/retry
+     path the fields already have. Refuses to apply a block for the wrong
+     month or week rather than guessing which numbers the person meant,
+     since that's silent data corruption, not a convenience. */
+  const applyPaste = () => {
+    const parsed = parseSpendBlock(pasteText);
+    if (!parsed.ok) {
+      setPasteFeedback({ kind: 'error', message: parsed.error, warnings: parsed.warnings });
+      return;
+    }
+    if (parsed.period.year !== data.year || parsed.period.month !== data.month) {
+      const got = `${parsed.period.year}-${String(parsed.period.month).padStart(2, '0')}`;
+      const want = `${data.year}-${String(data.month).padStart(2, '0')}`;
+      setPasteFeedback({ kind: 'error', message: `This block is for ${got}, but you're entering ${want}.` });
+      return;
+    }
+    if (parsed.weekNo !== weekNo) {
+      setPasteFeedback({
+        kind: 'error', message: `This block is for Week ${parsed.weekNo}.`, switchTo: parsed.weekNo,
+      });
+      return;
+    }
+
+    const filledKeys = Object.keys(parsed.values);
+    setAmounts((a) => {
+      const next = { ...a };
+      for (const [key, dollars] of Object.entries(parsed.values)) next[key] = String(dollars);
+      return next;
+    });
+    filledKeys.forEach((key) => commitAmount(key, String(parsed.values[key])));
+
+    setPasteFeedback({
+      kind: 'success',
+      message: `Filled and saving ${filledKeys.length} of ${data.categories.length} fields.`,
+      warnings: parsed.warnings,
+    });
+    setPasteText('');
   };
 
   const handleKeyDown = (e, idx) => {
@@ -126,6 +170,61 @@ export default function EntryScreen({ data, weekNo }) {
             <span className="sc-week-strip__dates">{dayShort(w.startsOn)}–{dayShort(w.endsOn)}</span>
           </Link>
         ))}
+      </div>
+
+      <div className="sc-paste">
+        <button
+          type="button"
+          className="sc-paste__toggle"
+          onClick={() => { setPasteOpen((o) => !o); setPasteFeedback(null); }}
+        >
+          {pasteOpen ? 'Hide paste' : 'Paste weekly numbers instead'}
+        </button>
+        {pasteOpen && (
+          <div className="sc-paste__panel">
+            <textarea
+              className="sc-paste__input"
+              rows={7}
+              placeholder={'HOWSAM-SPEND v1\nperiod: 2026-09\nweek: 1\ngroceries: 93\nfuel: 242\n…'}
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+            />
+            <button
+              type="button"
+              className="sc-paste__submit"
+              onClick={applyPaste}
+              disabled={!pasteText.trim()}
+            >
+              Fill fields
+            </button>
+            {pasteFeedback?.kind === 'error' && (
+              <div>
+                <p className="sc-entry-row__flag">
+                  {pasteFeedback.message}
+                  {pasteFeedback.switchTo && (
+                    <>
+                      {' '}
+                      <Link href={`/scorecard/entry?week=${pasteFeedback.switchTo}`} className="sc-paste__switch">
+                        Switch to Week {pasteFeedback.switchTo}
+                      </Link>
+                    </>
+                  )}
+                </p>
+                {pasteFeedback.warnings?.map((w, i) => (
+                  <p key={i} className="sc-entry-row__flag">{w}</p>
+                ))}
+              </div>
+            )}
+            {pasteFeedback?.kind === 'success' && (
+              <div>
+                <p className="sc-paste__ok">{pasteFeedback.message}</p>
+                {pasteFeedback.warnings?.map((w, i) => (
+                  <p key={i} className="sc-entry-row__flag">{w}</p>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="sc-entry-list" data-register="household">

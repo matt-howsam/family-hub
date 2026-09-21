@@ -760,6 +760,28 @@ html, body {
 .sc-week-strip__seg--active { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
 .sc-week-strip__dates { font: var(--fh-text-meta); letter-spacing: 0; text-transform: none; margin-top: 2px; }
 
+/* Paste a HOWSAM-SPEND block instead of tapping through eleven fields —
+   see "How the data arrives" in the brief: a categorisation chat hands
+   these numbers back as text already. Collapsed by default so it doesn't
+   compete with the manual-entry flow most Sundays still use. */
+.sc-paste { margin: 0 var(--fh-space-2) var(--fh-space-5); }
+.sc-paste__toggle { display: block; border: 0; background: none; padding: 0;
+                     font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                     text-transform: uppercase; color: var(--fh-ink-label); text-decoration: underline; }
+.sc-paste__panel { margin-top: var(--fh-space-4); border-radius: var(--fh-radius-lg);
+                    background: var(--fh-surface); box-shadow: var(--fh-shadow-card);
+                    padding: var(--fh-space-5); }
+.sc-paste__input { display: block; width: 100%; box-sizing: border-box; border: var(--fh-border-input);
+                    border-radius: var(--fh-radius-md); background: var(--fh-surface-sunken);
+                    padding: var(--fh-space-4); font: 14px/1.5 var(--fh-font-mono); color: var(--fh-ink);
+                    resize: vertical; margin-bottom: var(--fh-space-4); }
+.sc-paste__submit { display: block; width: 100%; min-height: var(--fh-target-min); border: 0;
+                     border-radius: var(--fh-radius-btn); background: var(--fh-teal);
+                     color: var(--fh-ink-inverse); font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
+.sc-paste__submit:disabled { opacity: .5; }
+.sc-paste__ok { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin: var(--fh-space-4) 0 0; }
+.sc-paste__switch { color: var(--fh-teal-ink); text-decoration: underline; }
+
 .sc-entry-list { border-radius: var(--fh-r-radius); background: var(--fh-r-surface);
                   box-shadow: var(--fh-r-shadow); overflow: hidden; margin: 0 var(--fh-space-2); }
 .sc-entry-row { display: flex; align-items: center; justify-content: space-between; gap: var(--fh-space-4);
