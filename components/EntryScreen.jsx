@@ -232,6 +232,7 @@ export default function EntryScreen({ data, weekNo }) {
           <div className="sc-entry-row" key={c.key}>
             <div className="sc-entry-row__label">
               <span className="sc-entry-row__title">{c.label}</span>
+              <span className="sc-entry-row__target">Target {formatDollars(c.target)}</span>
               {status[c.key] === 'failed' && <span className="sc-entry-row__flag">Not saved yet</span>}
             </div>
             <input
@@ -241,7 +242,6 @@ export default function EntryScreen({ data, weekNo }) {
               inputMode="numeric"
               pattern="[0-9]*"
               enterKeyHint="next"
-              placeholder={String(Math.round(c.target / 100))}
               value={amounts[c.key]}
               onChange={(e) => setAmounts((a) => ({ ...a, [c.key]: sanitizeDigits(e.target.value) }))}
               onBlur={(e) => commitAmount(c.key, e.target.value)}

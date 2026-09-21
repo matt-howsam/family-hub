@@ -724,8 +724,8 @@ html, body {
    own frame rather than truncating a category's own numbers. */
 .sc-table-wrap { border-radius: var(--fh-r-radius); background: var(--fh-r-surface);
                   box-shadow: var(--fh-r-shadow); overflow-x: auto; }
-.sc-table { display: grid; grid-template-columns: minmax(148px,1.4fr) repeat(6, minmax(66px,1fr));
-            min-width: 600px; }
+.sc-table { display: grid; grid-template-columns: minmax(168px,1.4fr) repeat(6, minmax(66px,1fr));
+            min-width: 620px; }
 .sc-table__head { display: contents; }
 .sc-table__hcell { padding: var(--fh-space-3) var(--fh-space-3) var(--fh-space-2);
                     font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
@@ -735,7 +735,13 @@ html, body {
 .sc-row { display: contents; }
 .sc-row__cat { padding: var(--fh-r-pad-y) var(--fh-space-3) var(--fh-r-pad-y) var(--fh-r-pad-x);
                border-top: var(--fh-border-hair); display: flex; flex-direction: column; justify-content: center; }
-.sc-row__cat-label { font: var(--fh-r-title); color: var(--fh-r-title-color); }
+/* Smaller than --fh-r-title on purpose: at the household register's 20px
+   bold, names like "Hobbies & Entertainment" or "School & Kids Extras"
+   wrapped raggedly inside a ~150px column on a phone. Wrapping to a clean
+   two lines beats truncating — the full category name is the one thing on
+   this row a passer-by needs to read correctly on a money screen. */
+.sc-row__cat-label { font: 700 16px/1.25 var(--fh-font); letter-spacing: -.01em;
+                      color: var(--fh-r-title-color); }
 .sc-row__cat-desc { font: var(--fh-text-meta); color: var(--fh-ink-label); margin-top: 2px;
                      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .sc-cell { display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
@@ -797,6 +803,12 @@ html, body {
 .sc-entry-row:first-child { border-top: 0; }
 .sc-entry-row__label { display: flex; flex-direction: column; }
 .sc-entry-row__title { font: var(--fh-r-title); color: var(--fh-r-title-color); }
+/* The target used to live as placeholder text inside the field itself —
+   moved out here because a placeholder and a real saved value read too
+   similarly at a glance to tell apart. An empty field is now genuinely
+   empty; the target is its own, separately-styled line. */
+.sc-entry-row__target { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                         text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
 .sc-entry-row__flag { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
                        text-transform: uppercase; color: var(--fh-ink-label); margin-top: 2px; }
 .sc-entry-row__input { width: 108px; min-height: var(--fh-target-min); box-sizing: border-box;
@@ -804,7 +816,6 @@ html, body {
                         background: var(--fh-surface); text-align: right; padding: 0 var(--fh-space-4);
                         font: var(--fh-text-figure); font-variant-numeric: tabular-nums;
                         letter-spacing: 0; color: var(--fh-ink); font-family: var(--fh-font); }
-.sc-entry-row__input::placeholder { color: var(--fh-ink-label); font-weight: 500; }
 
 .sc-entry-total { display: flex; align-items: baseline; justify-content: space-between;
                    margin: var(--fh-space-5) var(--fh-space-2) var(--fh-space-8);
@@ -834,8 +845,11 @@ html, body {
 .sc-history__line { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin: 0 0 var(--fh-space-1); }
 .sc-history__line strong { color: var(--fh-ink); font-weight: 700; }
 
-.sc-entry-cta { display: block; text-align: center; text-decoration: none;
-                min-height: var(--fh-target-commit); line-height: var(--fh-target-commit);
+/* flex, not a line-height/min-height match — the label wraps to two lines
+   on a narrow phone, and line-height centering only works for one. */
+.sc-entry-cta { display: flex; align-items: center; justify-content: center; text-align: center;
+                text-decoration: none; min-height: var(--fh-target-commit);
+                padding: var(--fh-space-3) var(--fh-space-5);
                 margin: 0 var(--fh-space-2) var(--fh-space-6); border-radius: var(--fh-radius-btn);
                 background: var(--fh-teal); color: var(--fh-ink-inverse);
                 font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
