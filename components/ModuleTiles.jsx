@@ -31,9 +31,8 @@ export default function ModuleTiles({ spendingTile, holidayTile }) {
     <div className="tiles">
       <StaticTile name="Projects" />
 
-      {/* The only tile that links anywhere so far — per the
-          chevron-is-the-only-affordance rule, a tile with nowhere to go
-          gets no chevron. */}
+      {/* Both link out, per the chevron-is-the-only-affordance rule — a
+          tile with nowhere to go gets no chevron, and now both do. */}
       <Link
         href="/scorecard"
         className={`tile tile--live${spendingTile?.attention ? ' tile--attention' : ''}`}
@@ -49,13 +48,15 @@ export default function ModuleTiles({ spendingTile, holidayTile }) {
 
       <StaticTile name="Register" />
 
-      {/* Live data, no link yet — the fridge/phone timeline (§7.6) hasn't
-          shipped, so there's nowhere for a chevron to send anyone. */}
-      <div className={`tile${holidayTile?.attention ? ' tile--attention' : ''}`}>
+      <Link
+        href="/holidays"
+        className={`tile tile--live${holidayTile?.attention ? ' tile--attention' : ''}`}
+      >
         <Tent size={22} className="tile__icon" />
         <span className="tile__answer">{holidayTile?.line ?? 'Nothing planned yet'}</span>
         <span className="tile__name">Holidays</span>
-      </div>
+        <CaretRight size={16} className="tile__chevron" />
+      </Link>
     </div>
   );
 }
