@@ -22,9 +22,11 @@ html, body {
      than a hand-estimated number — a guess tuned for safe-area alone
      (env(safe-area-inset-bottom)) still left content hidden on a real
      iPhone, so this no longer tries to predict the bar's height in CSS at
-     all. The 220px fallback only matters for the instant before that
+     all. The measured height alone left the last line flush against the
+     bar with no breathing room, so a real gap (--fh-space-6) sits on top
+     of it. The 220px fallback only matters for the instant before that
      effect runs, or with JS disabled. */
-  padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-avatars-h, 220px);
+  padding: var(--fh-gutter-wall) var(--fh-gutter-wall) calc(var(--fh-avatars-h, 220px) + var(--fh-space-6));
   transition: background var(--fh-dur-dim) var(--fh-ease);
 }
 
@@ -286,7 +288,7 @@ html, body {
      certainly the actual reason the avatar-bar clearance fix didn't show
      up on a real iPhone: the base .wall rule was never wrong, this
      override replaced it entirely. */
-  .wall { padding: var(--fh-gutter-phone) var(--fh-gutter-phone) var(--fh-avatars-h, 220px); }
+  .wall { padding: var(--fh-gutter-phone) var(--fh-gutter-phone) calc(var(--fh-avatars-h, 220px) + var(--fh-space-6)); }
   .clock { font-size: 38px; }
   .date, .kid__answer { font-size: 19px; }
   .row__title { font-size: 17px; }
