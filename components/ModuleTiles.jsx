@@ -1,16 +1,15 @@
 import Link from 'next/link';
 import { Hammer, ChartLineDown, Receipt, Tent, CaretRight } from '@phosphor-icons/react/ssr';
 
-/* Placeholder until the projects, register and holidays modules ship —
-   each will replace one line here with a live query. Spending is the
-   first to go live: see docs/family-hub-spending-scorecard-brief.md,
-   "1. Dashboard tile". The answer leads and the module name is last and
-   smallest: nobody scanning a fridge is looking for a module. Calm and
-   attention differ by wash + accent only. */
+/* Placeholder until the projects and register modules ship — each will
+   replace one line here with a live query. Spending and Holidays are live:
+   see docs/family-hub-spending-scorecard-brief.md, "1. Dashboard tile",
+   and docs/family-hub-design-brief.md §7.6. The answer leads and the
+   module name is last and smallest: nobody scanning a fridge is looking
+   for a module. Calm and attention differ by wash + accent only. */
 const STATIC_TILES = {
   Projects: { icon: Hammer, attention: true, answer: '7 stalled · kitchen longest at 142 days' },
   Register: { icon: Receipt, answer: 'Nothing renews for 7 weeks', accent: ' · $1,449 saved' },
-  Holidays: { icon: Tent, answer: 'Straddie in 30 weeks' },
 };
 
 function StaticTile({ name }) {
@@ -27,14 +26,14 @@ function StaticTile({ name }) {
   );
 }
 
-export default function ModuleTiles({ spendingTile }) {
+export default function ModuleTiles({ spendingTile, holidayTile }) {
   return (
     <div className="tiles">
       <StaticTile name="Projects" />
 
-      {/* The only live tile so far, and the only one that links anywhere —
-          per the chevron-is-the-only-affordance rule, a tile with nowhere
-          to go gets no chevron. */}
+      {/* The only tile that links anywhere so far — per the
+          chevron-is-the-only-affordance rule, a tile with nowhere to go
+          gets no chevron. */}
       <Link
         href="/scorecard"
         className={`tile tile--live${spendingTile?.attention ? ' tile--attention' : ''}`}
@@ -49,7 +48,14 @@ export default function ModuleTiles({ spendingTile }) {
       </Link>
 
       <StaticTile name="Register" />
-      <StaticTile name="Holidays" />
+
+      {/* Live data, no link yet — the fridge/phone timeline (§7.6) hasn't
+          shipped, so there's nowhere for a chevron to send anyone. */}
+      <div className={`tile${holidayTile?.attention ? ' tile--attention' : ''}`}>
+        <Tent size={22} className="tile__icon" />
+        <span className="tile__answer">{holidayTile?.line ?? 'Nothing planned yet'}</span>
+        <span className="tile__name">Holidays</span>
+      </div>
     </div>
   );
 }

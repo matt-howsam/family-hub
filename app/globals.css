@@ -118,6 +118,10 @@ html, body {
 .row--ready .row__sub, .row--ready .row__figure { color: var(--fh-ready-accent); }
 .row--sunken { background: var(--fh-surface-sunken); }
 .row--sunken .row__title { color: var(--fh-ink-body); }
+/* A row with less to say than its neighbours — smaller title, no bold.
+   Typography carries the hierarchy; no colour, no badge. */
+.row--quiet .row__title { font: 600 17px/1.3 var(--fh-font); letter-spacing: -.005em; color: var(--fh-ink-body); }
+.row__marker { color: var(--fh-ink-label); flex-shrink: 0; }
 
 .kid { display: flex; align-items: stretch; text-decoration: none; color: inherit; }
 .kid__slab { background: var(--fh-r-fill);
@@ -876,5 +880,30 @@ html, body {
 .sc-event-row__note { font: var(--fh-text-body-sm); color: var(--fh-ink-body); margin-top: var(--fh-space-1); }
 .sc-event-row__amount { font: var(--fh-text-row); font-variant-numeric: tabular-nums;
                          color: var(--fh-ink); white-space: nowrap; }
+
+/* ==========================================================================
+   Holidays (/holidays) — docs/family-hub-design-brief.md §7.6. Family
+   register throughout, per app/tokens.css's own split (holidays sits with
+   people, not the ledger) — warmer and more generous than the scorecard's
+   dense numeric table.
+   ========================================================================== */
+.hol-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
+            background: var(--fh-page-bg);
+            padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+.hol-header { display: flex; align-items: flex-start; gap: var(--fh-space-4);
+              margin-bottom: var(--fh-space-6); }
+.hol-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
+.hol-header__note { margin-top: var(--fh-space-2); font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+.hol-empty { padding: var(--fh-space-6) var(--fh-space-2); font: var(--fh-text-body); color: var(--fh-ink-label); }
+.hol-form-wrap { margin-bottom: var(--fh-space-6); }
+.hol-who { margin-bottom: var(--fh-space-3); }
+.hol-who__label { display: block; margin-bottom: var(--fh-space-2);
+                   font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                   text-transform: uppercase; color: var(--fh-ink-label); }
+.hol-who__hint { margin: var(--fh-space-2) 0 0; font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+
+@media (max-width: 560px) {
+  .hol-page { padding: var(--fh-gutter-phone); }
+}
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

@@ -417,3 +417,49 @@ from spend_period, (values
 ) as c(category_key, base_amount)
 where spend_period.year = 2026 and spend_period.month = 8
 on conflict (period_id, category_key) do nothing;
+
+-- Holidays — see docs/family-hub-design-brief.md §7.6, revised per Matt,
+-- 22 September 2026: unlimited entries, not a fixed ten-slot structure.
+-- "Two major trips a year" is now a household guideline the `major` flag
+-- denotes, not something the schema enforces or pre-allocates space for.
+-- The earlier design's holiday_slot table (exactly ten pre-created
+-- year/period rows) never shipped to real use, so this replaces it
+-- outright rather than migrating it.
+--
+-- Certainty is deliberately just "has a date or not": a row with
+-- starts_on is a planned trip: shows on the dashboard tile as the next
+-- thing to look forward to. A row with no starts_on is an undated idea,
+-- shown in its own quiet list. No booked/committed/candidate ladder, no
+-- retire-with-reason mechanic — an idea that's a no gets deleted outright.
+create table if not exists holiday (
+  id         serial primary key,
+  title      text        not null unique,
+  major      boolean     not null default false, -- the big, overseas-trip flag
+  starts_on  date,                                -- null = an undated idea
+  nights     int,                                 -- null for a day trip or an undated idea
+  who        text[],                              -- null = whole family; else an explicit person list —
+                                                    -- "who's going" is a first-class attribute, not a note (§7.6)
+  budget     int,                                  -- cents
+  note       text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Seed content from §7.6, reshaped to the simplified fields. Straddie's
+-- dates are the Good Friday–Easter Monday long weekend (lib/calendar.js);
+-- its $678.90 mirrors the Operations Register row until that module
+-- exists to join against. Perisher and the North America ski trip keep
+-- their major-trip status; the slot they used to occupy is gone.
+insert into holiday (title, major, starts_on, nights, budget, note) values
+  ('Straddie / Minjerribah', false, '2027-03-26', 3,    67890, 'Easter long weekend'),
+  ('Ski Perisher',           true,  null,         null, null,  'Winter 2027'),
+  ('Ski North America',      true,  null,         null, null,  'January 2028')
+on conflict (title) do nothing;
+
+insert into holiday (title, major) values
+  ('Burning Man', true),
+  ('Summer in Europe', true),
+  ('Indo surf trip', false),
+  ('Sail the Whitsundays', false),
+  ('Darwin fishing trip', false)
+on conflict (title) do nothing;
