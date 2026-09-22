@@ -17,15 +17,14 @@ html, body {
   margin: 0 auto;
   min-height: 100dvh;
   background: var(--fh-page-bg);
-  /* Reserves clearance for the fixed .avatars bar below. That bar's own
-     bottom padding grows on a device with a home-indicator safe area
-     (max(--fh-space-5, env(safe-area-inset-bottom))) — a flat 160px here
-     didn't grow with it, so on exactly that kind of device (an iPad or
-     iPhone with no physical home button) the bar ended up taller than the
-     reserve, and the last bit of page content was hidden behind it with
-     nothing left to scroll. Must stay in step with .avatars's own padding. */
-  padding: var(--fh-gutter-wall) var(--fh-gutter-wall)
-           calc(180px + env(safe-area-inset-bottom, 0px));
+  /* Reserves clearance for the fixed .avatars bar below, using its actual
+     measured height (components/Avatars.jsx sets --fh-avatars-h) rather
+     than a hand-estimated number — a guess tuned for safe-area alone
+     (env(safe-area-inset-bottom)) still left content hidden on a real
+     iPhone, so this no longer tries to predict the bar's height in CSS at
+     all. The 220px fallback only matters for the instant before that
+     effect runs, or with JS disabled. */
+  padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-avatars-h, 220px);
   transition: background var(--fh-dur-dim) var(--fh-ease);
 }
 
@@ -281,7 +280,13 @@ html, body {
                 text-transform: uppercase; color: var(--fh-ink-label); margin-top: var(--fh-space-1); }
 
 @media (max-width: 560px) {
-  .wall { padding: var(--fh-gutter-phone); }
+  /* Not a flat var(--fh-gutter-phone) on all sides — that silently wiped
+     out the bottom reserve for the fixed .avatars bar on any screen under
+     560px wide, which is every iPhone in portrait. This is almost
+     certainly the actual reason the avatar-bar clearance fix didn't show
+     up on a real iPhone: the base .wall rule was never wrong, this
+     override replaced it entirely. */
+  .wall { padding: var(--fh-gutter-phone) var(--fh-gutter-phone) var(--fh-avatars-h, 220px); }
   .clock { font-size: 38px; }
   .date, .kid__answer { font-size: 19px; }
   .row__title { font-size: 17px; }
