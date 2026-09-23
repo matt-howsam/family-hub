@@ -1038,4 +1038,22 @@ html, body {
   .pj-page { padding: var(--fh-gutter-phone); }
 }
 
+/* ==========================================================================
+   Assets & replacement forecast (/assets, /assets/[id]) —
+   design-brief.md §7.7/§7.8. Household register throughout, reached only
+   from Settings — a check-occasionally planning surface, not a wall
+   tile, so it carries none of the dashboard's calm/attention machinery.
+   ========================================================================== */
+.as-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
+           background: var(--fh-page-bg);
+           padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+.as-header { display: flex; align-items: flex-start; gap: var(--fh-space-4);
+             margin-bottom: var(--fh-space-5); }
+.as-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
+.as-header__note { margin-top: var(--fh-space-2); font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+
+@media (max-width: 560px) {
+  .as-page { padding: var(--fh-gutter-phone); }
+}
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

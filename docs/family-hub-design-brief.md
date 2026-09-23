@@ -591,6 +591,15 @@ Capture is via the phone share sheet: an Apple Shortcut takes a PDF from Mail
 or Files, picks a job from a list, and uploads. Nobody will stand at the
 fridge and photograph a quote.
 
+**Amended 23 September 2026, confirmed by Matt:** v1 ships a plain phone-web
+upload (a normal file picker on the asset's own page) rather than the
+Shortcut, since the underlying storage didn't exist yet and the Shortcut
+needs its own non-cookie upload auth designed. iOS's native picker already
+offers Photos, Files (anything saved from Mail lands there) and a document
+scan, so this covers most of the same ground for a lot less to build. The
+Shortcut stays a clean follow-on against the same storage. See
+`docs/DECISIONS.md`.
+
 The fridge displays that documents exist and opens them. It never uploads.
 
 ### 7.8 Assets & replacement forecast

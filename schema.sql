@@ -839,3 +839,70 @@ from stage s,
        ('Servicing — Defender', 1), ('Servicing — Mazda', 1), ('Pool pump service', 1), ('Gutter clean', 1)
      ) as cur(title, position)
 where job.title = cur.title and s.job_id = job.id and s.position = cur.position and job.stage_id is null;
+
+-- Assets & replacement forecast — design-brief.md §7.8. "Nothing in the
+-- system currently owns a thing. This module does." Framed in the brief
+-- as §7.1 maintenance with a lifespan and a price, and its central case is
+-- that warranty documents finally have somewhere to live (§7.7 Files).
+--
+-- `expected_replacement_year` is a year, not `expected_replacement_date`
+-- as the brief's field list literally names it — nobody knows the day a
+-- 20-year-old hot water unit will actually fail, only roughly when, and a
+-- fabricated day would be exactly the kind of false precision the register
+-- module already learned to avoid. `estimate_year` is the separate, real
+-- brief-specified field: the year *the estimate itself* was made, so its
+-- age stays visible ("a 2026 estimate") without re-modelling inflation.
+create table if not exists asset (
+  id                        serial primary key,
+  name                      text        not null unique,
+  location                  text,
+  install_date              date,
+  purchase_cost             int,                  -- cents
+  warranty_expiry           date,
+  expected_life_years       int,
+  expected_replacement_year int,
+  replacement_estimate      int,                  -- cents, today's dollars
+  estimate_year             int,
+  notes                     text,
+  created_at                timestamptz not null default now(),
+  updated_at                timestamptz not null default now()
+);
+
+-- Files (§7.7), shared by both consumers the brief names — assets and the
+-- projects module's own "Attachments" field — rather than two separate
+-- tables for what is explicitly one file layer. Exactly one owner per
+-- document; a receipt cannot float free of both.
+--
+-- Stored as `bytea` in the same Postgres database, not a separate blob
+-- store: a household's receipt volume is trivially small, and this needs
+-- no new account or token to provision. If that ever stops being true, the
+-- fix is a contained swap behind lib/documents.js, not a rewrite of
+-- anything that calls it.
+create table if not exists document (
+  id           serial primary key,
+  asset_id     int         references asset(id) on delete cascade,
+  job_id       int         references job(id) on delete cascade,
+  label        text        not null,
+  filename     text        not null,
+  content_type text        not null,
+  size_bytes   int         not null,
+  data         bytea       not null,
+  uploaded_by  text,
+  uploaded_at  timestamptz not null default now(),
+  check (asset_id is not null or job_id is not null)
+);
+
+-- Seed content: the brief's three real worked examples, with real numbers,
+-- plus Matt's four named additions as bare rows — name only, nothing
+-- fabricated for make, model, cost or date the source doesn't give.
+insert into asset (name, location, install_date, purchase_cost, warranty_expiry, expected_life_years, expected_replacement_year, notes) values
+  ('Pool pump', 'Pool equipment', '2026-09-01', 140000, '2031-09-01', 10, 2036, null),
+  ('Instant gas hot water', null, null, null, null, null, 2028,
+    'Original to the house, ~20 years old as of 2026. Replacement expected within two years — estimate to be confirmed.'),
+  ('Rainwater pump', null, null, null, null, null, null,
+    'Similar age and story to the hot water unit — original to the house, likely due around a similar timeframe.')
+on conflict (name) do nothing;
+
+insert into asset (name) values
+  ('Solar system'), ('TVs'), ('Computer'), ('Sound system')
+on conflict (name) do nothing;

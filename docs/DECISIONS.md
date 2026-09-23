@@ -388,6 +388,36 @@ languages here." The dashboard tile still washes amber on a stalled count,
 same as every other module — that's the dashboard's own calm/attention
 vocabulary, not the module's.
 
+**Assets & replacement forecast (§7.7/§7.8) shipped 23 September 2026,**
+built beyond the original Release 1 scope at Matt's request. Seeded with
+the brief's three real worked examples (pool pump, instant gas hot water,
+rainwater pump) plus solar, TVs, computer and sound system as bare rows —
+name only, since the brief gives no real make, model, cost or date for
+those to seed honestly. `expected_replacement_year` is a year, not the
+brief's literal `expected_replacement_date` — nobody knows the day a
+20-year-old hot water unit will fail, only roughly when, and a fabricated
+day is exactly the false precision the register module already learned to
+avoid.
+
+**Files (§7.7) store as `bytea` in Postgres, not a separate blob store,
+and upload via a plain phone-web file picker rather than the brief's Apple
+Shortcut — both confirmed with Matt.** Neither needed inventing: a
+household's receipt volume is trivially small, this needs no new account
+to provision, and iOS's native file picker already covers most of what the
+Shortcut would (Photos, Files, a document scan). The `document` table
+itself supports both assets and jobs — the brief names Projects'
+"Attachments" as the same file layer — but only the Assets UI is wired up
+this round; Projects' detail screen picking it up later is a clean
+follow-on, not a schema change.
+
+**Assets has no dashboard tile.** It's a check-occasionally planning
+surface — replacement forecasting, warranty lookup — not a "does this need
+me" wall glance like Register or Projects. Reached from Settings only,
+same as Q&A, the review queue and pairing a device, so the wall itself
+doesn't get louder. The design review already flagged the module rows as
+too loud; a fifth tile for something nobody needs to glance at daily would
+only make that worse.
+
 **"Waiting on someone" is a separate state from stalled.**
 Household projects die at "Brett said he'd send a quote", not at "I haven't
 done anything". Both look identical to `last_moved_at`, but one needs *start
