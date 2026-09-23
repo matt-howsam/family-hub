@@ -184,11 +184,10 @@ real calendar event for that child and day wins. Feeding both into
 already handled by the one adapter it needs.
 
 **Adults' Needs You section doesn't render.** It would read from Projects and
-the Register. The Register shipped 23 September 2026 and has real data
-behind it, but nothing reads it into a person view yet; Projects is still a
-static placeholder. A section for a module that hasn't shipped renders
-nothing, not a fake one; Matt and Renée's person views currently show
-Coming up only.
+the Register. Both shipped 23 September 2026 and have real data behind
+them, but nothing reads either into a person view yet — that's still a
+genuinely unbuilt cross-module surface, not a placeholder for an unshipped
+module. Matt and Renée's person views currently show Coming up only.
 
 **A device identifies itself once, by URL — superseded by `docs/identity.md`.**
 `/?role=display` and the `fh_role` cookie were the whole identity system
@@ -359,6 +358,35 @@ failure the module exists to catch.
 
 **Maintenance only enters Stalled after `next_due` passes.**
 A gutter clean waiting eleven months by design must never top the list.
+
+**A maintenance job links to its register row rather than duplicating
+cost, 23 September 2026.** Both the design brief (§7.1) and the projects
+brief flagged this overlap — car servicing, rego, boat licence — as
+unresolved. `job.register_item_id` is the resolution, confirmed by Matt:
+the register keeps cost, renewal date and K/R/A (a review/spend question);
+the job owns whether this cycle has actually been booked and done (a
+stall/action question). Servicing–Defender and Servicing–Mazda link this
+way. Registration renewals and the boat licence stayed register-only —
+neither has a real "booking" step, so a maintenance job for them would
+track nothing a renewal date doesn't already say. Pool pump service and
+gutter clean have no register row at all; they were never on the real
+paper register.
+
+**Projects & maintenance shipped 23 September 2026, all three Release 1
+modules now live.** Built from `docs/family-hub-projects-module-brief.md`,
+which supersedes design-brief.md §7.1's single pipeline with four presets.
+Seeded with the real eight-job backlog and four maintenance jobs; no
+fabricated stage history or contractor names where the brief's own worked
+examples (e.g. "waiting on a quote from Brett for 18 days") were design
+mockups rather than recorded fact about a specific job — `waiting_on` for
+Paint the house says only "Quote," matching the real seed table.
+
+**This module never uses the attention accent, deliberately — not even for
+Needs you.** §7 of the projects brief: "plain, factual, unsoftened... the
+register's `A` status and the briefing's warmth are both wrong borrowed
+languages here." The dashboard tile still washes amber on a stalled count,
+same as every other module — that's the dashboard's own calm/attention
+vocabulary, not the module's.
 
 **"Waiting on someone" is a separate state from stalled.**
 Household projects die at "Brett said he'd send a quote", not at "I haven't

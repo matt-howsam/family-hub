@@ -18,6 +18,7 @@ import { getTonight } from '@/lib/mealplanner';
 import { getStoredConditions } from '@/lib/conditions';
 import { eveningLine } from '@/lib/todo';
 import { getSession } from '@/lib/identity';
+import { getProjectsTile } from '@/lib/projects';
 import { getSpendingTile } from '@/lib/scorecard';
 import { getRegisterTile } from '@/lib/register';
 import { getHolidayTile } from '@/lib/holidays';
@@ -37,6 +38,7 @@ export default async function Wall() {
   const now = today(TZ);
   const w = weekLetter(anchor, now);
   const tonight = await getTonight();
+  const projectsTile = await getProjectsTile();
   const spendingTile = await getSpendingTile();
   const registerTile = await getRegisterTile();
   const holidayTile = await getHolidayTile();
@@ -140,7 +142,7 @@ export default async function Wall() {
           all four people, so it outranks the module rows, which are stable
           for months and mostly Matt-and-Renée content. */}
       <WhatsOn items={onWall} />
-      <ModuleTiles spendingTile={spendingTile} registerTile={registerTile} holidayTile={holidayTile} />
+      <ModuleTiles projectsTile={projectsTile} spendingTile={spendingTile} registerTile={registerTile} holidayTile={holidayTile} />
       <Avatars showSettings={session?.role === 'adult'} />
 
       <div className="house">

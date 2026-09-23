@@ -624,3 +624,218 @@ where service = 'Home Insurance'
   and not exists (
     select 1 from register_saving where what_changed = 'Home insurance — switched ALDI/Honey → CBA/Hollard Plus'
   );
+
+-- Projects & maintenance. Digitises the household's real renovation and
+-- maintenance backlog — see docs/family-hub-projects-module-brief.md,
+-- which supersedes design-brief.md §7.1's single-pipeline model with four
+-- presets. Two types on one table: a project moves toward "done"; a
+-- maintenance job cycles Due → Booked → Done → resets. `last_moved_at` is
+-- the whole stall mechanic — set only on a real stage change, never by a
+-- note, and maintenance only enters Stalled once `next_due` (on
+-- `maintenance_schedule`) has passed.
+--
+-- `register_item_id` is the resolution to the overlap both the design
+-- brief and the projects brief flag as unsettled: car servicing, rego and
+-- similar sit as real rows on the register (cost, renewal date, K/R/A —
+-- a review/spend question) and, where they're also an active maintenance
+-- job, link here rather than duplicating cost — the job owns whether this
+-- cycle has actually been booked and done, a stall/action question.
+--
+-- `stage_id` is denormalised from the current `stage` row, per the brief:
+-- update both in the same transaction. No FK to `stage` (a circular
+-- reference the id-generation order makes awkward for no real benefit);
+-- app code is the guarantee, same as the brief's own note.
+create table if not exists job (
+  id               serial primary key,
+  title            text        not null unique,
+  type             text        not null check (type in ('project', 'maintenance')),
+  pipeline         text        not null check (pipeline in ('contracted', 'diy', 'supply_install', 'maintenance')),
+  status           text        not null default 'active' check (status in ('active', 'parked', 'done')),
+  stage_id         int,
+  next_action      text,                                -- ONE line: "Call Brett for a quote"
+  owner            text        check (owner in ('matt', 'renee', 'rose', 'tom')),
+  due              date,
+  last_moved_at    timestamptz not null default now(),   -- set on stage change only
+  budget_est       int,                                  -- cents; spans $500 to $40k+, never one visual treatment
+  budget_actual    int,                                  -- cents, filled as it completes
+  blocked_reason   text        check (blocked_reason in ('vendor', 'funds', 'other_job')),
+  waiting_on       text,                                 -- who/what: "quote", "Brett — quote"
+  waiting_since    date,
+  waiting_expected date,
+  funding_source   text        check (funding_source in ('monthly', 'savings', 'undecided')),
+  blocked_by       int         references job(id),
+  asset_id         int,                                  -- §7.8 Assets isn't built yet; unenforced until it is
+  register_item_id int         references register_item(id) on delete set null,
+  created_at       timestamptz not null default now()
+);
+
+create table if not exists stage (
+  id           serial primary key,
+  job_id       int         not null references job(id) on delete cascade,
+  name         text        not null,
+  position     int         not null,   -- "position", not "order" — reserved word in SQL
+  entered_at   timestamptz,            -- null = not reached yet, or reached before this module existed to record it
+  completed_at timestamptz
+);
+
+-- Append-only. Adding a note does not touch last_moved_at — talking about
+-- a job isn't moving it.
+create table if not exists note (
+  id         serial primary key,
+  job_id     int         not null references job(id) on delete cascade,
+  author     text        not null,
+  body       text        not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists quote (
+  id           serial primary key,
+  job_id       int         not null references job(id) on delete cascade,
+  vendor       text,
+  contact      text,
+  amount       int,                    -- cents
+  valid_until  date,
+  status       text        not null default 'requested' check (status in ('requested', 'received', 'accepted', 'declined')),
+  requested_at date
+);
+
+create table if not exists maintenance_schedule (
+  job_id          int  primary key references job(id) on delete cascade,
+  interval_months int,                 -- null where the real cadence isn't known yet
+  last_done       date,
+  next_due        date
+);
+
+-- Seed content is the real backlog from the projects brief — eight
+-- projects, four maintenance jobs — not placeholders. Stage histories,
+-- fabricated contractor names and invented dates are deliberately absent
+-- where the brief doesn't state them as fact; the brief's own "waiting on
+-- a quote from Brett for 18 days" is a worked design example, not a
+-- recorded fact about this specific job, so `waiting_on` here says only
+-- what the real seed table says: "Quote". Seeding `last_moved_at` at
+-- insert time is itself honest, not a placeholder — day one, nothing has
+-- moved yet, because nothing has been in the system to move.
+insert into job (title, type, pipeline, next_action, budget_est, waiting_on, blocked_reason, funding_source) values
+  ('Front landscaping', 'project', 'contracted', null, null, null, null, null),
+  ('Paint the house', 'project', 'contracted', 'Chase the quote', null, 'Quote', null, null),
+  ('Under stair storage', 'project', 'diy', null, 200000, null, null, null),
+  ('Remodel kids'' bathrooms', 'project', 'contracted', null, null, null, null, null),
+  ('Downstairs flooring', 'project', 'supply_install', null, null, null, 'other_job', null),
+  ('Remodel kitchen', 'project', 'contracted', null, 4000000, null, null, null),
+  ('Replace rear sliding doors', 'project', 'supply_install', null, null, null, null, null),
+  ('Upstairs bathroom cupboard sliders', 'project', 'supply_install', 'Fund it when ready', 50000, null, 'funds', 'undecided'),
+  ('Servicing — Defender', 'maintenance', 'maintenance', null, null, null, null, null),
+  ('Servicing — Mazda', 'maintenance', 'maintenance', null, null, null, null, null),
+  ('Pool pump service', 'maintenance', 'maintenance', null, null, null, null, null),
+  ('Gutter clean', 'maintenance', 'maintenance', null, null, null, null, null)
+on conflict (title) do nothing;
+
+-- Kitchen's $40k+ is a floor, not a figure — the plain budget_est column
+-- can't carry that "+" honestly, so it's a note instead of silent false
+-- precision.
+insert into note (job_id, author, body)
+select id, 'Matt', 'Quoted at $40k+ — treat the budget estimate as a floor, not a ceiling.'
+from job
+where title = 'Remodel kitchen'
+  and not exists (select 1 from note where note.job_id = job.id);
+
+-- Downstairs flooring is queued behind the kitchen — a job deliberately
+-- waiting on another, not one that's fallen off the radar.
+update job set blocked_by = (select id from job where title = 'Remodel kitchen')
+where title = 'Downstairs flooring' and blocked_by is null;
+
+-- Bathroom sliders already have a quote in hand — the one job on the
+-- day-one list with an obvious next step. No vendor is recorded in the
+-- source; left for Matt or Renée to fill in.
+insert into quote (job_id, amount, status)
+select id, 50000, 'received' from job
+where title = 'Upstairs bathroom cupboard sliders'
+  and not exists (select 1 from quote where quote.job_id = job.id);
+
+-- register_item_id: the two real maintenance jobs with a matching register
+-- row link to it rather than re-entering its cost. Pool pump service and
+-- gutter clean have no register counterpart — they were never on the real
+-- paper register, only in the projects brief's own maintenance list.
+update job set register_item_id = (select id from register_item where service = 'Servicing — Defender')
+where title = 'Servicing — Defender' and register_item_id is null;
+update job set register_item_id = (select id from register_item where service = 'Servicing — Mazda')
+where title = 'Servicing — Mazda' and register_item_id is null;
+
+-- Car servicing reads a 12-month cadence from the register's own
+-- "$1,000 allowance/year" framing — a grounded inference, not a guess.
+-- Pool pump and gutter cleaning have no such hint anywhere, so their
+-- interval stays unknown rather than invented.
+insert into maintenance_schedule (job_id, interval_months)
+select id, 12 from job where title = 'Servicing — Defender'
+  and not exists (select 1 from maintenance_schedule where job_id = job.id);
+insert into maintenance_schedule (job_id, interval_months)
+select id, 12 from job where title = 'Servicing — Mazda'
+  and not exists (select 1 from maintenance_schedule where job_id = job.id);
+insert into maintenance_schedule (job_id)
+select id from job where title = 'Pool pump service'
+  and not exists (select 1 from maintenance_schedule where job_id = job.id);
+insert into maintenance_schedule (job_id)
+select id from job where title = 'Gutter clean'
+  and not exists (select 1 from maintenance_schedule where job_id = job.id);
+
+-- Stages: every job gets its full pipeline strip up front (so the stage
+-- indicator can render the whole run, per the brief), with `entered_at`
+-- set only on the job's real current stage — earlier stages have no real
+-- date to record, later ones haven't happened. The two "Idea"/"Quoting"
+-- readings against the supply_install pipeline (which has neither name)
+-- predate the pipelines section in the brief's own document — mapped here
+-- to that pipeline's first stage and its "Quote" stage respectively, the
+-- nearest real equivalent.
+insert into stage (job_id, name, position, entered_at)
+select j.id, p.name, p.position, case when p.position = cur.position then now() end
+from job j
+join (values
+  ('Front landscaping', 2),
+  ('Paint the house', 3),
+  ('Remodel kids'' bathrooms', 1),
+  ('Remodel kitchen', 2)
+) as cur(title, position) on cur.title = j.title
+join (values ('Idea',1),('Research',2),('Quoting',3),('Decide',4),('Booked',5),('In progress',6),('Done',7)) as p(name, position) on true
+where j.pipeline = 'contracted' and not exists (select 1 from stage where stage.job_id = j.id);
+
+insert into stage (job_id, name, position, entered_at)
+select j.id, p.name, p.position, case when p.position = cur.position then now() end
+from job j
+join (values ('Under stair storage', 1)) as cur(title, position) on cur.title = j.title
+join (values ('Idea',1),('Plan',2),('Materials',3),('Build',4),('Done',5)) as p(name, position) on true
+where j.pipeline = 'diy' and not exists (select 1 from stage where stage.job_id = j.id);
+
+insert into stage (job_id, name, position, entered_at)
+select j.id, p.name, p.position, case when p.position = cur.position then now() end
+from job j
+join (values
+  ('Downstairs flooring', 1),
+  ('Replace rear sliding doors', 3),
+  ('Upstairs bathroom cupboard sliders', 3)
+) as cur(title, position) on cur.title = j.title
+join (values ('Research',1),('Choose',2),('Quote',3),('Order',4),('Delivery',5),('Install',6),('Done',7)) as p(name, position) on true
+where j.pipeline = 'supply_install' and not exists (select 1 from stage where stage.job_id = j.id);
+
+insert into stage (job_id, name, position, entered_at)
+select j.id, p.name, p.position, case when p.position = cur.position then now() end
+from job j
+join (values
+  ('Servicing — Defender', 1),
+  ('Servicing — Mazda', 1),
+  ('Pool pump service', 1),
+  ('Gutter clean', 1)
+) as cur(title, position) on cur.title = j.title
+join (values ('Due',1),('Booked',2),('Done',3)) as p(name, position) on true
+where j.pipeline = 'maintenance' and not exists (select 1 from stage where stage.job_id = j.id);
+
+-- Backfill the denormalised current stage in one pass, across every
+-- pipeline — title is unique, so this needs no per-pipeline split.
+update job set stage_id = s.id, last_moved_at = coalesce(job.last_moved_at, now())
+from stage s,
+     (values
+       ('Front landscaping', 2), ('Paint the house', 3), ('Under stair storage', 1),
+       ('Remodel kids'' bathrooms', 1), ('Downstairs flooring', 1), ('Remodel kitchen', 2),
+       ('Replace rear sliding doors', 3), ('Upstairs bathroom cupboard sliders', 3),
+       ('Servicing — Defender', 1), ('Servicing — Mazda', 1), ('Pool pump service', 1), ('Gutter clean', 1)
+     ) as cur(title, position)
+where job.title = cur.title and s.job_id = job.id and s.position = cur.position and job.stage_id is null;

@@ -966,4 +966,76 @@ html, body {
   .rg-hero__stat:not(:first-child) { border-left: 0; padding-left: 0; border-top: var(--fh-border-hair); padding-top: var(--fh-space-4); }
 }
 
+/* ==========================================================================
+   Projects & maintenance (/projects, /projects/[id]) —
+   docs/family-hub-projects-module-brief.md. Household register throughout.
+
+   Deliberately the plainest module in the product, by design intent, not
+   oversight: "this is the one module that should be slightly uncomfortable
+   to look at... plain, factual, unsoftened. No red, no colour escalation,
+   no borrowed urgency vocabulary." No amber, no attention wash anywhere
+   below — not even on Needs you. The contrast is what makes the warmth
+   everywhere else in the product mean something.
+   ========================================================================== */
+.pj-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
+           background: var(--fh-page-bg);
+           padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+.pj-header { display: flex; align-items: flex-start; gap: var(--fh-space-4);
+             margin-bottom: var(--fh-space-5); }
+.pj-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
+.pj-header__note { margin-top: var(--fh-space-2); font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+
+/* The next action — typographically dominant, per the brief, and the
+   first thing on the detail screen. Plain ink, no accent colour; its
+   weight alone should carry it. */
+.pj-next { margin: 0 0 var(--fh-space-6); padding: var(--fh-space-5) var(--fh-space-6);
+           border-radius: var(--fh-radius-lg); background: var(--fh-surface);
+           box-shadow: var(--fh-shadow-card); font: var(--fh-text-next);
+           letter-spacing: var(--fh-track-display); text-align: left; width: 100%;
+           border: 0; font-family: var(--fh-font); color: var(--fh-ink); }
+.pj-next--editable { cursor: pointer; }
+.pj-next-edit { margin-bottom: var(--fh-space-6); }
+.pj-next-edit input { display: block; width: 100%; min-height: var(--fh-target-min);
+                       border-radius: var(--fh-radius-md); border: var(--fh-border-input);
+                       padding: 0 var(--fh-space-4); font: var(--fh-text-row); font-family: var(--fh-font); }
+
+/* The stage strip — every stage in the pipeline, reached or not. Past
+   stages read as passed by position alone, never a colour; the current
+   one carries the weight. Must hold at four stages and at seven. */
+.pj-strip { display: flex; gap: var(--fh-space-2); margin-bottom: var(--fh-space-2);
+            overflow-x: auto; padding-bottom: var(--fh-space-1); }
+.pj-strip__seg { flex: 1; min-width: 74px; text-align: center;
+                 padding: var(--fh-space-3) var(--fh-space-2);
+                 border-radius: var(--fh-radius-md); background: var(--fh-surface-sunken); }
+.pj-strip__name { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                   text-transform: uppercase; color: var(--fh-ink-label); }
+.pj-strip__seg--past { background: none; }
+.pj-strip__seg--past .pj-strip__name { color: var(--fh-ink-body); }
+.pj-strip__seg--current { background: var(--fh-teal-wash); }
+.pj-strip__seg--current .pj-strip__name { color: var(--fh-teal-ink); font-weight: 700; }
+
+.pj-history { margin: 0 0 var(--fh-space-5); font: var(--fh-text-meta);
+              letter-spacing: var(--fh-track-meta); color: var(--fh-ink-label); }
+
+.pj-stage-controls { display: flex; gap: var(--fh-space-3); margin-bottom: var(--fh-space-5); }
+.pj-stage-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: var(--fh-space-2);
+                min-height: var(--fh-target-min); border: 0; border-radius: var(--fh-radius-btn);
+                background: var(--fh-surface-sunken); color: var(--fh-ink-body);
+                font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
+.pj-stage-btn:disabled { opacity: .45; }
+.pj-stage-btn--primary { background: var(--fh-teal); color: var(--fh-ink-inverse); }
+
+/* Plain fact lines, not warnings — "ready when you are" reads as an
+   available decision, not a failure; "waiting on Brett" is a fact, not a
+   nudge. No colour on any of these. */
+.pj-flag { margin: 0 0 var(--fh-space-3); font: var(--fh-text-body); color: var(--fh-ink-body); }
+.pj-facts { display: flex; flex-wrap: wrap; gap: var(--fh-space-4); margin-bottom: var(--fh-space-5); }
+.pj-fact { font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+.pj-register-link { display: block; margin-bottom: var(--fh-space-5);
+                     font: var(--fh-text-body-sm); color: var(--fh-teal-ink); text-decoration: none; }
+
+@media (max-width: 560px) {
+  .pj-page { padding: var(--fh-gutter-phone); }
+}
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

@@ -1,37 +1,27 @@
 import Link from 'next/link';
 import { Hammer, ChartLineDown, Receipt, Tent, CaretRight } from '@phosphor-icons/react/ssr';
 
-/* Placeholder until the projects module ships — it will replace this line
-   with a live query. Spending, Register and Holidays are live: see
+/* Projects, Spending, Register and Holidays are all live now: see
+   docs/family-hub-projects-module-brief.md, "4. Screen one",
    docs/family-hub-spending-scorecard-brief.md, "1. Dashboard tile",
    docs/family-hub-design-brief.md §7.2/§8, and §7.6. The answer leads and
    the module name is last and smallest: nobody scanning a fridge is
-   looking for a module. Calm and attention differ by wash + accent only. */
-const STATIC_TILES = {
-  Projects: { icon: Hammer, attention: true, answer: '7 stalled · kitchen longest at 142 days' },
-};
-
-function StaticTile({ name }) {
-  const { icon: Icon, answer, accent, attention } = STATIC_TILES[name];
-  return (
-    <div className={`tile${attention ? ' tile--attention' : ''}`}>
-      <Icon size={22} className="tile__icon" />
-      <span className="tile__answer">
-        {answer}
-        {accent && <span className="tile__accent">{accent}</span>}
-      </span>
-      <span className="tile__name">{name}</span>
-    </div>
-  );
-}
-
-export default function ModuleTiles({ spendingTile, registerTile, holidayTile }) {
+   looking for a module. Calm and attention differ by wash + accent only —
+   that's a dashboard-level convention, distinct from Projects' own
+   screens, which deliberately never use it (see app/globals.css). */
+export default function ModuleTiles({ projectsTile, spendingTile, registerTile, holidayTile }) {
   return (
     <div className="tiles">
-      <StaticTile name="Projects" />
+      <Link
+        href="/projects"
+        className={`tile tile--live${projectsTile?.attention ? ' tile--attention' : ''}`}
+      >
+        <Hammer size={22} className="tile__icon" />
+        <span className="tile__answer">{projectsTile?.line ?? 'Not set up yet'}</span>
+        <span className="tile__name">Projects</span>
+        <CaretRight size={16} className="tile__chevron" />
+      </Link>
 
-      {/* Both link out, per the chevron-is-the-only-affordance rule — a
-          tile with nowhere to go gets no chevron, and now both do. */}
       <Link
         href="/scorecard"
         className={`tile tile--live${spendingTile?.attention ? ' tile--attention' : ''}`}
