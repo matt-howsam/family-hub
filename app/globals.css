@@ -921,4 +921,49 @@ html, body {
   .hol-page { padding: var(--fh-gutter-phone); }
 }
 
+/* ==========================================================================
+   Register (/register) — docs/family-hub-design-brief.md §7.2. Household
+   register throughout: denser than Holidays, matching Spending — this is
+   the ledger, not people. See app/tokens.css's two-register split.
+   ========================================================================== */
+.rg-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
+           background: var(--fh-page-bg);
+           padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+.rg-header { display: flex; align-items: flex-start; gap: var(--fh-space-4);
+             margin-bottom: var(--fh-space-6); }
+.rg-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
+.rg-header__note { margin-top: var(--fh-space-2); font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+
+/* The reducing number and the savings won sit together on purpose — "one
+   is the target, the other is progress against it" (§7.2). Neither may
+   ever outrank the other; they're the same card. */
+.rg-hero { display: flex; gap: var(--fh-space-5); margin-bottom: var(--fh-space-6);
+           border-radius: var(--fh-radius-xl); background: var(--fh-surface);
+           box-shadow: var(--fh-shadow-card); padding: var(--fh-space-6); }
+.rg-hero__stat { flex: 1; min-width: 0; }
+.rg-hero__stat--won { border-left: var(--fh-border-hair); padding-left: var(--fh-space-5); }
+.rg-hero__label { display: block; font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                   text-transform: uppercase; color: var(--fh-ink-label); margin-bottom: var(--fh-space-2); }
+.rg-hero__figure { display: block; font: var(--fh-text-display); letter-spacing: var(--fh-track-display);
+                    font-variant-numeric: tabular-nums; }
+.rg-hero__figure--won { color: var(--fh-ready-accent); }
+.rg-hero__sub { display: block; margin-top: var(--fh-space-1); font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
+
+/* K is the default and gets no badge at all — a wall of "Keep" labels is
+   noise. R is a quiet label; only A borrows the attention accent, per the
+   product-wide rule that A is the only status allowed to shout. */
+.rg-status { display: inline-block; margin-top: var(--fh-space-1); font: var(--fh-text-meta);
+             letter-spacing: var(--fh-track-meta); text-transform: uppercase; color: var(--fh-ink-label); }
+.rg-status--a { color: var(--fh-attention-accent); font-weight: 700; }
+
+.rg-checkbox { display: flex; align-items: center; gap: var(--fh-space-2);
+               margin: 0 0 var(--fh-space-3); font: var(--fh-text-body-sm); color: var(--fh-ink-body); }
+.rg-checkbox input { width: auto; min-height: auto; margin: 0; }
+
+@media (max-width: 560px) {
+  .rg-page { padding: var(--fh-gutter-phone); }
+  .rg-hero { flex-direction: column; gap: var(--fh-space-4); }
+  .rg-hero__stat--won { border-left: 0; padding-left: 0; border-top: var(--fh-border-hair); padding-top: var(--fh-space-4); }
+}
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

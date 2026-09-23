@@ -183,9 +183,10 @@ real calendar event for that child and day wins. Feeding both into
 `lib/whatson.js` as independent sources would double an activity that's
 already handled by the one adapter it needs.
 
-**Adults' Needs You section doesn't render.** It would read from Projects
-and the Register, and neither has real data behind it yet — both are still
-static placeholders. A section for a module that hasn't shipped renders
+**Adults' Needs You section doesn't render.** It would read from Projects and
+the Register. The Register shipped 23 September 2026 and has real data
+behind it, but nothing reads it into a person view yet; Projects is still a
+static placeholder. A section for a module that hasn't shipped renders
 nothing, not a fake one; Matt and Renée's person views currently show
 Coming up only.
 
@@ -314,6 +315,15 @@ typography.
 **Configuration must never require a deploy.**
 Term dates, uniform rules, chore rates and budget targets are phone edits. If
 changing them needs a keyboard, the app goes stale the first term you are busy.
+
+**Renée's "everything except the register" exclusion is reversed, 23
+September 2026.** The design brief, `docs/identity.md` and the register brief
+itself all stated it as a deliberate, named decision — but none recorded a
+reason, and Matt reversed it when the register module was built: Renée now
+writes everything Matt does. The exclusion was also the only place in the
+app needing a person-level write check rather than a role-tier one; removing
+it means every write route, register included, gates on `role === 'adult'`
+alone, consistent with everywhere else. See `docs/identity.md`.
 
 ---
 

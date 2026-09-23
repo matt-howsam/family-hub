@@ -463,3 +463,164 @@ insert into holiday (title, major) values
   ('Sail the Whitsundays', false),
   ('Darwin fishing trip', false)
 on conflict (title) do nothing;
+
+-- Operations register. Digitises the Howsam Household Operations Register —
+-- see docs/family-hub-design-brief.md §7.2 and the attached PDF in
+-- docs/designs/. Renewal dates, vendors, K/R/A status and category totals
+-- are wall content; `notes` is where the paper's real policy numbers,
+-- rego plates and "switching to X" commentary live, so it is phone-only,
+-- never rendered on the fridge — same treatment the calendar already gives
+-- private event descriptions.
+--
+-- `cost_period` + `cost_kind` are kept apart rather than folded into one
+-- "cost basis" field, per the brief's own instruction: "~$175 working avg/mo"
+-- and "$346.50 per month" are different kinds of number and showing both as
+-- a flat dollar figure would be a lie. `cost_period` is what the displayed
+-- figure is denominated in; `cost_kind` says whether it's a known actual, a
+-- rough estimate, a budgeted allowance, a running working average, or a
+-- one-off running total (paid_to_date). `frequency` is the separate,
+-- genuinely different question of how often the bill actually arrives —
+-- Electricity is `working_avg`/month but bills `quarterly`.
+--
+-- `renewal_label` is the raw text from the paper ("19th mthly", "~22 Oct",
+-- "Feb–Mar cluster") and is always what's shown — real financial dates are
+-- exactly where a confident wrong guess is the worst kind of wrong.
+-- `renewal_date` is a best-effort parse of the same fact, used only for
+-- sorting and the "N renewals in 30 days" derived figures, and is left null
+-- wherever the paper itself has no resolvable day.
+create table if not exists register_item (
+  id             serial primary key,
+  section        text        not null check (section in (
+                   'home_utilities', 'digital_comms', 'transport',
+                   'family_children_holidays', 'health_insurance')),
+  service        text        not null unique,       -- one row per line item; also the seed's re-run key
+  provider       text,
+  cost_cents     int,                              -- null when genuinely TBC
+  cost_period    text        check (cost_period in ('month', 'year', 'term')),
+  cost_kind      text        not null default 'actual'
+                 check (cost_kind in ('actual', 'working_avg', 'estimate', 'allowance', 'paid_to_date', 'tbc')),
+  frequency      text        not null check (frequency in (
+                   'monthly', 'quarterly', 'annual', 'per_term', 'fixed_term', 'one_off')),
+  renewal_date   date,
+  renewal_label  text,
+  status         text        not null default 'k' check (status in ('k', 'r', 'a')),
+  status_set_at  timestamptz,
+  excluded_from_reducing_number boolean not null default false, -- mortgage, school fees
+  hide_cost_on_fridge boolean not null default false, -- the mortgage payment amount, specifically (§6)
+  notes          text,                             -- phone-only, see above
+  position       int         not null default 0,   -- stable order within a section
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now()
+);
+
+-- Savings Won — a log of every switch and cancellation with its annual
+-- saving. "A savings tally is a scoreboard" (§7.2): kept separate from the
+-- item table so a switch's win survives even if the row it came from is
+-- later edited or removed.
+create table if not exists register_saving (
+  id                  serial primary key,
+  happened_on         date        not null,
+  what_changed        text        not null,
+  annual_saving_cents int         not null,
+  where_it_went       text,
+  register_item_id    int         references register_item(id) on delete set null,
+  created_at          timestamptz not null default now()
+);
+
+-- Seed content transcribed directly from the real V2026.1 register PDF —
+-- real vendors, real costs, real policy commentary. Renewal years for a
+-- day/month given with no year are the next occurrence from 23 Sep 2026.
+insert into register_item
+  (section, service, provider, cost_cents, cost_period, cost_kind, frequency, renewal_date, renewal_label, status, excluded_from_reducing_number, hide_cost_on_fridge, notes, position)
+values
+  -- Home & Utilities
+  ('home_utilities', 'Mortgage', 'AFSH Nominees (NAB)', 661878, 'month', 'actual', 'monthly', null, '19th, monthly', 'a', true, true,
+    'SWITCHING → Peoples Choice 5.84%. Currently 6.24% var P&I. Match term to May 2055. Saves ~$2,231/yr.', 1),
+  ('home_utilities', 'Electricity', 'Dodo Power & Gas', 17500, 'month', 'working_avg', 'quarterly', '2026-10-22', '~22 Oct', 'k', false, false,
+    'Last bill $526.06 / 91 days (2 Apr–1 Jul 26, actual read), due 22 Jul. Seasonal — add each bill to firm the average.', 2),
+  ('home_utilities', 'Water', 'Tweed Shire Council', 12800, 'month', 'working_avg', 'quarterly', null, '~Sep', 'k', false, false,
+    'Last bill $383.61 / 91 days (9 Feb–11 May), due 19 Jun. $175.44 usage + $208.17 fixed charges.', 3),
+  ('home_utilities', 'Natural Gas', 'Elgas', 9400, 'month', 'estimate', 'quarterly', null, null, 'k', false, false,
+    'Estimate only — from $218.98 / 70 days, 1,823.7 MJ (26.1 MJ/day). Hot water & cooktop.', 4),
+  ('home_utilities', 'Council Rates', 'Tweed Shire Council', 37000, 'month', 'allowance', 'quarterly', null, null, 'k', false, false,
+    'Household allowance, not a fixed debit.', 5),
+  ('home_utilities', 'Home Insurance', 'CBA / Hollard — Plus', 34650, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'SWITCHED Aug 26 — saved $1,449/yr. Bldg $1.1M + 25% gap, contents $90k. Cancel ALDI after 72hrs. 15% discount may drop at renewal.', 6),
+
+  -- Digital & Communications
+  ('digital_comms', 'Internet', 'Tangerine Telecom', 9383, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'Check intro/promo expiry. Review annually.', 1),
+  ('digital_comms', 'Mobile — Renée', 'Optus', 10578, 'month', 'actual', 'fixed_term', null, 'Jul 2027', 'k', false, false,
+    'Fixed-term contract ends Jul 2027 — must roll. Diarise Apr 2027 to compare before it auto-rolls.', 2),
+  ('digital_comms', 'Mobile — Rose', 'Aldi Mobile', 2300, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'Prepaid. Review annually.', 3),
+  ('digital_comms', 'Mobile — Matt & Tom', 'TPG Telecom', 5000, 'month', 'actual', 'monthly', null, '2 × $25', 'k', false, false,
+    'Mobile plans — not internet. Two services. Review annually.', 4),
+  ('digital_comms', 'Spotify', 'Spotify', 2799, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'Review annually. Family plan still right size?', 5),
+  ('digital_comms', 'Netflix', 'Netflix', 2899, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'Still watched? Review value.', 6),
+  ('digital_comms', 'Claude Pro', 'Anthropic', 3151, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'Charged in USD — ~$1.10 intl transaction fee each month.', 7),
+  ('digital_comms', 'Dropbox ×2', 'Dropbox', 37000, 'year', 'actual', 'annual', null, '2 × $185', 'r', false, false,
+    'One paid by Matt, one by Renée. Confirm both accounts are needed.', 8),
+  ('digital_comms', 'iCloud+ 200 GB', 'Apple', 449, 'month', 'actual', 'monthly', '2027-08-11', '11 Aug', 'k', false, false,
+    'Review storage tier.', 9),
+  ('digital_comms', 'Apple News+', 'Apple', 1999, 'month', 'actual', 'monthly', '2027-08-21', '21 Aug', 'r', false, false,
+    'Decide whether it is worth keeping.', 10),
+  ('digital_comms', 'Surfline Premium', 'Surfline', 7799, 'year', 'actual', 'annual', '2027-01-09', '9 Jan 2027', 'k', false, false,
+    'Review before renewal.', 11),
+
+  -- Transport
+  ('transport', 'Comprehensive — Defender', 'AAMI — MPA126514985', 40001, 'year', 'actual', 'annual', '2027-02-12', '12 Feb 27', 'r', false, false,
+    'BLF23W — 2009 Defender 110 4D wagon, 2.4L turbo diesel. Compare Jan 27.', 1),
+  ('transport', 'CTP green slip — Defender', 'Policy OA71211380', 34900, 'year', 'actual', 'annual', '2026-10-29', '29 Oct 26', 'r', false, false,
+    'Term 30 Oct 25 – 29 Oct 26. 2009 Defender. Compare before renewal.', 2),
+  ('transport', '3rd party property — Mazda', 'Allianz — AALMVE00014429', 3773, 'month', 'actual', 'monthly', '2027-03-08', '8 Mar 27', 'r', false, false,
+    'DD02RX — 2018 CX-5. NOT comprehensive (~$453/yr). Excess $650 ($1,800 if driver under 25).', 3),
+  ('transport', 'CTP green slip — Mazda', 'Insurer TBC', null, null, 'tbc', 'annual', null, null, 'r', false, false,
+    'Separate policy — still to find. Defender equivalent was $349.', 4),
+  ('transport', 'Servicing — Defender', 'Chinderah Motors', 100000, 'year', 'allowance', 'annual', null, null, 'k', false, false,
+    '2009 Defender 110 Puma, 2.4L turbo diesel. Log last service date here.', 5),
+  ('transport', 'Servicing — Mazda', 'Chinderah Motors', 100000, 'year', 'allowance', 'annual', null, null, 'k', false, false,
+    'Log last service date here. Book both cars together where possible.', 6),
+  ('transport', 'Registration — Defender', 'Service NSW', 66000, 'year', 'estimate', 'annual', null, null, 'k', false, false,
+    'Renewal date to confirm — write it here.', 7),
+  ('transport', 'Registration — Mazda', 'Service NSW', 66000, 'year', 'estimate', 'annual', null, null, 'k', false, false,
+    'Renewal date to confirm — write it here.', 8),
+  ('transport', 'Boat licence', 'Service NSW', null, null, 'tbc', 'annual', '2027-03-03', '3 Mar', 'k', false, false,
+    'Renew before 3 March.', 9),
+  ('transport', 'Fishing licences', 'Service NSW', 10000, 'year', 'actual', 'annual', null, null, 'k', false, false,
+    'Renewal date to confirm.', 10),
+  ('transport', 'Tinny + trailer rego', 'Service NSW', 22000, 'year', 'actual', 'annual', null, 'February', 'k', false, false,
+    'Renew in February.', 11),
+
+  -- Family, Children & Holidays
+  ('family_children_holidays', 'School fees', 'Lindisfarne Anglican Grammar', 210000, 'month', 'allowance', 'monthly', null, null, 'k', true, false,
+    'Household commitment. Not part of the $4,510 fridge scorecard.', 1),
+  ('family_children_holidays', 'Surf coaching — Tom', 'Boardriders / coach', 25000, 'term', 'actual', 'per_term', null, null, 'k', false, false,
+    'Review each term. Moved off the scorecard.', 2),
+  ('family_children_holidays', 'KPA — Rose ×3', 'Kingscliff Performing Arts', 40699, 'term', 'actual', 'per_term', null, null, 'k', false, false,
+    'Three programs. Charged 12 Aug 26. Review each term — are all three still right?', 3),
+  ('family_children_holidays', 'Pilates — Rose', 'Rydge Fitness', 25000, 'term', 'estimate', 'per_term', null, null, 'k', false, false,
+    'Review each term. Moved off the scorecard.', 4),
+  ('family_children_holidays', 'Easter 2027 trip', 'Straddie / Minjerribah', 67890, null, 'paid_to_date', 'one_off', '2027-03-26', 'Easter 27', 'k', false, false,
+    'Ferries $286.09 + camping $392.81, booked Aug 26. Log further costs here — not on the fridge scorecard.', 5),
+
+  -- Health & Insurance
+  ('health_insurance', 'Private health cover', 'GMHBA', 17665, 'month', 'actual', 'monthly', null, null, 'k', false, false,
+    'Review cover and value at renewal.', 1),
+  ('health_insurance', 'Credit card fee', 'CBA — My Card', 39500, 'year', 'actual', 'annual', '2027-02-16', '16 Feb', 'a', false, false,
+    'ACTION — cancel before 16 Feb. Set a reminder for late Jan.', 2)
+on conflict (service) do nothing;
+
+-- register_saving is an append-only log with no natural unique key, so the
+-- seed guards its own re-run with `where not exists` rather than a
+-- constraint that would also fight a real second saving on the same item.
+insert into register_saving (happened_on, what_changed, annual_saving_cents, where_it_went, register_item_id)
+select '2026-08-01', 'Home insurance — switched ALDI/Honey → CBA/Hollard Plus', 144900, null, id
+from register_item
+where service = 'Home Insurance'
+  and not exists (
+    select 1 from register_saving where what_changed = 'Home insurance — switched ALDI/Honey → CBA/Hollard Plus'
+  );

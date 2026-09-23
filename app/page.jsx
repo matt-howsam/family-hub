@@ -19,6 +19,7 @@ import { getStoredConditions } from '@/lib/conditions';
 import { eveningLine } from '@/lib/todo';
 import { getSession } from '@/lib/identity';
 import { getSpendingTile } from '@/lib/scorecard';
+import { getRegisterTile } from '@/lib/register';
 import { getHolidayTile } from '@/lib/holidays';
 
 /* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
@@ -37,6 +38,7 @@ export default async function Wall() {
   const w = weekLetter(anchor, now);
   const tonight = await getTonight();
   const spendingTile = await getSpendingTile();
+  const registerTile = await getRegisterTile();
   const holidayTile = await getHolidayTile();
 
   /* Only build briefings on a school weekday. At the weekend or in the
@@ -138,7 +140,7 @@ export default async function Wall() {
           all four people, so it outranks the module rows, which are stable
           for months and mostly Matt-and-Renée content. */}
       <WhatsOn items={onWall} />
-      <ModuleTiles spendingTile={spendingTile} holidayTile={holidayTile} />
+      <ModuleTiles spendingTile={spendingTile} registerTile={registerTile} holidayTile={holidayTile} />
       <Avatars showSettings={session?.role === 'adult'} />
 
       <div className="house">

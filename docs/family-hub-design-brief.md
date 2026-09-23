@@ -112,9 +112,13 @@ The fridge holds an anonymous read-only identity.
 |---|---|
 | Fridge iPad | Nothing. Read-only, always. |
 | Matt's phone | Everything |
-| Renée's phone | Everything except the register |
+| Renée's phone | Everything |
 | Tom's phone | His goals, his assignments, his chore ticks, holiday ideas |
 | Rose's phone | Her goals, her assignments, her chore ticks, holiday ideas |
+
+**Amended 23 September 2026** — see `docs/identity.md`: Renée's register
+exclusion is reversed. She has full write parity with Matt everywhere,
+including the operations register.
 
 **Design implication:** every screen has a fridge variant and a phone variant.
 The fridge variant has no edit affordances at all — no disabled buttons, no

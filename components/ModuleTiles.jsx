@@ -1,15 +1,14 @@
 import Link from 'next/link';
 import { Hammer, ChartLineDown, Receipt, Tent, CaretRight } from '@phosphor-icons/react/ssr';
 
-/* Placeholder until the projects and register modules ship — each will
-   replace one line here with a live query. Spending and Holidays are live:
-   see docs/family-hub-spending-scorecard-brief.md, "1. Dashboard tile",
-   and docs/family-hub-design-brief.md §7.6. The answer leads and the
-   module name is last and smallest: nobody scanning a fridge is looking
-   for a module. Calm and attention differ by wash + accent only. */
+/* Placeholder until the projects module ships — it will replace this line
+   with a live query. Spending, Register and Holidays are live: see
+   docs/family-hub-spending-scorecard-brief.md, "1. Dashboard tile",
+   docs/family-hub-design-brief.md §7.2/§8, and §7.6. The answer leads and
+   the module name is last and smallest: nobody scanning a fridge is
+   looking for a module. Calm and attention differ by wash + accent only. */
 const STATIC_TILES = {
   Projects: { icon: Hammer, attention: true, answer: '7 stalled · kitchen longest at 142 days' },
-  Register: { icon: Receipt, answer: 'Nothing renews for 7 weeks', accent: ' · $1,449 saved' },
 };
 
 function StaticTile({ name }) {
@@ -26,7 +25,7 @@ function StaticTile({ name }) {
   );
 }
 
-export default function ModuleTiles({ spendingTile, holidayTile }) {
+export default function ModuleTiles({ spendingTile, registerTile, holidayTile }) {
   return (
     <div className="tiles">
       <StaticTile name="Projects" />
@@ -46,7 +45,18 @@ export default function ModuleTiles({ spendingTile, holidayTile }) {
         <CaretRight size={16} className="tile__chevron" />
       </Link>
 
-      <StaticTile name="Register" />
+      <Link
+        href="/register"
+        className={`tile tile--live${registerTile?.attention ? ' tile--attention' : ''}`}
+      >
+        <Receipt size={22} className="tile__icon" />
+        <span className="tile__answer">
+          {registerTile?.line1 ?? 'Not set up yet'}
+          {registerTile?.line2 && <span className="tile__answer2">{registerTile.line2}</span>}
+        </span>
+        <span className="tile__name">Register</span>
+        <CaretRight size={16} className="tile__chevron" />
+      </Link>
 
       <Link
         href="/holidays"

@@ -123,10 +123,17 @@ Mirrors §5, with Rose's assignment write added per §7.11.
 | Role | Person | Can write |
 |---|---|---|
 | `display` | none | Chore ticks. Meal planner nights. Nothing else. |
-| `adult` | Matt | Everything |
-| `adult` | Renée | Everything except the operations register |
+| `adult` | Matt, Renée | Everything |
 | `child` | Rose | Her goals, her assignments, her chore ticks, holiday ideas, her own discovery settings |
 | `child` | Tom | His goals, his assignments, his chore ticks, holiday ideas, his own discovery settings |
+
+**Amended 23 September 2026:** Renée previously had "everything except the
+operations register" — no reason was ever recorded for that specific
+carve-out, and Matt reversed it when the register module was built: Renée
+gets full write access, same as Matt. This removes the app's only
+person-level write distinction. Every write route, register included, now
+gates on `role === 'adult'` alone — the same check already used everywhere
+else — rather than needing a second, person-specific check anywhere.
 
 Enforce in the route handler, reading the cookie server-side. Never in the
 component. A UI that hides a control is a courtesy; the route is the rule.

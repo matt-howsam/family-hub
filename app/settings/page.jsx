@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/qa', title: 'Ask about school mail', note: 'Search everything ingested, with citations' },
   { href: '/review', title: 'Review queue', note: 'Approve or discard proposed items' },
   { href: '/settings/devices', title: 'Pair a device', note: 'Generate a code, manage paired devices' },
+  { href: '/register?from=settings', title: 'Operations register', note: 'Renewals, costs and the number we’re reducing' },
 ];
 
 export default async function SettingsPage() {
