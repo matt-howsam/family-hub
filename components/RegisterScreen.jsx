@@ -317,6 +317,7 @@ export default function RegisterScreen({ view, fridge, role }) {
   };
 
   const yearCents = view.reducingNumberCents * 12;
+  const totalYearCents = view.totalMonthlyCents * 12;
 
   return (
     <div className="rg-page" data-register="household">
@@ -335,6 +336,11 @@ export default function RegisterScreen({ view, fridge, role }) {
           <span className="rg-hero__label">The number we're reducing</span>
           <span className="rg-hero__figure">{formatMoney(view.reducingNumberCents)}/mo</span>
           <span className="rg-hero__sub">{formatMoney(yearCents)}/yr · excludes mortgage &amp; school fees</span>
+        </div>
+        <div className="rg-hero__stat">
+          <span className="rg-hero__label">Everything, per month</span>
+          <span className="rg-hero__figure">{formatMoney(view.totalMonthlyCents)}/mo</span>
+          <span className="rg-hero__sub">{formatMoney(totalYearCents)}/yr · mortgage &amp; school fees included</span>
         </div>
         <div className="rg-hero__stat rg-hero__stat--won">
           <span className="rg-hero__label">Saved this year</span>
