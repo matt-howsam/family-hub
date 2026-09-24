@@ -944,8 +944,15 @@ html, body {
 .rg-hero__stat:not(:first-child) { border-left: var(--fh-border-hair); padding-left: var(--fh-space-5); }
 .rg-hero__label { display: block; font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
                    text-transform: uppercase; color: var(--fh-ink-label); margin-bottom: var(--fh-space-2); }
-.rg-hero__figure { display: block; font: var(--fh-text-display); letter-spacing: var(--fh-track-display);
-                    font-variant-numeric: tabular-nums; }
+/* --fh-text-figure, not --fh-text-display — the latter is the screen-title
+   size (42px) and was wide enough, on three columns sharing 810px, to spill
+   a figure like "$8,624.78/mo" into its neighbour. --fh-text-figure is the
+   token the design system already reserves for money specifically (28px).
+   overflow-wrap is a second line of defence — a currency string has no
+   natural break point, so without it a genuinely long figure would rather
+   overflow than wrap. */
+.rg-hero__figure { display: block; font: var(--fh-text-figure); letter-spacing: var(--fh-track-title);
+                    font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
 .rg-hero__figure--won { color: var(--fh-ready-accent); }
 .rg-hero__sub { display: block; margin-top: var(--fh-space-1); font: var(--fh-text-body-sm); color: var(--fh-ink-label); }
 
