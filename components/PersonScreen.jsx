@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { TShirt, ArrowLeft } from '@phosphor-icons/react/ssr';
+import { TShirt, ArrowLeft, PencilSimple } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
 import { resolveUniform } from '@/lib/timetable';
 import TodoSection from '@/components/TodoSection';
@@ -205,6 +205,12 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
         <div>
           <div className="pv-header__name">{person.name}</div>
           {person.year && <span className="pv-header__year">Year {person.year}</span>}
+          {todo.canWrite && (
+            <Link href={`/settings/avatars/${person.id}`} className="pv-header__edit">
+              <PencilSimple size={14} weight="bold" />
+              <span>Edit avatar</span>
+            </Link>
+          )}
         </div>
       </div>
 

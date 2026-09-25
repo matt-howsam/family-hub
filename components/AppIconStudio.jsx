@@ -51,47 +51,49 @@ export default function AppIconStudio({ initialCfg }) {
 
   return (
     <div className="ic-page">
-      <div className="ic-header">
-        <Link href="/settings" className="wo-back" aria-label="Back to settings">
-          <ArrowLeft size={24} />
-        </Link>
-        <div>
-          <h1 className="ic-header__title">App icon</h1>
-          <p className="ic-header__note">How the hub looks on every screen in the house.</p>
-        </div>
-      </div>
-
-      {/* Preview + sizes + save/download */}
-      <div className="ic-preview">
-        <div style={{ position: 'relative', width: 160, height: 160 }}>
-          <HubIcon icon={cfg} size={160} />
-          {safeZone && (
-            <div
-              style={{
-                position: 'absolute', left: '10%', top: '10%', width: '80%', height: '80%', borderRadius: '50%',
-                border: '2px dashed rgba(255,255,255,.85)', boxShadow: '0 0 0 1px rgba(0,0,0,.25)', pointerEvents: 'none',
-              }}
-            />
-          )}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--fh-space-5)' }}>
-          <div className="ic-preview__sizes">
-            {[{ px: 96, label: 'Tablet' }, { px: 60, label: 'Phone' }, { px: 32, label: 'Tab' }].map((s) => (
-              <div key={s.label} className="ic-preview__size">
-                <HubIcon icon={cfg} size={s.px} />
-                <span className="ic-preview__size-label">{s.label}</span>
-              </div>
-            ))}
+      <div className="ic-sticky-top">
+        <div className="ic-header">
+          <Link href="/settings" className="wo-back" aria-label="Back to settings">
+            <ArrowLeft size={24} />
+          </Link>
+          <div>
+            <h1 className="ic-header__title">App icon</h1>
+            <p className="ic-header__note">How the hub looks on every screen in the house.</p>
           </div>
-          <div className="ic-preview__actions">
-            <button type="button" className="ic-btn" onClick={handleSave} disabled={saving}>
-              {saved ? <Check size={20} weight="bold" /> : <HouseLine size={20} weight="bold" />}
-              <span>{saving ? 'Saving…' : saved ? 'Saved — shows on next launch' : 'Use this icon'}</span>
-            </button>
-            <button type="button" className="ic-btn ic-btn--ghost" onClick={handleDownload}>
-              <DownloadSimple size={20} weight="bold" />
-              <span>PNG</span>
-            </button>
+        </div>
+
+        {/* Preview + sizes + save/download */}
+        <div className="ic-preview">
+          <div style={{ position: 'relative', width: 160, height: 160 }}>
+            <HubIcon icon={cfg} size={160} />
+            {safeZone && (
+              <div
+                style={{
+                  position: 'absolute', left: '10%', top: '10%', width: '80%', height: '80%', borderRadius: '50%',
+                  border: '2px dashed rgba(255,255,255,.85)', boxShadow: '0 0 0 1px rgba(0,0,0,.25)', pointerEvents: 'none',
+                }}
+              />
+            )}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--fh-space-5)' }}>
+            <div className="ic-preview__sizes">
+              {[{ px: 96, label: 'Tablet' }, { px: 60, label: 'Phone' }, { px: 32, label: 'Tab' }].map((s) => (
+                <div key={s.label} className="ic-preview__size">
+                  <HubIcon icon={cfg} size={s.px} />
+                  <span className="ic-preview__size-label">{s.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="ic-preview__actions">
+              <button type="button" className="ic-btn" onClick={handleSave} disabled={saving}>
+                {saved ? <Check size={20} weight="bold" /> : <HouseLine size={20} weight="bold" />}
+                <span>{saving ? 'Saving…' : saved ? 'Saved — shows on next launch' : 'Use this icon'}</span>
+              </button>
+              <button type="button" className="ic-btn ic-btn--ghost" onClick={handleDownload}>
+                <DownloadSimple size={20} weight="bold" />
+                <span>PNG</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

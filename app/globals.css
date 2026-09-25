@@ -413,6 +413,9 @@ html, body {
 .pv-header__year { display: block; margin-top: var(--fh-space-1);
                     font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
                     text-transform: uppercase; color: var(--fh-ink-label); }
+.pv-header__edit { display: inline-flex; align-items: center; gap: var(--fh-space-2); margin-top: var(--fh-space-3);
+                    min-height: var(--fh-target-min); font: 600 15px/1 var(--fh-font); color: var(--fh-teal-ink);
+                    text-decoration: none; }
 
 .pv-section { margin-bottom: var(--fh-space-7); }
 .pv-section__label { padding: 0 var(--fh-space-2) var(--fh-space-3);

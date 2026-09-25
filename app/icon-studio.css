@@ -7,14 +7,25 @@
 .ic-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
            background: var(--fh-page-bg);
            padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+/* Pinned to the top of the viewport while the Mark/Colour/Finish sections
+   scroll underneath — the point is seeing the icon change without a trip
+   back to the top (or, once you've scrolled past it, down again) every
+   time you tap something. The header rides along so Back stays reachable
+   too. A solid page-matching background keeps scrolled content from
+   showing through once it's stuck. */
+.ic-sticky-top { position: sticky; top: 0; z-index: 5; background: var(--fh-page-bg);
+                  padding-top: var(--fh-space-2); margin-top: calc(-1 * var(--fh-space-2));
+                  padding-bottom: var(--fh-space-3); }
+
 .ic-header { display: flex; align-items: flex-start; gap: var(--fh-space-4);
              margin-bottom: var(--fh-space-5); }
 .ic-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
 .ic-header__note { margin-top: var(--fh-space-2); font: var(--fh-text-body-sm); color: var(--fh-ink-label);
                     max-width: 56ch; }
 
-.ic-preview { border-radius: var(--fh-radius-xl); background: var(--fh-surface); box-shadow: var(--fh-shadow-card);
-              padding: var(--fh-space-6); margin-bottom: var(--fh-space-4);
+.ic-preview { border-radius: var(--fh-radius-xl); background: var(--fh-surface);
+              box-shadow: var(--fh-shadow-card), 0 16px 28px rgba(20,69,74,.12);
+              padding: var(--fh-space-6);
               display: grid; grid-template-columns: 160px 1fr; gap: var(--fh-space-6); align-items: center; }
 .ic-preview__sizes { display: flex; align-items: flex-end; gap: var(--fh-space-6); flex-wrap: wrap; }
 .ic-preview__size { display: flex; flex-direction: column; align-items: center; gap: var(--fh-space-2); }
@@ -128,5 +139,12 @@
 
 @media (max-width: 560px) {
   .ic-page { padding: var(--fh-gutter-phone); }
-  .ic-preview { grid-template-columns: 1fr; }
+  .ic-sticky-top { margin-left: calc(-1 * var(--fh-gutter-phone)); margin-right: calc(-1 * var(--fh-gutter-phone));
+                    padding-left: var(--fh-gutter-phone); padding-right: var(--fh-gutter-phone); }
+  /* Stacking the sizes row under the main preview (the old behaviour) made
+     this sticky bar tall enough to swallow a third of a phone screen
+     permanently. Two columns and no sizes row keeps it to roughly the
+     height of the icon itself while it's scrolled with you. */
+  .ic-preview { grid-template-columns: auto 1fr; gap: var(--fh-space-4); padding: var(--fh-space-4); }
+  .ic-preview__sizes { display: none; }
 }
