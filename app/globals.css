@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './icon-studio.css';
 
 *, *::before, *::after { box-sizing: border-box; }
 

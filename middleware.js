@@ -20,5 +20,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|api|pair|icons|manifest|favicon).*)'],
+  matcher: ['/((?!_next|api|pair|icon|apple-icon|manifest|favicon).*)'],
 };
