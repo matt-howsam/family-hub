@@ -1,13 +1,18 @@
 import { derive } from '@/lib/hubIcon';
 
 /* Below this size, the studio's heavier effects (long shadow, glow, stack,
- * a hollow outline) read as mud rather than style — a stack of 1px offsets
- * just disappears, and outline's hairline stroke goes illegible. Falling
- * back to a flat fill keeps the letter/mark readable at avatar-row (52px)
- * and avatar-inline (28px) sizes without every call site having to know
- * to ask for it. Wall-sized avatars (80px) and the icon studio's own
- * previews (96px+) are unaffected. */
-const SIMPLIFY_BELOW = 62;
+ * a hollow outline) stop reading as style. It's not just legibility at
+ * tiny sizes — checked by rendering "long" at 80px next to a flattened
+ * version: the effect is built from ~18 text-shadow copies each offset
+ * a fraction of a CSS pixel apart, so it reads as a crisp diagonal trail
+ * at app-icon scale (1024px) but the sub-pixel offsets just blur together
+ * at avatar scale, which is exactly the "looks a bit soft" symptom on the
+ * wall strip (80px). Falling back to a flat fill covers every real
+ * placement — wall (80px), row (52px), inline (28px) — without every call
+ * site having to know to ask for it. Only the studios' own large hero
+ * preview (160px) and the actual rasterized icon (512/1024px) are above
+ * this and keep full effects, where they were designed to be seen. */
+const SIMPLIFY_BELOW = 110;
 
 /* Renders one icon tile from a config — used for preset swatches, the live
  * studio preview, the home-screen mock, and person avatars. `flat` drops
