@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/identity';
 import { PEOPLE } from '@/lib/people';
 import { setAvatarConfig } from '@/lib/avatarIcon';
@@ -20,6 +21,14 @@ export async function POST(request) {
   if (!body.cfg) return NextResponse.json({ error: 'cfg is required' }, { status: 400 });
 
   await setAvatarConfig(body.person, body.cfg);
+
+  /* Both pages already re-fetch fresh on every load (dynamic = 'force-
+   * dynamic'), so there's no server cache here to purge — this is purely
+   * about next.config.mjs's 3-minute client Router Cache. Without it, a
+   * quick "save, then tap back to the wall" round trip serves the wall's
+   * cached pre-save render instead of waiting out the 3 minutes. */
+  revalidatePath('/');
+  revalidatePath(`/people/${body.person}`);
 
   return NextResponse.json({ ok: true });
 }
