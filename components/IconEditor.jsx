@@ -4,7 +4,7 @@ import HubIcon from '@/components/HubIcon';
 import { FONTS, MARKS, SHAPES, FILLS, EFFECTS, PALETTE, TEXTS } from '@/lib/hubIcon';
 
 const PRESET_KEYS = ['kind', 'font', 'text', 'mark', 'fg', 'bg1', 'bg2', 'fill', 'effect', 'shape'];
-const sameAsPreset = (a, b) => PRESET_KEYS.every((k) => a[k] === b[k]);
+const sameAsPreset = (a, b, keys) => keys.every((k) => a[k] === b[k]);
 
 function Seg({ options, value, onChange }) {
   return (
@@ -25,9 +25,12 @@ function Seg({ options, value, onChange }) {
  * avatar studio. The parent owns the preview, the save flow, and cfg
  * state — this just turns taps into onChange(patch) calls.
  *
- * - presets: preset list for a "Start from" strip, or null to hide it
- *   (avatars don't have a preset gallery — each person starts from their
- *   own seeded colours).
+ * - presets: preset list for a "Start from" strip, or null to hide it.
+ * - presetKeepText: tapping a preset normally sets every field it carries,
+ *   text included — right for the app icon, where the preset owns the
+ *   whole identity. An avatar's initials aren't part of the "look", so
+ *   there this is true: a preset changes font/colours/effect but leaves
+ *   whichever initials are already showing alone.
  * - textMode: 'words' shows the app icon's fixed H/h/hub segmented
  *   control; 'free' shows a short text input instead, for arbitrary
  *   initials.
@@ -36,10 +39,13 @@ function Seg({ options, value, onChange }) {
  * - resetLabel/onReset: what the reset link says and does — the app icon
  *   resets to the teal default, an avatar resets to that person's seed. */
 export default function IconEditor({
-  cfg, onChange, presets = null, textMode = 'words',
+  cfg, onChange, presets = null, presetKeepText = false, textMode = 'words',
   showSafeZone = false, safeZone = false, onToggleSafeZone,
   resetLabel = 'Reset', onReset,
 }) {
+  const presetCompareKeys = presetKeepText ? PRESET_KEYS.filter((k) => k !== 'text') : PRESET_KEYS;
+  const applyPreset = (presetCfg) =>
+    onChange(presetKeepText ? Object.assign({}, presetCfg, { text: cfg.text }) : Object.assign({}, presetCfg));
   const isType = cfg.kind !== 'mark';
   const isMark = cfg.kind === 'mark';
   const usesAccent = cfg.effect === 'offset' || cfg.effect === 'stack';
@@ -62,10 +68,10 @@ export default function IconEditor({
               <button
                 key={p.name} type="button" title={p.name}
                 className="ic-tile" style={{ height: 48, padding: 4 }}
-                aria-pressed={sameAsPreset(p.cfg, cfg)}
-                onClick={() => onChange(Object.assign({}, p.cfg))}
+                aria-pressed={sameAsPreset(p.cfg, cfg, presetCompareKeys)}
+                onClick={() => applyPreset(p.cfg)}
               >
-                <HubIcon icon={p.cfg} size={40} flat />
+                <HubIcon icon={presetKeepText ? Object.assign({}, p.cfg, { text: cfg.text }) : p.cfg} size={40} flat />
               </button>
             ))}
           </div>

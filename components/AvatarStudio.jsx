@@ -4,12 +4,15 @@ import Link from 'next/link';
 import { ArrowLeft, Check, HouseLine } from '@phosphor-icons/react/ssr';
 import HubIcon from '@/components/HubIcon';
 import IconEditor from '@/components/IconEditor';
+import { PRESETS } from '@/lib/hubIcon';
 
-/* Same studio as the app icon (components/IconEditor.jsx), minus the parts
- * that only make sense for an OS home-screen icon: no preset gallery (each
- * person starts from their own seeded colours, not a shared list), no
- * Android safe-zone toggle, no PNG download, no home-screen mock — this
- * renders live everywhere in the app instead of being installed once. */
+/* Same studio as the app icon (components/IconEditor.jsx) and the same
+ * preset gallery, minus the parts that only make sense for an OS
+ * home-screen icon: no Android safe-zone toggle, no PNG download, no
+ * home-screen mock — this renders live everywhere in the app instead of
+ * being installed once. presetKeepText means tapping "Gothic" restyles
+ * the font/colours/effect but leaves whichever initials are already
+ * showing alone, rather than resetting to the preset's own "H". */
 export default function AvatarStudio({ person, initialCfg, seedCfg, backHref = '/settings/avatars' }) {
   const [cfg, setCfg] = useState(() => Object.assign({}, seedCfg, initialCfg));
   const [saved, setSaved] = useState(true);
@@ -67,7 +70,7 @@ export default function AvatarStudio({ person, initialCfg, seedCfg, backHref = '
       </div>
 
       <IconEditor
-        cfg={cfg} onChange={change} presets={null} textMode="free"
+        cfg={cfg} onChange={change} presets={PRESETS} presetKeepText textMode="free"
         resetLabel={`Back to ${person.name}'s original`} onReset={() => change(Object.assign({}, seedCfg))}
       />
     </div>
