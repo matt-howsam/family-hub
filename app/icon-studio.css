@@ -45,6 +45,11 @@
                color: var(--fh-ink); background: transparent; }
 .ic-seg__opt[aria-pressed="true"] { background: var(--fh-ink); color: var(--fh-ink-inverse); }
 
+.ic-text-input { width: 84px; min-height: 40px; padding: 0 var(--fh-space-4); border-radius: var(--fh-radius-md);
+                  border: var(--fh-border-input); background: var(--fh-surface); color: var(--fh-ink);
+                  font: 700 17px/1 var(--fh-font); text-align: center; }
+.ic-text-input:focus-visible { outline: var(--fh-border-select); outline-offset: 1px; }
+
 .ic-grid-fonts { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: var(--fh-space-3); }
 .ic-grid-marks { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--fh-space-3); }
 .ic-tile { height: 104px; border-radius: var(--fh-radius-md); border: 0; cursor: pointer;
@@ -115,6 +120,11 @@
 .ic-phone__app-label { font: 500 9px/1 var(--fh-font); white-space: nowrap; }
 .ic-phone__dock { border-radius: 26px; padding: 10px 12px; display: grid; grid-template-columns: repeat(4, 1fr);
                    justify-content: space-between; align-items: center; }
+
+.ic-avatar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--fh-space-5); }
+.ic-avatar-grid__item { display: flex; flex-direction: column; align-items: center; gap: var(--fh-space-3);
+                         text-decoration: none; padding: var(--fh-space-4); border-radius: var(--fh-radius-md); }
+.ic-avatar-grid__name { font: var(--fh-text-row); color: var(--fh-ink); }
 
 @media (max-width: 560px) {
   .ic-page { padding: var(--fh-gutter-phone); }

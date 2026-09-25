@@ -22,6 +22,7 @@ import { getProjectsTile } from '@/lib/projects';
 import { getSpendingTile } from '@/lib/scorecard';
 import { getRegisterTile } from '@/lib/register';
 import { getHolidayTile } from '@/lib/holidays';
+import { getAllAvatarConfigs } from '@/lib/avatarIcon';
 
 /* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
    relevant again even on a school day, per the conditions data spec. */
@@ -42,6 +43,7 @@ export default async function Wall() {
   const spendingTile = await getSpendingTile();
   const registerTile = await getRegisterTile();
   const holidayTile = await getHolidayTile();
+  const avatarIcons = await getAllAvatarConfigs();
 
   /* Only build briefings on a school weekday. At the weekend or in the
      holidays the children's blocks have nothing true to say, so they are
@@ -143,7 +145,7 @@ export default async function Wall() {
           for months and mostly Matt-and-Renée content. */}
       <WhatsOn items={onWall} />
       <ModuleTiles projectsTile={projectsTile} spendingTile={spendingTile} registerTile={registerTile} holidayTile={holidayTile} />
-      <Avatars showSettings={session?.role === 'adult'} />
+      <Avatars avatarIcons={avatarIcons} showSettings={session?.role === 'adult'} />
 
       <div className="house">
         <span>

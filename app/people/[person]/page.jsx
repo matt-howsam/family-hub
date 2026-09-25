@@ -7,6 +7,7 @@ import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getSession } from '@/lib/identity';
 import { listTodos, subjectsFor } from '@/lib/todo';
+import { getAvatarConfig } from '@/lib/avatarIcon';
 import PersonScreen from '@/components/PersonScreen';
 import AutoRefresh from '@/components/AutoRefresh';
 
@@ -24,18 +25,20 @@ const SCHOOL_DAY_END_HOUR = 15.5;
 
 export default async function PersonPage({ params }) {
   const { person: id } = await params;
-  const p = PEOPLE[id];
-  if (!p) notFound();
+  const person = PEOPLE[id];
+  if (!person) notFound();
 
   const now = today(TZ);
   const todayKey = now.toISOString().slice(0, 10);
   const tomorrowKey = new Date(now.getTime() + DAY).toISOString().slice(0, 10);
 
-  const [{ entries }, session, todos] = await Promise.all([
+  const [{ entries }, session, todos, icon] = await Promise.all([
     getWhatsOn({ from: now, days: 14 }),
     getSession(),
     listTodos(id),
+    getAvatarConfig(id),
   ]);
+  const p = { ...person, icon };
   const role = session?.role ?? 'display';
 
   // docs/family-hub-todo-brief.md: ownership is `session.person === person`,

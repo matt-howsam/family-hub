@@ -1,15 +1,35 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Gear } from '@phosphor-icons/react/ssr';
 import { PEOPLE, PEOPLE_ORDER } from '@/lib/people';
+import HubIcon from '@/components/HubIcon';
+
+/* Matches the old .avatar__disc media query (app/globals.css) — wall gets
+ * the full 80px studio render, a phone-width viewport gets 60px, which is
+ * also small enough that HubIcon auto-simplifies heavier effects. */
+const WALL_PX = 80;
+const PHONE_PX = 60;
+const PHONE_QUERY = '(max-width: 560px)';
+
+function useAvatarSize() {
+  const [px, setPx] = useState(WALL_PX);
+  useEffect(() => {
+    const mq = window.matchMedia(PHONE_QUERY);
+    const update = () => setPx(mq.matches ? PHONE_PX : WALL_PX);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return px;
+}
 
 /* One tap opens a person's own view — their day, goals, chores. Same
    destination as tapping a child's home block.
 
    `showSettings` adds one more stop at the end of the same row — Q&A,
    review queue, device pairing, all adult-only utilities with nowhere else
-   to live. Deliberately NOT another avatar__disc: a disc with a gear icon
+   to live. Deliberately NOT another avatar disc: a disc with a gear icon
    instead of an initial would read as a fifth person, and the whole point
    of the disc shape is "this is someone." A plain icon keeps the two kinds
    of thing visually distinct while still sharing the row a family already
@@ -22,8 +42,9 @@ import { PEOPLE, PEOPLE_ORDER } from '@/lib/people';
    once already; measuring the actual rendered height is correct by
    construction regardless of safe-area quirks, Dynamic Type text scaling,
    or anything else that changes how tall this bar ends up. */
-export default function Avatars({ showSettings = false }) {
+export default function Avatars({ avatarIcons, showSettings = false }) {
   const ref = useRef(null);
+  const avatarPx = useAvatarSize();
 
   useEffect(() => {
     const el = ref.current;
@@ -43,12 +64,7 @@ export default function Avatars({ showSettings = false }) {
         const p = PEOPLE[id];
         return (
           <Link className="avatar" href={`/people/${id}`} key={id}>
-            <div
-              className="avatar__disc"
-              style={{ background: `var(--fh-${id}-disc)`, color: `var(--fh-${id}-ink)` }}
-            >
-              {p.initial}
-            </div>
+            <HubIcon icon={avatarIcons[id]} size={avatarPx} />
             <span className="avatar__name">{p.name}</span>
             <div className="avatar__rule" />
           </Link>

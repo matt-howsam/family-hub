@@ -409,10 +409,6 @@ html, body {
            padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
 .pv-header { display: flex; align-items: center; gap: var(--fh-space-5);
              padding: var(--fh-space-2) var(--fh-space-2) var(--fh-space-7); }
-.pv-header__disc { width: var(--fh-avatar-wall); height: var(--fh-avatar-wall);
-                    border-radius: var(--fh-radius-pill); display: flex;
-                    align-items: center; justify-content: center;
-                    font: 700 30px var(--fh-font); flex-shrink: 0; }
 .pv-header__name { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
 .pv-header__year { display: block; margin-top: var(--fh-space-1);
                     font: var(--fh-text-label); letter-spacing: var(--fh-track-label);

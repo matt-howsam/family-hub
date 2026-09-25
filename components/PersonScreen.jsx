@@ -6,6 +6,7 @@ import { TShirt, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
 import { resolveUniform } from '@/lib/timetable';
 import TodoSection from '@/components/TodoSection';
+import HubIcon from '@/components/HubIcon';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
    the fridge should be showing the wall, not one person's day. */
@@ -200,12 +201,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
     <main className="pv-page">
       <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="pv-header">
-        <div
-          className="pv-header__disc"
-          style={{ background: `var(--fh-${person.id}-disc)`, color: `var(--fh-${person.id}-ink)` }}
-        >
-          {person.initial}
-        </div>
+        <HubIcon icon={person.icon} size={80} />
         <div>
           <div className="pv-header__name">{person.name}</div>
           {person.year && <span className="pv-header__year">Year {person.year}</span>}
