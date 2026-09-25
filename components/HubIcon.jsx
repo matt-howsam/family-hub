@@ -1,17 +1,12 @@
 import { derive } from '@/lib/hubIcon';
 
-/* Below this size, the studio's heavier effects (long shadow, glow, stack,
- * a hollow outline) stop reading as style. It's not just legibility at
- * tiny sizes — checked by rendering "long" at 80px next to a flattened
- * version: the effect is built from ~18 text-shadow copies each offset
- * a fraction of a CSS pixel apart, so it reads as a crisp diagonal trail
- * at app-icon scale (1024px) but the sub-pixel offsets just blur together
- * at avatar scale, which is exactly the "looks a bit soft" symptom on the
- * wall strip (80px). Falling back to a flat fill covers every real
- * placement — wall (80px), row (52px), inline (28px) — without every call
- * site having to know to ask for it. Only the studios' own large hero
- * preview (160px) and the actual rasterized icon (512/1024px) are above
- * this and keep full effects, where they were designed to be seen. */
+/* Below this size, "long" and "stack" collapse to a single shadow copy
+ * instead of many sub-pixel-spaced ones — see lib/hubIcon.js#derive for
+ * why. Every other effect (glow, drop, offset, outline) is unaffected by
+ * `simplify` and renders identically at any size. Covers every real
+ * avatar placement — wall (80px), row (52px), inline (28px) — while the
+ * studios' own large hero preview (160px) and the actual rasterized icon
+ * (512/1024px) are above this and keep the full multi-layer effect. */
 const SIMPLIFY_BELOW = 110;
 
 /* Renders one icon tile from a config — used for preset swatches, the live
@@ -19,10 +14,7 @@ const SIMPLIFY_BELOW = 110;
  * the drop shadow (dock/tray icons, and inline avatars, don't get one). */
 export default function HubIcon({ icon, size = 120, flat = false }) {
   const px = Number(size) || 120;
-  const raw = derive(icon);
-  const d = px < SIMPLIFY_BELOW
-    ? Object.assign({}, raw, { shadow: 'none', filter: 'none', stroke: '0 transparent', color: raw.fg, gloss: false })
-    : raw;
+  const d = derive(icon, { simplify: px < SIMPLIFY_BELOW });
   const lift = flat ? 'none' : `0 ${Math.max(1, px * .02)}px ${Math.max(2, px * .06)}px rgba(20,20,48,.22)`;
 
   return (
