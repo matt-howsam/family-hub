@@ -1,17 +1,17 @@
 /* Phosphor (@phosphor-icons/react, used everywhere else in the app) has no
  * BBQ, tongs, drumstick, steak or chopsticks glyphs — checked against the
  * latest version, not just what's installed. These five are hand-drawn to
- * match its look: 256×256 viewBox, stroke-based, 16-unit stroke, rounded
- * caps/joins — so they drop into the same picker grid at the same size
- * without reading as a different icon set. Each accepts the same
- * {size, className} shape components/PlannerScreen.jsx already renders
- * every food icon with. */
+ * match its look: 256×256 viewBox, stroke-based, rounded caps/joins, 16-unit
+ * stroke by default (Bbq overrides — see below) — so they drop into the
+ * same picker grid at the same size without reading as a different icon
+ * set. Each accepts the same {size, className} shape
+ * components/PlannerScreen.jsx already renders every food icon with. */
 
-function IconBase({ size = '1em', className, children }) {
+function IconBase({ size = '1em', className, strokeWidth = 16, children }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 256 256"
-      fill="none" stroke="currentColor" strokeWidth={16} strokeLinecap="round" strokeLinejoin="round"
+      fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"
       className={className}
     >
       {children}
@@ -19,16 +19,23 @@ function IconBase({ size = '1em', className, children }) {
   );
 }
 
+/* A kettle grill, not a grate-and-flame — closer to how people actually
+ * picture "BBQ", and legible in a way the flatter grate version wasn't.
+ * More detail than the other four (rim highlight, smoke, a wheel and a
+ * two-leg stand) needs a thinner stroke than IconBase's default to stay
+ * crisp instead of muddy at picker size — checked side by side at 26px. */
 export function Bbq(props) {
   return (
-    <IconBase {...props}>
-      <rect x="48" y="96" width="160" height="64" rx="14" />
-      <line x1="88" y1="96" x2="88" y2="160" />
-      <line x1="128" y1="96" x2="128" y2="160" />
-      <line x1="168" y1="96" x2="168" y2="160" />
-      <line x1="62" y1="160" x2="42" y2="216" />
-      <line x1="194" y1="160" x2="214" y2="216" />
-      <path d="M128 42 C112 66 112 84 128 92 C144 84 144 66 128 42 Z" />
+    <IconBase strokeWidth={10} {...props}>
+      <path d="M100 58 C92 74 104 82 98 98" />
+      <path d="M128 50 C120 66 132 76 126 92" />
+      <path d="M156 58 C148 74 160 82 154 98" />
+      <path d="M56 120 A72 75 0 0 0 200 120 Z" />
+      <path d="M85 145 A45 26 0 0 0 152 160" />
+      <line x1="90" y1="186" x2="78" y2="222" />
+      <circle cx="70" cy="230" r="13" />
+      <line x1="166" y1="184" x2="206" y2="220" />
+      <line x1="150" y1="205" x2="188" y2="228" />
     </IconBase>
   );
 }
