@@ -180,7 +180,6 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
   const router = useRouter();
   const timer = useRef(null);
   const fridge = role === 'display';
-  const todoEmpty = !todo || todo.items.length === 0;
   const boardEmpty = !board || (board.available.length === 0 && board.mine.length === 0 && !board.bonus.status);
 
   useEffect(() => {
@@ -197,7 +196,37 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
     };
   }, [fridge, router]);
 
-  const nothing = !today && (!school) && comingUp.length === 0 && todoEmpty && boardEmpty;
+  // One tab per section that actually has something in it — same sections
+  // that used to stack, in the same order ("ordered by decay speed", same
+  // reasoning as the wall). To do is always offered even with nothing due:
+  // it's the one tab with its own add affordance, so "empty" still means
+  // something to do there. Everything else already renders nothing when
+  // empty (TodaySection, ComingUp, ChoresBoard), so an empty one just
+  // never gets a tab rather than existing as a dead end — which is also
+  // what replaces the old standalone "Nothing needs you" banner: if To do
+  // is the only tab and it says "Nothing due", that already says it.
+  const tabs = [
+    today && { key: 'today', label: 'Today', render: () => <TodaySection today={today} tint={person.tint} /> },
+    school && { key: 'school', label: 'School', render: () => <SchoolSection school={school} /> },
+    !boardEmpty && {
+      key: 'chores', label: 'Chores',
+      render: () => <ChoresBoard person={person.id} board={board} canWrite={todo.canWrite} fridge={fridge} />,
+    },
+    {
+      key: 'todo', label: 'To do',
+      render: () => (
+        <TodoSection
+          person={person.id} personKind={person.kind} subjects={todo.subjects} items={todo.items}
+          now={todo.now} canWrite={todo.canWrite} fridge={fridge}
+        />
+      ),
+    },
+    comingUp.length > 0 && { key: 'comingup', label: 'Coming up', render: () => <ComingUp entries={comingUp} /> },
+  ].filter(Boolean);
+
+  // To do is always in the list above, so there's always at least one tab.
+  const [activeTab, setActiveTab] = useState(() => tabs[0].key);
+  const active = tabs.find((t) => t.key === activeTab) ?? tabs[0];
 
   return (
     <main className="pv-page">
@@ -216,25 +245,21 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
         </div>
       </div>
 
-      {nothing && <div className="pv-empty">Nothing needs you.</div>}
+      {tabs.length > 1 && (
+        <div className="pv-tabs">
+          {tabs.map((t) => (
+            <button
+              key={t.key} type="button"
+              className={`pv-tabs__tab${t.key === active.key ? ' pv-tabs__tab--active' : ''}`}
+              onClick={() => setActiveTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
 
-      <TodaySection today={today} tint={person.tint} />
-      {school && <SchoolSection school={school} />}
-      {board && (
-        <ChoresBoard person={person.id} board={board} canWrite={todo.canWrite} fridge={fridge} />
-      )}
-      {todo && (
-        <TodoSection
-          person={person.id}
-          personKind={person.kind}
-          subjects={todo.subjects}
-          items={todo.items}
-          now={todo.now}
-          canWrite={todo.canWrite}
-          fridge={fridge}
-        />
-      )}
-      <ComingUp entries={comingUp} />
+      {active.render()}
     </main>
   );
 }

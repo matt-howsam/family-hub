@@ -253,30 +253,21 @@ html, body {
                      font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
                      text-transform: uppercase; opacity: .75; }
 
-/* ---- Chores — static until the chores module ships. Ticking one is the
-   one write the fridge allows, but it happens in a personal view, not here. ---- */
-.chore { display: grid; grid-template-columns: auto 1fr auto; align-items: center;
-         gap: var(--fh-space-5); background: var(--fh-surface);
-         border-radius: var(--fh-radius-xl); box-shadow: var(--fh-shadow-card);
-         padding: var(--fh-space-4) var(--fh-space-5); }
-.chore + .chore { margin-top: var(--fh-space-4); }
-.chore__who { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
-              text-transform: uppercase; color: var(--fh-ink-label);
-              margin-bottom: var(--fh-space-3); }
-.chore__list { display: flex; flex-wrap: wrap; gap: var(--fh-space-2) var(--fh-space-3);
-               align-items: center; }
-.chore__pill { display: inline-flex; align-items: center; gap: var(--fh-space-2);
-               border-radius: var(--fh-radius-md); padding: 9px var(--fh-space-4);
-               font: 500 18px var(--fh-font); min-height: var(--fh-target-min); }
-.chore__pill--done { background: var(--fh-teal-wash); color: var(--fh-teal-ink);
-                      text-decoration: line-through; }
-.chore__pill--open { background: var(--fh-surface-sunken);
-                      border-bottom: 3px solid var(--fh-teal); }
-.chore__earned { text-align: right; flex-shrink: 0; }
-.chore__figure { font: var(--fh-text-figure); letter-spacing: var(--fh-track-title);
-                 color: var(--fh-teal-ink); font-variant-numeric: tabular-nums; }
-.chore__label { display: block; font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
-                text-transform: uppercase; color: var(--fh-ink-label); margin-top: var(--fh-space-1); }
+/* ---- Chores dashboard card — components/Chores.jsx. Read-only glance at
+   the job board: what's sitting open, what each kid's actually done this
+   week. The tick itself lives in a personal view, never here — see
+   docs/family-hub-chores-brief.md's "Surfaces > Dashboard". ---- */
+.chores-card { background: var(--fh-surface); border-radius: var(--fh-radius-xl);
+               box-shadow: var(--fh-shadow-card); padding: var(--fh-space-5) var(--fh-space-5) var(--fh-space-4); }
+.chores-card__header { display: flex; align-items: baseline; justify-content: space-between;
+                        gap: var(--fh-space-3); margin-bottom: var(--fh-space-4); }
+.chores-card__label { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                       text-transform: uppercase; color: var(--fh-ink-label); }
+.chores-card__available { font: 600 15px/1 var(--fh-font); color: var(--fh-teal-ink); }
+.chores-card__kids { display: flex; flex-direction: column; gap: var(--fh-space-4); }
+.chores-card__kid { display: flex; align-items: center; gap: var(--fh-space-4); }
+.chores-card__name { font: 700 18px/1.2 var(--fh-font); color: var(--fh-ink); }
+.chores-card__stat { font: 400 15px/1.3 var(--fh-font); color: var(--fh-ink-body); margin-top: 2px; }
 
 @media (max-width: 560px) {
   /* Not a flat var(--fh-gutter-phone) on all sides — that silently wiped
@@ -412,6 +403,18 @@ html, body {
 .pv-header__edit { display: inline-flex; align-items: center; gap: var(--fh-space-2); margin-top: var(--fh-space-3);
                     min-height: var(--fh-target-min); font: 600 15px/1 var(--fh-font); color: var(--fh-teal-ink);
                     text-decoration: none; }
+
+/* One tab per section that has something in it — components/PersonScreen.jsx.
+   Scrolls horizontally rather than squeezing labels to fit, so it holds up
+   from a 393px phone to the 810px wall regardless of how many tabs this
+   person has today. */
+.pv-tabs { display: flex; gap: var(--fh-space-2); margin: var(--fh-space-2) 0 var(--fh-space-6);
+           overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.pv-tabs::-webkit-scrollbar { display: none; }
+.pv-tabs__tab { flex: none; min-height: var(--fh-target-min); padding: 0 var(--fh-space-5);
+                border: 0; border-radius: var(--fh-radius-md); background: var(--fh-surface-sunken);
+                color: var(--fh-ink-label); font: 700 15px/1 var(--fh-font); white-space: nowrap; }
+.pv-tabs__tab--active { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
 
 .pv-section { margin-bottom: var(--fh-space-7); }
 .pv-section__label { padding: 0 var(--fh-space-2) var(--fh-space-3);

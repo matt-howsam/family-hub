@@ -23,6 +23,7 @@ import { getSpendingTile } from '@/lib/scorecard';
 import { getRegisterTile } from '@/lib/register';
 import { getHolidayTile } from '@/lib/holidays';
 import { getAllAvatarConfigs } from '@/lib/avatarIcon';
+import { getChoresDashboardTile } from '@/lib/chores';
 
 /* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
    relevant again even on a school day, per the conditions data spec. */
@@ -44,6 +45,7 @@ export default async function Wall() {
   const registerTile = await getRegisterTile();
   const holidayTile = await getHolidayTile();
   const avatarIcons = await getAllAvatarConfigs();
+  const choresTile = await getChoresDashboardTile();
 
   /* Only build briefings on a school weekday. At the weekend or in the
      holidays the children's blocks have nothing true to say, so they are
@@ -133,11 +135,14 @@ export default async function Wall() {
       {/* Family register — people. Softer radius, more air, tinted. Kid
           cards run the whole school day; the water card is additive once
           there's time to act on it — a non-school day, or after pickup —
-          rather than only ever replacing the kids' blocks. */}
+          rather than only ever replacing the kids' blocks. Chores is
+          always on, school day or not — the brief's own rule is that the
+          job board ignores school terms, same as the lawn growing in the
+          holidays (docs/family-hub-chores-brief.md). */}
       <div data-register="family" style={{ marginTop: 'var(--fh-space-8)' }}>
         {isSchoolDayToday && kids.map((b) => <KidCard key={b.id} b={b} />)}
         {showWater && <WaterHero conditions={conditions} />}
-        {!isSchoolDayToday && <Chores avatarIcons={avatarIcons} />}
+        <Chores tile={choresTile} avatarIcons={avatarIcons} />
       </div>
 
       {/* Ordered by decay speed: What's on is wrong within hours and read by
