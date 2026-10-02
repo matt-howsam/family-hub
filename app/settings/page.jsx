@@ -15,6 +15,7 @@ const LINKS = [
   { href: '/settings/devices', title: 'Pair a device', note: 'Generate a code, manage paired devices' },
   { href: '/settings/app-icon', title: 'App icon', note: 'Design the icon that shows on every home screen' },
   { href: '/settings/avatars', title: 'Avatars', note: 'Each person’s own mark, wall strip and their own view' },
+  { href: '/settings/chores', title: 'Chores', note: 'The job board, review queue, and what’s owed and paid' },
   { href: '/register?from=settings', title: 'Operations register', note: 'Renewals, costs and the number we’re reducing' },
   { href: '/assets', title: 'Assets', note: 'What the house owns, warranties, replacement forecasts' },
 ];

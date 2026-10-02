@@ -137,7 +137,7 @@ export default async function Wall() {
       <div data-register="family" style={{ marginTop: 'var(--fh-space-8)' }}>
         {isSchoolDayToday && kids.map((b) => <KidCard key={b.id} b={b} />)}
         {showWater && <WaterHero conditions={conditions} />}
-        {!isSchoolDayToday && <Chores />}
+        {!isSchoolDayToday && <Chores avatarIcons={avatarIcons} />}
       </div>
 
       {/* Ordered by decay speed: What's on is wrong within hours and read by

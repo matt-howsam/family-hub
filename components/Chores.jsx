@@ -1,7 +1,14 @@
 import { Check } from '@phosphor-icons/react/ssr';
+import HubIcon from '@/components/HubIcon';
 
-/* Static until the chores module ships. Ticking one is the one write the
-   fridge allows, but that happens inside a personal view, not on the wall. */
+/* Static mock pending the real job board's dashboard line — see
+   docs/family-hub-chores-brief.md's "Open": placement can't land in zone 1,
+   and the brief itself defers this surface to "Later". Ticking a real job
+   happens inside a personal view (components/ChoresBoard.jsx), never here,
+   so this tile was always read-only regardless.
+
+   The avatar is real, though — same per-person HubIcon config as the wall
+   strip and each person's own page, not the old generic initial-in-a-disc. */
 const KIDS = [
   { id: 'tom', name: 'Tom', earned: 7, chores: [
     { label: 'Bins', done: true },
@@ -15,17 +22,12 @@ const KIDS = [
   ] },
 ];
 
-export default function Chores() {
+export default function Chores({ avatarIcons }) {
   return (
     <>
       {KIDS.map((k) => (
         <div className="chore" key={k.id}>
-          <div
-            className="chore__avatar"
-            style={{ background: `var(--fh-${k.id}-disc)`, color: `var(--fh-${k.id}-ink)` }}
-          >
-            {k.name[0]}
-          </div>
+          <HubIcon icon={avatarIcons[k.id]} size={52} />
           <div>
             <div className="chore__who">{k.name} · this week</div>
             <div className="chore__list">

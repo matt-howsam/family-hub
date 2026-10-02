@@ -472,6 +472,46 @@ Sydney time and changes the week letter mid-morning.
 
 ---
 
+## Chores & pocket money
+
+**This replaces design-brief §7.10, 2 October 2026.** See
+`docs/family-hub-chores-brief.md`. §7.10 assumed chores were assigned by a
+parent and ticked by a child; this module is a job board instead.
+
+**Chores are a claim board, not a roster.** Parents curate paid jobs with a
+value and a frequency. A job comes up on its schedule, appears as available,
+and a child claims it. Nothing is assigned to a child.
+
+**A child claims, does, and submits. An adult approves.** Submitting is the
+child's satisfying moment and is the tick. Approval and payment are
+parent-side bookkeeping, on a phone.
+
+**Adults mark done; they never claim.** If a job goes untaken, an adult does
+it and marks it done: no claim, no review, no payment, and it's quiet on the
+fridge — a child's view never shows who did an unclaimed job.
+
+**The next cycle runs from completion, not from the calendar.** The clock
+starts the day the work was submitted, not the day it was approved, so a slow
+approval never delays the next cycle.
+
+**Contribution earns one weekly bonus, never a price per task.** Bins, the
+dishwasher, tidy rooms and the rest aren't jobs on the board — a child who's
+done their part claims a flat weekly bonus ($12), judged by an adult. All or
+nothing, no checklist, children only. A declined week is never shown on the
+fridge.
+
+**Claim and submit happen inside the personal view, never on the dashboard.**
+Same rule as the old §7.10 tick and the To Do tick. The avatar tap supplies
+enough identity.
+
+**Chores ignore school terms.** The lawn grows in the holidays. This
+supersedes the water-card note above ("chores stay tied to non-school days
+only") for the job board itself — that line was about the old wall tile's
+display days, not the schedule engine, and the wall/dashboard side of this
+hasn't been rebuilt yet (see Open).
+
+---
+
 ## Scope
 
 **Release 1 is projects, operations register and spending scorecard.**
@@ -500,4 +540,17 @@ settled. Individual module screens are cheap and rot if designed too early.
   surface could have; also the easiest to trigger by accident.
 - Whether holidays and wants are one module or two.
 - Whether chores and goals can share a child's screen without the goals
-  inheriting the chores' compliance feeling.
+  inheriting the chores' compliance feeling — much less acute now that
+  nothing on the chores board is assigned (2 October 2026), but still worth
+  checking once goals exist.
+- **Chores: the dashboard line.** Deferred — "3 jobs available" needs a slot
+  that isn't zone 1. Candidate: Saturday state, per the brief.
+- **Chores: claim contention.** Shipped with no cap and a 3-day lapse back to
+  the board (Matt's call, 2 October 2026) — revisit if one child is grabbing
+  everything, or the lapse window feels wrong in practice.
+- **Chores: submit has no undo**, unlike claim. Reversing it cleanly means
+  unwinding the chore's own schedule advance, not just the one row — the
+  practical correction path is the adult's "needs another go" in review.
+- **Chores: no stale-board indicator on a failed fetch.** The brief's
+  acceptance checks ask for this (cached board, marked stale, never a
+  spinner, same as StaleGuard elsewhere); not built yet.

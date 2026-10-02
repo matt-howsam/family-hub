@@ -260,10 +260,6 @@ html, body {
          border-radius: var(--fh-radius-xl); box-shadow: var(--fh-shadow-card);
          padding: var(--fh-space-4) var(--fh-space-5); }
 .chore + .chore { margin-top: var(--fh-space-4); }
-.chore__avatar { width: var(--fh-avatar-row); height: var(--fh-avatar-row);
-                 border-radius: var(--fh-radius-pill); display: flex;
-                 align-items: center; justify-content: center;
-                 font: 700 21px var(--fh-font); flex-shrink: 0; }
 .chore__who { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
               text-transform: uppercase; color: var(--fh-ink-label);
               margin-bottom: var(--fh-space-3); }
@@ -1062,5 +1058,54 @@ html, body {
 @media (max-width: 560px) {
   .as-page { padding: var(--fh-gutter-phone); }
 }
+
+/* ==========================================================================
+   Chores — the job board + weekly bonus. See
+   docs/family-hub-chores-brief.md and components/ChoresBoard.jsx. Lives
+   inside a .pv-section on a child's own view, same register as To do. */
+
+.board-bonus { display: flex; align-items: center; gap: var(--fh-space-3);
+               width: 100%; min-height: var(--fh-target-commit); border: 0; cursor: pointer;
+               border-radius: var(--fh-radius-lg); padding: 0 var(--fh-space-5);
+               background: var(--fh-teal-tint-a); color: var(--fh-ink);
+               font: var(--fh-text-row); margin-bottom: var(--fh-space-4);
+               transition: transform var(--fh-dur-tick) var(--fh-ease); }
+.board-bonus:active { transform: scale(.98); }
+.board-bonus:disabled { cursor: default; }
+.board-bonus--done { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
+
+.board-group { margin-bottom: var(--fh-space-5); }
+.board-group__label { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                       text-transform: uppercase; color: var(--fh-ink-label);
+                       margin-bottom: var(--fh-space-3); }
+
+.board-job { display: flex; align-items: center; gap: var(--fh-space-4); width: 100%;
+             min-height: var(--fh-target-min); border: 0; text-align: left;
+             background: var(--fh-surface); border-radius: var(--fh-radius-md);
+             box-shadow: var(--fh-shadow-flat); padding: var(--fh-space-3) var(--fh-space-4);
+             margin-bottom: var(--fh-space-2); }
+.board-job__icon { color: var(--fh-teal-ink); flex-shrink: 0; }
+.board-job__main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.board-job__title { font: 600 17px/1.3 var(--fh-font); color: var(--fh-ink); }
+.board-job__value { font: 500 14px/1.3 var(--fh-font); color: var(--fh-ink-body); margin-top: 2px; }
+.board-job--claimable { cursor: pointer; transition: transform var(--fh-dur-tick) var(--fh-ease); }
+.board-job--claimable:active { transform: scale(.98); }
+.board-job--claimable:disabled { opacity: .6; cursor: default; }
+.board-job__action { flex-shrink: 0; width: 40px; height: 40px; border-radius: var(--fh-radius-pill);
+                      border: 0; background: var(--fh-teal); color: var(--fh-ink-inverse);
+                      display: flex; align-items: center; justify-content: center; cursor: pointer;
+                      transition: transform var(--fh-dur-tick) var(--fh-ease); }
+.board-job__action:active { transform: scale(.92); }
+.board-job__undo { flex-shrink: 0; width: 36px; height: 36px; border-radius: var(--fh-radius-pill);
+                    border: 0; background: transparent; color: var(--fh-ink-label); cursor: pointer;
+                    display: flex; align-items: center; justify-content: center; }
+
+.chores-earned { display: flex; align-items: center; gap: var(--fh-space-3); margin-top: var(--fh-space-4); }
+.chores-earned__figure { font: var(--fh-text-row); color: var(--fh-ink); font-variant-numeric: tabular-nums; }
+.chores-earned__badge { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                         text-transform: uppercase; color: var(--fh-ink-label);
+                         background: var(--fh-surface-sunken); border-radius: var(--fh-radius-pill);
+                         padding: var(--fh-space-1) var(--fh-space-3); }
+.chores-earned__badge--paid { color: var(--fh-teal-ink); background: var(--fh-teal-wash); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

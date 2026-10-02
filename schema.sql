@@ -906,3 +906,96 @@ on conflict (name) do nothing;
 insert into asset (name) values
   ('Solar system'), ('TVs'), ('Computer'), ('Sound system')
 on conflict (name) do nothing;
+
+-- Chores & pocket money — job board + weekly contribution bonus.
+-- See docs/family-hub-chores-brief.md, which supersedes design-brief §7.10
+-- (the old assigned-chore-ticked-by-a-child model). A job is offered, not
+-- assigned; a child claims it, submits (the tick), an adult reviews.
+--
+-- `next_available` advances on SUBMIT, not on approval — the clock starts
+-- the day the work was actually done (grass grows from the last cut),
+-- never from a calendar schedule or from when a parent got around to
+-- checking it. A claimed-but-unsubmitted job never touches it.
+create table if not exists chore (
+  id              serial primary key,
+  title           text        not null unique,     -- unique so the seed insert can conflict-skip on re-run
+  icon            text        not null,             -- Phosphor icon name
+  value_cents     int         not null,
+  frequency       text        not null check (frequency in ('weekly', 'fortnightly', 'monthly')),
+  interval_days   int         not null,              -- 7 | 14 | 30, derived from frequency
+  eligible        text[],                            -- null = both children
+  notes           text,
+  next_available  date        not null,
+  position        int         not null default 0,
+  archived_at     timestamptz,
+  created_at      timestamptz not null default now()
+);
+
+-- One instance of a chore being done. `status` is the whole lifecycle —
+-- 'claimed' → 'submitted' → 'approved', with 'redo' a detour back to the
+-- same child rather than a reschedule, and 'adult_done' a side door that
+-- skips claim/submit/review entirely when nobody claims it. No "unclaimed"
+-- status: unclaiming (lapsed or manual) just deletes a 'claimed' row,
+-- since nothing happened yet to need a record of.
+--
+-- Paid is a timestamp, not a status — owed is "approved, paid_at is null".
+-- value_cents is snapshotted from chore.value_cents at claim/adult-done
+-- time, so a later rate change never touches a job already in flight.
+create table if not exists chore_job (
+  id            serial primary key,
+  chore_id      int         not null references chore(id),
+  person        text        not null,             -- who claimed, or the adult who did it
+  status        text        not null check (status in ('claimed', 'submitted', 'redo', 'approved', 'adult_done')),
+  value_cents   int         not null,
+  claimed_at    timestamptz,
+  submitted_at  timestamptz,
+  done_on       date,                             -- drives chore.next_available
+  reviewed_by   text,
+  reviewed_at   timestamptz,
+  review_note   text,
+  paid_at       timestamptz,
+  set_from      text        not null check (set_from in ('display', 'phone')),
+  created_at    timestamptz not null default now()
+);
+create index if not exists chore_job_chore_idx on chore_job (chore_id);
+create index if not exists chore_job_person_idx on chore_job (person);
+
+-- One row per child per Monday-Sunday week, written only on claim — an
+-- unclaimed week is the absence of a row, never a record of lapsing.
+create table if not exists weekly_bonus (
+  id           serial primary key,
+  person       text        not null,              -- children only
+  week_start   date        not null,               -- Monday, lib/week.js#mondayOf
+  status       text        not null check (status in ('claimed', 'not_yet', 'approved', 'declined')),
+  value_cents  int         not null,               -- snapshot of bonus_setting at claim
+  claimed_at   timestamptz not null,
+  reviewed_by  text,
+  reviewed_at  timestamptz,
+  paid_at      timestamptz,
+  set_from     text        not null check (set_from in ('display', 'phone')),
+  created_at   timestamptz not null default now(),
+  unique (person, week_start)
+);
+
+-- Single row — the bonus amount, a phone edit per docs/DECISIONS.md's
+-- "configuration must never require a deploy", same single-row idiom as
+-- week_anchor.
+create table if not exists bonus_setting (
+  id          boolean primary key default true check (id),
+  value_cents int     not null
+);
+
+insert into chore (title, icon, value_cents, frequency, interval_days, eligible, notes, next_available, position) values
+  ('Mow rear lawn',              'Tree',        1500, 'fortnightly', 14, null,          'The fire break to the bushland. ~45 min.',                current_date, 0),
+  ('Mow back yard and front',    'Leaf',        1000, 'fortnightly', 14, null,          'Back yard and pool area, nature strip, pathway. ~30 min.', current_date, 1),
+  ('Vacuum upstairs',            'Broom',        500, 'weekly',       7, null,          null,                                                        current_date, 2),
+  ('Vacuum downstairs',          'Broom',        500, 'weekly',       7, null,          null,                                                        current_date, 3),
+  ('Dust whole house',           'Sparkle',      500, 'fortnightly', 14, null,          null,                                                        current_date, 4),
+  ('Mop downstairs',             'Drop',        1000, 'monthly',     30, null,          null,                                                        current_date, 5),
+  ('Clean downstairs windows',   'SprayBottle',  800, 'monthly',     30, null,          null,                                                        current_date, 6),
+  ('Clean interior — Mazda',     'CarSimple',    600, 'monthly',     30, null,          null,                                                        current_date, 7),
+  ('Clean interior — Defender',  'CarSimple',    600, 'monthly',     30, null,          null,                                                        current_date, 8)
+on conflict (title) do nothing;
+
+insert into bonus_setting (value_cents) values (1200)
+on conflict (id) do nothing;

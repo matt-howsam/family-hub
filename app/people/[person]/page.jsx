@@ -7,6 +7,7 @@ import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getSession } from '@/lib/identity';
 import { listTodos, subjectsFor } from '@/lib/todo';
+import { boardFor } from '@/lib/chores';
 import { getAvatarConfig } from '@/lib/avatarIcon';
 import PersonScreen from '@/components/PersonScreen';
 import AutoRefresh from '@/components/AutoRefresh';
@@ -32,11 +33,13 @@ export default async function PersonPage({ params }) {
   const todayKey = now.toISOString().slice(0, 10);
   const tomorrowKey = new Date(now.getTime() + DAY).toISOString().slice(0, 10);
 
-  const [{ entries }, session, todos, icon] = await Promise.all([
+  const isChild = person.kind === 'child';
+  const [{ entries }, session, todos, icon, board] = await Promise.all([
     getWhatsOn({ from: now, days: 14 }),
     getSession(),
     listTodos(id),
     getAvatarConfig(id),
+    isChild ? boardFor(id) : null,
   ]);
   const p = { ...person, icon };
   const role = session?.role ?? 'display';
@@ -96,6 +99,7 @@ export default async function PersonPage({ params }) {
         person={p}
         role={role}
         todo={todo}
+        board={board}
         today={todaySection}
         school={{
           dayKey: schoolDayKey,

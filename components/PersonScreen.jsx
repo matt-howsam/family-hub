@@ -6,6 +6,7 @@ import { TShirt, ArrowLeft, PencilSimple } from '@phosphor-icons/react/ssr';
 import { subjectIcon } from '@/lib/subjectIcons';
 import { resolveUniform } from '@/lib/timetable';
 import TodoSection from '@/components/TodoSection';
+import ChoresBoard from '@/components/ChoresBoard';
 import HubIcon from '@/components/HubIcon';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
@@ -175,11 +176,12 @@ function SchoolSection({ school }) {
   );
 }
 
-export default function PersonScreen({ person, role, today, school, comingUp = [], todo }) {
+export default function PersonScreen({ person, role, today, school, comingUp = [], todo, board }) {
   const router = useRouter();
   const timer = useRef(null);
   const fridge = role === 'display';
   const todoEmpty = !todo || todo.items.length === 0;
+  const boardEmpty = !board || (board.available.length === 0 && board.mine.length === 0 && !board.bonus.status);
 
   useEffect(() => {
     if (!fridge) return undefined;
@@ -195,7 +197,7 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
     };
   }, [fridge, router]);
 
-  const nothing = !today && (!school) && comingUp.length === 0 && todoEmpty;
+  const nothing = !today && (!school) && comingUp.length === 0 && todoEmpty && boardEmpty;
 
   return (
     <main className="pv-page">
@@ -218,6 +220,9 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
       <TodaySection today={today} tint={person.tint} />
       {school && <SchoolSection school={school} />}
+      {board && (
+        <ChoresBoard person={person.id} board={board} canWrite={todo.canWrite} fridge={fridge} />
+      )}
       {todo && (
         <TodoSection
           person={person.id}
