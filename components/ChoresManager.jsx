@@ -207,7 +207,7 @@ function LibrarySection({ library, onChange }) {
           const Icon = choreIcon(c.icon);
           const available = !c.openJobId && c.nextAvailable <= new Date().toISOString().slice(0, 10);
           return (
-            <div key={c.id} className="row" style={{ flexWrap: 'wrap' }}>
+            <div key={c.id} className="row chore-row">
               <Icon size={22} style={{ flexShrink: 0, color: 'var(--fh-teal-ink)' }} />
               <div className="row__main">
                 <span className="row__title">{c.title}</span>
@@ -215,26 +215,30 @@ function LibrarySection({ library, onChange }) {
                   {c.openJobId ? `Held by ${c.openPerson === 'tom' ? 'Tom' : 'Rose'} (${c.openStatus})` : available ? 'Available now' : `Next ${c.nextAvailable}`}
                 </span>
               </div>
-              <input
-                className="pair__input" type="number" step="0.01" min="0"
-                style={{ width: 70, flex: 'none', minHeight: 40, padding: '0 var(--fh-space-3)', textAlign: 'right' }}
-                defaultValue={dollars(c.valueCents)} onBlur={(e) => saveRate(c, e.target.value)}
-              />
-              <select
-                className="pair__input" style={{ width: 120, flex: 'none', minHeight: 40 }}
-                defaultValue={c.frequency} onChange={(e) => saveFrequency(c, e.target.value)}
-              >
-                <option value="weekly">Weekly</option>
-                <option value="fortnightly">Fortnightly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-              {available && (
-                <button className="pair__link" disabled={busy === c.id} onClick={() => markDone(c.id)}>Mark done</button>
-              )}
-              {c.openStatus === 'claimed' && (
-                <button className="pair__link" disabled={busy === c.id} onClick={() => releaseClaim(c)}>Release claim</button>
-              )}
-              <button className="pair__link" disabled={busy === c.id} onClick={() => toggleArchive(c)}>Archive</button>
+              <div className="chore-row__meta">
+                <input
+                  className="pair__input" type="number" step="0.01" min="0"
+                  style={{ width: 70, flex: 'none', minHeight: 40, padding: '0 var(--fh-space-3)', textAlign: 'right' }}
+                  defaultValue={dollars(c.valueCents)} onBlur={(e) => saveRate(c, e.target.value)}
+                />
+                <select
+                  className="pair__input" style={{ width: 120, flex: 'none', minHeight: 40 }}
+                  defaultValue={c.frequency} onChange={(e) => saveFrequency(c, e.target.value)}
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="fortnightly">Fortnightly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div className="chore-row__actions">
+                {available && (
+                  <button className="pair__link" disabled={busy === c.id} onClick={() => markDone(c.id)}>Mark done</button>
+                )}
+                {c.openStatus === 'claimed' && (
+                  <button className="pair__link" disabled={busy === c.id} onClick={() => releaseClaim(c)}>Release claim</button>
+                )}
+                <button className="pair__link" disabled={busy === c.id} onClick={() => toggleArchive(c)}>Archive</button>
+              </div>
             </div>
           );
         })}

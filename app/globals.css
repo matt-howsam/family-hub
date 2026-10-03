@@ -133,6 +133,23 @@ html, body {
 .row--quiet .row__title { font: 600 17px/1.3 var(--fh-font); letter-spacing: -.005em; color: var(--fh-ink-body); }
 .row__marker { color: var(--fh-ink-label); flex-shrink: 0; }
 
+/* The chores library row (components/ChoresManager.jsx) packs a rate
+   input and a frequency <select> in alongside the title — on an iPhone
+   there's no room, and a native <select> doesn't reliably respect a
+   fixed CSS width (iOS adds its own internal padding), so the title and
+   status text were overlapping it rather than cleanly truncating. Forcing
+   the rate/frequency group (and the action links) onto their own row
+   below the title sidesteps that instead of fighting iOS's select
+   rendering. */
+.chore-row { flex-wrap: wrap; }
+.chore-row__meta { display: flex; gap: var(--fh-space-2); flex: none; }
+.chore-row__actions { display: flex; align-items: center; gap: var(--fh-space-4); flex: none; }
+
+@media (max-width: 560px) {
+  .chore-row__meta, .chore-row__actions { flex-basis: 100%; margin-top: var(--fh-space-2); }
+  .chore-row__actions { flex-wrap: wrap; }
+}
+
 .kid { display: flex; align-items: stretch; text-decoration: none; color: inherit; }
 .kid__slab { background: var(--fh-r-fill);
              padding: var(--fh-r-pad-y) var(--fh-r-pad-x);
