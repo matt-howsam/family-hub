@@ -7,6 +7,59 @@ arbitrary until you know why.
 
 ---
 
+## The Announcement card
+
+**One shared dashboard slot, not one per module.** Chores, Goals and Wants
+each separately reached for the same quiet dashboard space — Chores' deferred
+"N jobs available" line, Goals' shared wins, Wants' active-want line — and
+each would have re-solved the same placement and timing question alone. One
+card, with a priority order across sources, settles it once. Confirmed by
+Matt, 6 October 2026, while reviewing `docs/family-hub-goals-brief.md` and
+`docs/family-hub-wants-brief.md`.
+
+**Shows one thing at a time, never a feed.** Same discipline as the rest of
+the wall. When nothing qualifies at all, the card is simply absent — no
+placeholder joke, no "nothing to report." "Nothing is ever blank" is about
+stale data standing in for live data; it has never meant manufacturing
+content where there is genuinely none.
+
+**Priority, highest first:**
+
+1. **A birthday** — the person's own day.
+2. **A shared win** — Goals' or Wants' own 3-day, withdrawable window.
+3. **A manual announcement** — one-off, adult-authored (a special occasion, a
+   family note).
+4. **The active household want, as the card's default** — e.g. *Saving for ·
+   Boat · around mid-2028* — shown whenever nothing above applies. This is
+   what `family-hub-wants-brief.md` called "the rest slot."
+5. Chores' "N jobs available" nudge is a candidate for this slot too, once
+   Chores revisits its own deferred dashboard line (see "Chores & pocket
+   money" below) — ranking it against the want default is not decided.
+
+**Never on school mornings, 06:00–09:00, regardless of source.** That window
+belongs to the uniform answer; one blackout rule for the slot, not one per
+module.
+
+**Calm register, always.** The attention accent never appears here, whatever
+the source — generalises the rule Goals and Wants already stated for their
+own wins to the slot itself.
+
+**Manual announcements are an adult, phone-only write.** No fridge writes,
+matching every other module's gate. The author sets the display window (a
+single day by default); nothing escalates if it's missed and nothing expires
+early — the window just ends.
+
+**Not a second calendar.** Recurring school terms and public holidays already
+live in `lib/calendar.js` and the Holidays module. This card is for what has
+no home there: birthdays, shared wins, one-off messages, and, by default, the
+active want.
+
+**Adults need a `dob` to get a birthday line.** `lib/people.js` only carries
+`dob` for Rose and Tom today, added for the holiday module's "ages in every
+slot" line. Add Matt's and Renée's if adult birthdays should appear here too.
+
+---
+
 ## Freshness policy
 
 **`force-dynamic` on every page means the server always computes today
@@ -543,8 +596,10 @@ settled. Individual module screens are cheap and rot if designed too early.
   inheriting the chores' compliance feeling — much less acute now that
   nothing on the chores board is assigned (2 October 2026), but still worth
   checking once goals exist.
-- **Chores: the dashboard line.** Deferred — "3 jobs available" needs a slot
-  that isn't zone 1. Candidate: Saturday state, per the brief.
+- **Chores: the dashboard line.** Deferred — "3 jobs available" now has a
+  candidate home in the Announcement card (see "The Announcement card"
+  above, priority 5); still needs its own decision on whether that's the
+  right fit, not assumed by the card's existence.
 - **Chores: claim contention.** Shipped with no cap and a 3-day lapse back to
   the board (Matt's call, 2 October 2026) — revisit if one child is grabbing
   everything, or the lapse window feels wrong in practice.
