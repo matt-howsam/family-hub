@@ -999,3 +999,55 @@ on conflict (title) do nothing;
 
 insert into bonus_setting (value_cents) values (1200)
 on conflict (id) do nothing;
+
+-- Goals — see docs/family-hub-goals-brief.md (develops design-brief §7.5).
+-- v1 ships visibility = 'me' only; goal_supporter and goal_cheer are
+-- created now so later steps are additive, not a migration — same
+-- reasoning as proposed_item's forward-added columns above.
+create table if not exists goal (
+  id             serial primary key,
+  person         text        not null,                -- owner; the only write gate
+  kind           text        not null check (kind in ('aim', 'goal')),
+  aim_id         int         references goal(id),      -- only when kind = 'goal'
+  title          text        not null,
+  done_when      text,                                  -- required when kind = 'goal'
+  hoping_for     text,
+  why            text,
+  obstacle       text,
+  if_then        text,
+  next_step      text,
+  help_wanted    text,
+  horizon        text        check (horizon in ('term', 'year', 'later', 'date')),
+  by             date,                                  -- only meaningful for horizon = 'date';
+                                                          -- 'term'/'year' are re-derived live, never
+                                                          -- trusted from here — see lib/goals.js
+  state          text        not null default 'active' check (state in ('active', 'someday', 'done', 'released')),
+  visibility     text        not null default 'me' check (visibility in ('me', 'chosen', 'family')),
+  reflection     text,
+  release_note   text,
+  win_shared_at  timestamptz,
+  todo_item_id   int references todo_item(id),
+  want_id        int,       -- references want(id) once the Wants module ships; no FK yet, table doesn't exist
+  position       int,       -- order of stones under an aim
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now(),
+  done_at        timestamptz,
+  released_at    timestamptz,
+
+  check ((kind = 'goal') = (done_when is not null)),
+  check (kind = 'goal' or aim_id is null)
+);
+
+create table if not exists goal_supporter (
+  goal_id int  not null references goal(id) on delete cascade,
+  person  text not null,
+  primary key (goal_id, person)
+);
+
+create table if not exists goal_cheer (
+  id          serial primary key,
+  goal_id     int  not null references goal(id) on delete cascade,
+  from_person text not null,
+  body        text not null,
+  created_at  timestamptz not null default now()
+);

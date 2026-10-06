@@ -8,6 +8,7 @@ import { getWhatsOn } from '@/lib/whatson';
 import { getSession } from '@/lib/identity';
 import { listTodos, subjectsFor } from '@/lib/todo';
 import { boardFor } from '@/lib/chores';
+import { getGoalsView } from '@/lib/goals';
 import { getAvatarConfig } from '@/lib/avatarIcon';
 import PersonScreen from '@/components/PersonScreen';
 import AutoRefresh from '@/components/AutoRefresh';
@@ -34,12 +35,19 @@ export default async function PersonPage({ params }) {
   const tomorrowKey = new Date(now.getTime() + DAY).toISOString().slice(0, 10);
 
   const isChild = person.kind === 'child';
-  const [{ entries }, session, todos, icon, board] = await Promise.all([
+  // Resolved before the rest so the goals fetch below can gate on it — v1
+  // ships visibility='me' only (docs/family-hub-goals-brief.md), so a goal
+  // must never even reach the server-rendered payload sent to anyone but
+  // its owner, not just be hidden in the tab bar.
+  const session = await getSession();
+  const canWriteSelf = session?.person === id;
+
+  const [{ entries }, todos, icon, board, goals] = await Promise.all([
     getWhatsOn({ from: now, days: 14 }),
-    getSession(),
     listTodos(id),
     getAvatarConfig(id),
     isChild ? boardFor(id) : null,
+    canWriteSelf ? getGoalsView(id) : null,
   ]);
   const p = { ...person, icon };
   const role = session?.role ?? 'display';
@@ -65,7 +73,7 @@ export default async function PersonPage({ params }) {
     return (
       <>
         <AutoRefresh />
-        <PersonScreen person={p} role={role} todo={todo} comingUp={comingUp} />
+        <PersonScreen person={p} role={role} todo={todo} comingUp={comingUp} goals={goals} />
       </>
     );
   }
@@ -100,6 +108,7 @@ export default async function PersonPage({ params }) {
         role={role}
         todo={todo}
         board={board}
+        goals={goals}
         today={todaySection}
         school={{
           dayKey: schoolDayKey,

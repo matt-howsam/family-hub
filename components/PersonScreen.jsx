@@ -7,6 +7,7 @@ import { subjectIcon } from '@/lib/subjectIcons';
 import { resolveUniform } from '@/lib/timetable';
 import TodoSection from '@/components/TodoSection';
 import ChoresBoard from '@/components/ChoresBoard';
+import GoalsSection from '@/components/GoalsSection';
 import HubIcon from '@/components/HubIcon';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
@@ -176,7 +177,7 @@ function SchoolSection({ school }) {
   );
 }
 
-export default function PersonScreen({ person, role, today, school, comingUp = [], todo, board }) {
+export default function PersonScreen({ person, role, today, school, comingUp = [], todo, board, goals }) {
   const router = useRouter();
   const timer = useRef(null);
   const fridge = role === 'display';
@@ -198,8 +199,10 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
   // One tab per section that actually has something in it — same sections
   // that used to stack, in the same order ("ordered by decay speed", same
-  // reasoning as the wall). To do is always offered even with nothing due:
-  // it's the one tab with its own add affordance, so "empty" still means
+  // reasoning as the wall). To do and Goals are always offered when there's
+  // an add affordance to reach — To do regardless of anything due, Goals
+  // only on your own page (nothing to show on anyone else's yet, per
+  // docs/family-hub-goals-brief.md's v1 scope) — so "empty" still means
   // something to do there. Everything else already renders nothing when
   // empty (TodaySection, ComingUp, ChoresBoard), so an empty one just
   // never gets a tab rather than existing as a dead end — which is also
@@ -222,6 +225,10 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
       ),
     },
     comingUp.length > 0 && { key: 'comingup', label: 'Coming up', render: () => <ComingUp entries={comingUp} /> },
+    // v1 ships visibility='me' only (docs/family-hub-goals-brief.md step 2)
+    // — there's nothing yet to show on anyone else's page, so the tab only
+    // exists at all when viewing your own.
+    todo.canWrite && goals && { key: 'goals', label: 'Goals', render: () => <GoalsSection person={person.id} goals={goals} /> },
   ].filter(Boolean);
 
   // To do is always in the list above, so there's always at least one tab.

@@ -1128,4 +1128,32 @@ html, body {
                          padding: var(--fh-space-1) var(--fh-space-3); }
 .chores-earned__badge--paid { color: var(--fh-teal-ink); background: var(--fh-teal-wash); }
 
+/* ==========================================================================
+   Goals (/goals/[id]) — docs/family-hub-goals-brief.md. Family register:
+   warmer, rounded, person-tinted, same as person views. The "My goals" list
+   itself lives inside the person page's Goals tab and reuses .pv-section/
+   .card/.row directly rather than classes of its own; only the standalone
+   detail screen needs its own page shell.
+   ========================================================================== */
+.gl-page { max-width: 810px; margin: 0 auto; min-height: 100dvh;
+           background: var(--fh-page-bg);
+           padding: var(--fh-gutter-wall) var(--fh-gutter-wall) var(--fh-space-9); }
+
+/* The next step — typographically dominant, first thing on the screen,
+   same rule as the projects module's next action: its weight alone should
+   carry it, no accent colour. */
+.gl-next { margin: 0 0 var(--fh-space-6); padding: var(--fh-space-5) var(--fh-space-6);
+           border-radius: var(--fh-radius-lg); background: var(--fh-surface);
+           box-shadow: var(--fh-shadow-card); font: var(--fh-text-next);
+           letter-spacing: var(--fh-track-display); text-align: left; width: 100%;
+           border: 0; font-family: var(--fh-font); color: var(--fh-ink); cursor: pointer; }
+.gl-next-edit { margin-bottom: var(--fh-space-6); }
+.gl-next-edit input { display: block; width: 100%; min-height: var(--fh-target-min);
+                       border-radius: var(--fh-radius-md); border: var(--fh-border-input);
+                       padding: 0 var(--fh-space-4); font: var(--fh-text-row); font-family: var(--fh-font); }
+
+@media (max-width: 560px) {
+  .gl-page { padding: var(--fh-gutter-phone); }
+}
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
