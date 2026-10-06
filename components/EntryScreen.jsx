@@ -150,7 +150,7 @@ export default function EntryScreen({ data, weekNo }) {
   return (
     <div className="sc-page">
       <div className="sc-header">
-        <Link href="/scorecard" className="wo-back" aria-label="Back to the month view">
+        <Link href={`/scorecard?year=${data.year}&month=${data.month}`} className="wo-back" aria-label="Back to the month view">
           <ArrowLeft size={24} />
         </Link>
         <div>
@@ -163,7 +163,7 @@ export default function EntryScreen({ data, weekNo }) {
         {data.monthWeeks.map((w) => (
           <Link
             key={w.weekNo}
-            href={`/scorecard/entry?week=${w.weekNo}`}
+            href={`/scorecard/entry?year=${data.year}&month=${data.month}&week=${w.weekNo}`}
             className={`sc-week-strip__seg${w.weekNo === weekNo ? ' sc-week-strip__seg--active' : ''}`}
           >
             Wk {w.weekNo}
@@ -204,7 +204,7 @@ export default function EntryScreen({ data, weekNo }) {
                   {pasteFeedback.switchTo && (
                     <>
                       {' '}
-                      <Link href={`/scorecard/entry?week=${pasteFeedback.switchTo}`} className="sc-paste__switch">
+                      <Link href={`/scorecard/entry?year=${data.year}&month=${data.month}&week=${pasteFeedback.switchTo}`} className="sc-paste__switch">
                         Switch to Week {pasteFeedback.switchTo}
                       </Link>
                     </>

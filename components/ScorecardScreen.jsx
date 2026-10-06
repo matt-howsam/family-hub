@@ -231,8 +231,15 @@ export default function ScorecardScreen({ view, fridge, currentYear, currentMont
             </p>
           )}
 
-          {!fridge && view.isCurrentMonth && (
-            <Link href="/scorecard/entry" className="sc-entry-cta">Enter this week's numbers</Link>
+          {!fridge && !view.notOpen && !view.noData && (
+            <Link
+              href={`/scorecard/entry?year=${year}&month=${month}${
+                view.isCurrentMonth ? '' : `&week=${view.weekTotals?.find((w) => !w.complete)?.weekNo ?? 1}`
+              }`}
+              className="sc-entry-cta"
+            >
+              {view.isCurrentMonth ? "Enter this week's numbers" : 'Enter / edit numbers'}
+            </Link>
           )}
 
           {fridge ? <WallRows view={view} /> : <PhoneTable view={view} />}

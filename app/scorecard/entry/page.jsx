@@ -24,8 +24,11 @@ export default async function EntryPage({ searchParams }) {
   const session = await getSession();
   if (!session || session.role === 'display') redirect('/scorecard');
 
-  const weekNo = Number(params?.week) || currentWeekNoOf(today(TZ));
-  const data = await getEntryData(weekNo);
+  const now = today(TZ);
+  const year = Number(params?.year) || now.getUTCFullYear();
+  const month = Number(params?.month) || now.getUTCMonth() + 1;
+  const weekNo = Number(params?.week) || currentWeekNoOf(now);
+  const data = await getEntryData(year, month, weekNo);
 
   // `key` forces a fresh EntryScreen instance per week. Without it, tapping
   // between week-strip tabs keeps the same component mounted and only
@@ -34,5 +37,5 @@ export default async function EntryPage({ searchParams }) {
   // mount, so a week switched to via the tabs would keep showing whichever
   // week's numbers happened to load first. A full page reload always hits
   // this fresh anyway, which is exactly why that path never showed the bug.
-  return <EntryScreen key={weekNo} data={data} weekNo={weekNo} />;
+  return <EntryScreen key={`${year}-${month}-${weekNo}`} data={data} weekNo={weekNo} />;
 }
