@@ -72,6 +72,10 @@ function ReviewSection({ queue, onChange }) {
                 style={{ marginTop: 'var(--fh-space-2)' }}
                 value={note[j.id] || ''} onChange={(e) => setNote((n) => ({ ...n, [j.id]: e.target.value }))}
               />
+              <button className="pair__link" disabled={busy === j.id}
+                onClick={() => act('rejectJob', { id: j.id })}>
+                Reject — back to Available
+              </button>
             </div>
           );
         })}
@@ -88,11 +92,11 @@ function ReviewSection({ queue, onChange }) {
               </button>
               <button className="pair__button pair__button--secondary" style={{ flex: 1 }} disabled={busy === b.id}
                 onClick={() => act('notYetBonus', { id: b.id })}>
-                Not yet
+                Have another go
               </button>
               <button className="pair__link" disabled={busy === b.id}
                 onClick={() => act('declineBonus', { id: b.id })}>
-                Decline
+                Reject — can&rsquo;t resubmit this week
               </button>
             </div>
           </div>

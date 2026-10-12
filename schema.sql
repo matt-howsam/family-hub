@@ -960,6 +960,15 @@ create table if not exists chore_job (
 create index if not exists chore_job_chore_idx on chore_job (chore_id);
 create index if not exists chore_job_person_idx on chore_job (person);
 
+-- `chore_job` already exists in production — `create table if not exists`
+-- above is a no-op against it, so a new column has to arrive this way, same
+-- trap `proposed_item`'s own columns below already note.
+-- Snapshots the chore's next_available at submit time, so Cancel Review
+-- (the child) and Reject (the parent) can restore it exactly — a lookup,
+-- not a recompute — rather than leaving the chore stuck until its already-
+-- advanced next cycle for work that's being fully disowned.
+alter table chore_job add column if not exists prev_next_available date;
+
 -- One row per child per Monday-Sunday week, written only on claim — an
 -- unclaimed week is the absence of a row, never a record of lapsing.
 create table if not exists weekly_bonus (

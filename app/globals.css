@@ -397,6 +397,18 @@ html, body {
                     background: var(--fh-surface-sunken); font: var(--fh-text-row);
                     letter-spacing: var(--fh-track-answer); color: var(--fh-ink); }
 
+/* The chore sheet's own additions — the notes a parent wrote so a kid
+   doesn't cut corners, a plain flag for a sent-back job or a failed save,
+   and the one primary action button, teal per the rest of the product's
+   primary-commit colour. */
+.wo-sheet__note { margin: 0 0 var(--fh-space-5); font: var(--fh-text-body); color: var(--fh-ink-body); }
+.wo-sheet__flag { margin: 0 0 var(--fh-space-4); font: var(--fh-text-body-sm); color: var(--fh-ink-body); }
+.wo-sheet__action { display: block; width: 100%; min-height: var(--fh-target-commit);
+                     margin-top: var(--fh-space-6); border: 0; border-radius: var(--fh-radius-btn);
+                     background: var(--fh-teal); color: var(--fh-ink-inverse); font: var(--fh-text-row);
+                     letter-spacing: var(--fh-track-answer); }
+.wo-sheet__action:disabled { opacity: .6; }
+
 @media (max-width: 560px) {
   .wo-page { padding: var(--fh-gutter-phone); }
   .wo-row { grid-template-columns: 52px 1fr auto; padding: var(--fh-space-3) var(--fh-space-4); }

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/identity';
 import { CHILDREN } from '@/lib/people';
 import {
-  claimJob, submitJob, unclaimJob, getJobOwner,
+  claimJob, submitJob, unclaimJob, claimAndSubmit, reverseSubmission, getJobOwner,
   getBonus, claimBonus,
   redoJob, approveJob, markJobDone, payAllOwed,
   notYetBonus, approveBonus, declineBonus,
@@ -13,12 +13,13 @@ const forbidden = () => NextResponse.json({ error: 'forbidden' }, { status: 403 
 const badRequest = (error) => NextResponse.json({ error }, { status: 400 });
 const ok = (extra) => NextResponse.json({ ok: true, ...extra });
 
-/* `role = 'display'` (the fridge) may claim, submit, unclaim and claim the
- * bonus — identical exception to todo_item's done_at, reused rather than
- * rebuilt (docs/family-hub-chores-brief.md's "Validate before building").
- * Everything else — review, mark done, pay, the library, the bonus
- * amount — is role = 'adult' only, rejected at the route per the brief's
- * own acceptance checks, not just hidden in the UI. */
+/* `role = 'display'` (the fridge) may claim, submit, cancel a review,
+ * unclaim and claim the bonus — identical exception to todo_item's
+ * done_at, reused rather than rebuilt (docs/family-hub-chores-brief.md's
+ * "Validate before building"). Everything else — review (including
+ * reject), mark done, pay, the library, the bonus amount — is
+ * role = 'adult' only, rejected at the route per the brief's own
+ * acceptance checks, not just hidden in the UI. */
 export async function POST(request) {
   const session = await getSession();
   const body = await request.json().catch(() => ({}));
@@ -31,11 +32,11 @@ export async function POST(request) {
       const isSelf = session && session.person === body.person;
       if (!isDisplay && !isSelf) return forbidden();
       try {
-        await claimJob(body.choreId, body.person, isDisplay ? 'display' : 'phone');
+        const id = await claimJob(body.choreId, body.person, isDisplay ? 'display' : 'phone');
+        return ok({ id });
       } catch (e) {
         return badRequest(e.message);
       }
-      return ok();
     }
 
     case 'submitJob': {
@@ -44,6 +45,27 @@ export async function POST(request) {
       const isSelf = session && session.person === job.person;
       if (!isDisplay && !isSelf) return forbidden();
       await submitJob(body.id, isDisplay ? 'display' : 'phone');
+      return ok();
+    }
+
+    case 'claimAndSubmit': {
+      if (!body.person || !CHILDREN.includes(body.person)) return badRequest('valid child person is required');
+      const isSelf = session && session.person === body.person;
+      if (!isDisplay && !isSelf) return forbidden();
+      try {
+        const id = await claimAndSubmit(body.choreId, body.person, isDisplay ? 'display' : 'phone');
+        return ok({ id });
+      } catch (e) {
+        return badRequest(e.message);
+      }
+    }
+
+    case 'cancelReview': {
+      const job = await getJobOwner(body.id);
+      if (!job) return badRequest('not found');
+      const isSelf = session && session.person === job.person;
+      if (!isDisplay && !isSelf) return forbidden();
+      await reverseSubmission(body.id);
       return ok();
     }
 
@@ -77,6 +99,12 @@ export async function POST(request) {
     case 'approveJob': {
       if (!isAdult) return forbidden();
       await approveJob(body.id, session.person || session.label || 'adult');
+      return ok();
+    }
+
+    case 'rejectJob': {
+      if (!isAdult) return forbidden();
+      await reverseSubmission(body.id);
       return ok();
     }
 
