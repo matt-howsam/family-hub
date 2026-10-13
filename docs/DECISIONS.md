@@ -15,7 +15,10 @@ each separately reached for the same quiet dashboard space — Chores' deferred
 each would have re-solved the same placement and timing question alone. One
 card, with a priority order across sources, settles it once. Confirmed by
 Matt, 6 October 2026, while reviewing `docs/family-hub-goals-brief.md` and
-`docs/family-hub-wants-brief.md`.
+`docs/family-hub-wants-brief.md`. **Wants was renamed Wishlist and reshaped
+13 October 2026** (`docs/family-hub-wishlist-brief.md`; the old file is
+deleted) — the references below are updated to match, but this entry's own
+date and source docs are left as they were when the decision was made.
 
 **Shows one thing at a time, never a feed.** Same discipline as the rest of
 the wall. When nothing qualifies at all, the card is simply absent — no
@@ -26,23 +29,24 @@ content where there is genuinely none.
 **Priority, highest first:**
 
 1. **A birthday** — the person's own day.
-2. **A shared win** — Goals' or Wants' own 3-day, withdrawable window.
+2. **A shared win** — Goals' or Wishlist's own 3-day, withdrawable window.
 3. **A manual announcement** — one-off, adult-authored (a special occasion, a
    family note).
-4. **The active household want, as the card's default** — e.g. *Saving for ·
+4. **The active household wish, as the card's default** — e.g. *Saving for ·
    Boat · around mid-2028* — shown whenever nothing above applies. This is
-   what `family-hub-wants-brief.md` called "the rest slot."
+   what `family-hub-wishlist-brief.md`'s phase 2 (household "Saving for")
+   uses this slot for.
 5. Chores' "N jobs available" nudge is a candidate for this slot too, once
    Chores revisits its own deferred dashboard line (see "Chores & pocket
-   money" below) — ranking it against the want default is not decided.
+   money" below) — ranking it against the wish default is not decided.
 
 **Never on school mornings, 06:00–09:00, regardless of source.** That window
 belongs to the uniform answer; one blackout rule for the slot, not one per
 module.
 
 **Calm register, always.** The attention accent never appears here, whatever
-the source — generalises the rule Goals and Wants already stated for their
-own wins to the slot itself.
+the source — generalises the rule Goals and Wishlist already stated for
+their own wins to the slot itself.
 
 **Manual announcements are an adult, phone-only write.** No fridge writes,
 matching every other module's gate. The author sets the display window (a
@@ -52,7 +56,7 @@ early — the window just ends.
 **Not a second calendar.** Recurring school terms and public holidays already
 live in `lib/calendar.js` and the Holidays module. This card is for what has
 no home there: birthdays, shared wins, one-off messages, and, by default, the
-active want.
+active wish.
 
 **Adults need a `dob` to get a birthday line.** `lib/people.js` only carries
 `dob` for Rose and Tom today, added for the holiday module's "ages in every
