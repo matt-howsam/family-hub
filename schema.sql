@@ -1060,3 +1060,97 @@ create table if not exists goal_cheer (
   body        text not null,
   created_at  timestamptz not null default now()
 );
+
+-- Wishlist — see docs/family-hub-wishlist-brief.md (develops design-brief
+-- §7.9, replacing the old Wants brief). Phase 1 ships 'personal' scope
+-- only; the phase-2 household columns below exist now so the schema holds
+-- it without a later migration, same reasoning as goal's own forward
+-- columns above.
+create table if not exists wish (
+  id             serial primary key,
+  scope          text        not null default 'personal' check (scope in ('personal', 'household')),
+  person         text        not null,                -- owner (personal) or proposer (household)
+  title          text        not null,
+  url            text,
+  note           text,
+  price          numeric,                              -- AUD
+  price_as_at    date,
+  price_source   text        check (price_source in ('fetched', 'entered')),
+  position       int,                                   -- personal only: owner's order
+  visibility     text        not null default 'family' check (visibility in ('me', 'chosen', 'family')),
+  state          text        not null default 'listed' check (state in ('listed', 'got', 'removed')),
+  saving_for     boolean     not null default false,    -- personal: one per person, see the index below
+  horizon        text        check (horizon in ('term', 'year', 'later', 'date')),
+  by             date,                                   -- only meaningful for horizon = 'date'; see lib/goals.js's
+                                                           -- same note — 'term'/'year' are re-derived live
+  my_count       numeric,                                -- owner-only, always — never selected for any other viewer
+  my_count_as_at date,
+  deal           text,
+  got_at         date,
+  win_shared_at  timestamptz,
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now(),
+
+  -- phase 2, household only — not built this round, see the brief's "Phase 2":
+  active         boolean,
+  estimate_basis text check (estimate_basis in ('guess', 'researched', 'quoted')),
+  ongoing_cost   numeric,
+  ongoing_period text check (ongoing_period in ('month', 'year')),
+  ongoing_note   text,
+  saved          numeric,
+  saved_as_at    date,
+  release_note   text,
+  suggested_from int references wish(id)
+);
+
+-- A wish has at most one image, unlike an asset's or job's many documents,
+-- so this doesn't reuse the `document` table — its existing check
+-- constraint (asset_id/job_id) can't be safely altered through
+-- scripts/apply-schema.mjs's plain statement-splitting, and a third owner
+-- column would need exactly that. Same bytea-in-Postgres principle, own
+-- table, no constraint to fight.
+create table if not exists wish_image (
+  wish_id      int   primary key references wish(id) on delete cascade,
+  content_type text  not null,
+  data         bytea not null,
+  source       text  not null check (source in ('fetched', 'uploaded')),
+  created_at   timestamptz not null default now()
+);
+
+-- One cover per item (the primary key on wish_id alone is the enforcement —
+-- a second insert attempt is a constraint violation). `note` is private to
+-- the coverer alone, never the owner. The two `owner_*_at` columns are what
+-- let a coverer be told once, quietly, without the owner ever knowing a
+-- cover existed — see the brief's "Gifts: I've got this".
+create table if not exists wish_cover (
+  wish_id          int  primary key references wish(id) on delete cascade,
+  covered_by       text not null,
+  note             text,
+  given_at         date,
+  owner_changed_at timestamptz,
+  owner_removed_at timestamptz,
+  created_at       timestamptz not null default now()
+);
+
+create unique index if not exists wish_one_saving_for_per_person
+  on wish (person) where scope = 'personal' and saving_for and state = 'listed';
+
+-- goal_supporter (added with Goals, never read or written anywhere in
+-- lib/goals.js — visibility is locked to 'me' in shipped Goals v1) and this
+-- brief's own wish_supporter are structurally identical. Both tables are
+-- empty, so this is a clean drop-and-replace, not a migration: one generic
+-- table for both modules' 'chosen' visibility, per the wishlist brief's own
+-- "worth actually doing this time, not just noting."
+drop table if exists goal_supporter;
+create table if not exists supporter (
+  subject_type text not null check (subject_type in ('goal', 'wish')),
+  subject_id   int  not null,
+  person       text not null,
+  primary key (subject_type, subject_id, person)
+);
+
+-- goal.want_id was an unused, FK-less placeholder added when Goals shipped,
+-- before this module existed to point at. Never read or written anywhere —
+-- a rename-in-place, not a migration of real data.
+alter table goal add column if not exists wish_id int references wish(id);
+alter table goal drop column if exists want_id;

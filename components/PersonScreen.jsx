@@ -8,6 +8,7 @@ import { resolveUniform } from '@/lib/timetable';
 import TodoSection from '@/components/TodoSection';
 import ChoresBoard from '@/components/ChoresBoard';
 import GoalsSection from '@/components/GoalsSection';
+import WishlistSection from '@/components/WishlistSection';
 import HubIcon from '@/components/HubIcon';
 
 /* Same idle budget as What's On: nobody standing at the fridge for 60s means
@@ -177,7 +178,7 @@ function SchoolSection({ school }) {
   );
 }
 
-export default function PersonScreen({ person, role, today, school, comingUp = [], todo, board, goals }) {
+export default function PersonScreen({ person, role, today, school, comingUp = [], todo, board, goals, wishlist }) {
   const router = useRouter();
   const timer = useRef(null);
   const fridge = role === 'display';
@@ -199,12 +200,13 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
 
   // One tab per section that actually has something in it — same sections
   // that used to stack, in the same order ("ordered by decay speed", same
-  // reasoning as the wall). To do and Goals are always offered when there's
-  // an add affordance to reach — To do regardless of anything due, Goals
-  // only on your own page (nothing to show on anyone else's yet, per
-  // docs/family-hub-goals-brief.md's v1 scope) — so "empty" still means
-  // something to do there. Everything else already renders nothing when
-  // empty (TodaySection, ComingUp, ChoresBoard), so an empty one just
+  // reasoning as the wall). To do, Goals and Wishlist are always offered
+  // when there's an add affordance to reach — To do regardless of anything
+  // due, Goals only on your own page (nothing to show on anyone else's yet,
+  // per docs/family-hub-goals-brief.md's v1 scope), Wishlist on your own
+  // page too or wherever a Family item exists already — so "empty" still
+  // means something to do there. Everything else already renders nothing
+  // when empty (TodaySection, ComingUp, ChoresBoard), so an empty one just
   // never gets a tab rather than existing as a dead end — which is also
   // what replaces the old standalone "Nothing needs you" banner: if To do
   // is the only tab and it says "Nothing due", that already says it.
@@ -229,6 +231,15 @@ export default function PersonScreen({ person, role, today, school, comingUp = [
     // — there's nothing yet to show on anyone else's page, so the tab only
     // exists at all when viewing your own.
     todo.canWrite && goals && { key: 'goals', label: 'Goals', render: () => <GoalsSection person={person.id} goals={goals} /> },
+    // Unlike Goals, default visibility here is 'family' (docs/family-hub-
+    // wishlist-brief.md) — there's something to show on someone else's
+    // page from day one, so this is offered whenever it's your own page
+    // (to reach Add) or there's at least one visible item, same pairing
+    // Goals uses for its own always-offered case.
+    (todo.canWrite || wishlist?.listed.length > 0) && wishlist && {
+      key: 'wishlist', label: 'Wishlist',
+      render: () => <WishlistSection person={person.id} wishlist={wishlist} isOwner={todo.canWrite} fridge={fridge} />,
+    },
   ].filter(Boolean);
 
   // To do is always in the list above, so there's always at least one tab.

@@ -9,6 +9,7 @@ import { getSession } from '@/lib/identity';
 import { listTodos, subjectsFor } from '@/lib/todo';
 import { boardFor } from '@/lib/chores';
 import { getGoalsView } from '@/lib/goals';
+import { getWishlistView } from '@/lib/wishlist';
 import { getAvatarConfig } from '@/lib/avatarIcon';
 import PersonScreen from '@/components/PersonScreen';
 import AutoRefresh from '@/components/AutoRefresh';
@@ -42,15 +43,21 @@ export default async function PersonPage({ params }) {
   const session = await getSession();
   const canWriteSelf = session?.person === id;
 
-  const [{ entries }, todos, icon, board, goals] = await Promise.all([
+  const role = session?.role ?? 'display';
+  // Unlike Goals, safe to fetch for any viewer — default visibility is
+  // 'family' (docs/family-hub-wishlist-brief.md), so there's legitimately
+  // something to show on someone else's page. The privacy-sensitive part
+  // (covers, my count) is handled inside getWishlistView itself, keyed off
+  // viewerPerson/viewerRole, not by gating this call.
+  const [{ entries }, todos, icon, board, goals, wishlist] = await Promise.all([
     getWhatsOn({ from: now, days: 14 }),
     listTodos(id),
     getAvatarConfig(id),
     isChild ? boardFor(id) : null,
     canWriteSelf ? getGoalsView(id) : null,
+    getWishlistView(id, { viewerPerson: session?.person, viewerRole: role }),
   ]);
   const p = { ...person, icon };
-  const role = session?.role ?? 'display';
 
   // docs/family-hub-todo-brief.md: ownership is `session.person === person`,
   // no adult override — Matt viewing Rose's page can read it (same social
@@ -73,7 +80,7 @@ export default async function PersonPage({ params }) {
     return (
       <>
         <AutoRefresh />
-        <PersonScreen person={p} role={role} todo={todo} comingUp={comingUp} goals={goals} />
+        <PersonScreen person={p} role={role} todo={todo} comingUp={comingUp} goals={goals} wishlist={wishlist} />
       </>
     );
   }
@@ -109,6 +116,7 @@ export default async function PersonPage({ params }) {
         todo={todo}
         board={board}
         goals={goals}
+        wishlist={wishlist}
         today={todaySection}
         school={{
           dayKey: schoolDayKey,

@@ -1168,4 +1168,23 @@ html, body {
   .gl-page { padding: var(--fh-gutter-phone); }
 }
 
+/* ==========================================================================
+   Wishlist (person page tab + the chore-sheet pattern reused for item
+   detail) — docs/family-hub-wishlist-brief.md. Images carry this tab per
+   the brief's own design note: fitted, not cropped, on a neutral token
+   background, so a tall shoe box and a wide bike sit together without the
+   row heights jumping.
+   ========================================================================== */
+.wish-thumb { width: 48px; height: 48px; flex-shrink: 0; border-radius: var(--fh-radius-md);
+              background: var(--fh-surface-sunken); object-fit: contain; }
+.wish-thumb--placeholder { display: flex; align-items: center; justify-content: center;
+                            color: var(--fh-ink-label); }
+.wish-row__reorder { display: flex; flex-direction: column; flex-shrink: 0; }
+.wish-row__reorder button { width: 32px; height: 22px; border: 0; background: none;
+                             color: var(--fh-ink-label); display: flex; align-items: center; justify-content: center; }
+.wish-row__reorder button:disabled { opacity: .3; }
+.wish-sheet-image { display: block; width: 100%; max-height: 220px; object-fit: contain;
+                     border-radius: var(--fh-radius-lg); background: var(--fh-surface-sunken);
+                     margin-bottom: var(--fh-space-5); }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
