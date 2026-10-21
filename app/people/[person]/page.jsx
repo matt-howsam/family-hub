@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { PEOPLE } from '@/lib/people';
 import { getAnchor } from '@/lib/db';
-import { weekLetter, today, TZ, isSchoolDay, nextSchoolDay, hourNow } from '@/lib/week';
+import { weekLetter, today, TZ, isSchoolDay, nextSchoolDay, hourNow, SCHOOL_DAY_END_HOUR } from '@/lib/week';
 import { briefing, dayKey, TIMETABLE, UNIFORM, UNIFORM_LABEL } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
@@ -18,13 +18,6 @@ import AutoRefresh from '@/components/AutoRefresh';
 export const dynamic = 'force-dynamic';
 
 const DAY = 86400000;
-
-/* Both children finish by mid-afternoon and neither's exact bell times for
-   every period are in the data model yet (see lib/timetable.js) — only the
-   headline end time (lib/people.js#endsAt). 3:30pm Sydney is a fixed,
-   approximate "has today's school day ended" cutoff for both, used only to
-   decide which day the School section opens on. */
-const SCHOOL_DAY_END_HOUR = 15.5;
 
 export default async function PersonPage({ params }) {
   const { person: id } = await params;

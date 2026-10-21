@@ -92,6 +92,12 @@ export default function ReviewQueue({ items: initial }) {
 
   const batchCount = items.filter((i) => i.confidence >= BATCH_THRESHOLD).length;
 
+  // Server-ordered already (school before community, shakiest-first within
+  // each) — grouping here is a rendering split only, never a re-sort, so a
+  // community newsletter never displaces a school item within its section.
+  const schoolItems = items.filter((i) => i.category !== 'community');
+  const communityItems = items.filter((i) => i.category === 'community');
+
   return (
     <div className="pair__card" style={{ maxWidth: 480 }}>
       <Link href="/settings" className="pair__back"><ArrowLeft size={16} weight="bold" />Settings</Link>
@@ -105,9 +111,23 @@ export default function ReviewQueue({ items: initial }) {
         </button>
       )}
 
-      {items.map((item) => (
-        <Card key={item.id} item={item} busy={busy} onApprove={(id) => act(id, 'approve')} onDiscard={(id) => act(id, 'discard')} />
-      ))}
+      {schoolItems.length > 0 && (
+        <>
+          {communityItems.length > 0 && <h2 className="review-section">School &amp; activities</h2>}
+          {schoolItems.map((item) => (
+            <Card key={item.id} item={item} busy={busy} onApprove={(id) => act(id, 'approve')} onDiscard={(id) => act(id, 'discard')} />
+          ))}
+        </>
+      )}
+
+      {communityItems.length > 0 && (
+        <>
+          {schoolItems.length > 0 && <h2 className="review-section">Community</h2>}
+          {communityItems.map((item) => (
+            <Card key={item.id} item={item} busy={busy} onApprove={(id) => act(id, 'approve')} onDiscard={(id) => act(id, 'discard')} />
+          ))}
+        </>
+      )}
     </div>
   );
 }

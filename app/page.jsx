@@ -10,7 +10,7 @@ import TonightLine from '@/components/TonightLine';
 import AutoRefresh from '@/components/AutoRefresh';
 import StaleGuard from '@/components/StaleGuard';
 import { getAnchor, hasDb } from '@/lib/db';
-import { weekLetter, today, TZ, hourNow } from '@/lib/week';
+import { weekLetter, today, TZ, hourNow, SCHOOL_DAY_END_HOUR } from '@/lib/week';
 import { briefing, dayKey } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
@@ -24,10 +24,6 @@ import { getRegisterTile } from '@/lib/register';
 import { getHolidayTile } from '@/lib/holidays';
 import { getAllAvatarConfigs } from '@/lib/avatarIcon';
 import { getChoresDashboardTile } from '@/lib/chores';
-
-/* Tom's met at 3:10, Rose finishes 3:20 — after this the water card becomes
-   relevant again even on a school day, per the conditions data spec. */
-const SCHOOL_DAY_END_HOUR = 15.5;
 
 /* The fridge never sleeps, so nothing here may be cached. */
 export const dynamic = 'force-dynamic';

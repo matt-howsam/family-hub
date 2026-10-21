@@ -662,6 +662,10 @@ html, body {
    Review queue — docs/ingestion.md, docs/family-hub-gmail-ingestion-brief.md.
    Each proposal is its own card so approve/discard is unambiguous — no
    shared row state to accidentally act on the wrong item. */
+.review-section { font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
+                   text-transform: uppercase; color: var(--fh-ink-label);
+                   margin: var(--fh-space-5) 0 var(--fh-space-3); }
+.review-section:first-child { margin-top: 0; }
 .review-card { border-radius: var(--fh-radius-lg); background: var(--fh-surface-sunken);
                 box-shadow: var(--fh-shadow-inset); padding: var(--fh-space-5);
                 margin-bottom: var(--fh-space-4); }

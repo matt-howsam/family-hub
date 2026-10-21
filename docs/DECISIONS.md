@@ -234,11 +234,17 @@ Only the calendar exists as a source, so the Everything/Ours/Around town
 filter has nothing to filter and isn't rendered. Add it when a second source
 exists, not before.
 
-**No separate term adapter for standing after-school activities.** The home
-screen already treats `AFTER_SCHOOL` (the term layer) as a fallback only — a
-real calendar event for that child and day wins. Feeding both into
-`lib/whatson.js` as independent sources would double an activity that's
-already handled by the one adapter it needs.
+**Standing after-school activities have no term-layer fallback any more.**
+`AFTER_SCHOOL` (lib/timetable.js) was removed — it was keyed only by
+day-of-week, with no idea of the A/B week letter, so a fortnightly activity
+(Rose's Cadets) showed on every matching weekday regardless of which week it
+actually fell on, and stale entries (Tom's dropped Surfing) only got fixed
+by hand. After-school is now sourced entirely from `lib/whatson.js`'s merged
+entries (Home calendar + approved review-queue items), filtered in
+`lib/todayBriefing.js#overlayToday` to today's timed entries at or after
+`SCHOOL_DAY_END_HOUR`. A true fortnightly activity needs a real recurring
+calendar event (RRULE, INTERVAL=2) — `lib/homecal.js` already expands those
+correctly via node-ical.
 
 **Adults' Needs You section doesn't render.** It would read from Projects and
 the Register. Both shipped 23 September 2026 and have real data behind
@@ -363,6 +369,19 @@ person rather than `role=display`.
 Extracted items land in a review queue she confirms. A missed uniform is a bad
 morning; a missed assessment is a grade. A tool she trusts completely beats a
 cleverer one she cannot.
+
+**The subscription inbox's sender allowlist was removed; the review queue
+groups by category instead.** `lib/ingest/imap.js` used to drop any mail to
+the subscription address unless the sender matched a short allowlist (What's
+On Tweed, Destination NSW) — the right call while discovery only covered two
+newsletters, wrong once the intent became "any community newsletter." Rather
+than keep extending a list by hand, intake was opened fully and the review
+queue (`lib/review.js#listQueue`) now sorts school-sourced proposals (raw
+message source `seqta`/`bulletin`) ahead of community ones (`other`), with
+`components/ReviewQueue.jsx` rendering them as two sections. Confidence-
+ascending stays the tiebreak within each group. The goal is the same as the
+allowlist's — a school deadline must never get buried — met by ordering
+instead of gatekeeping.
 
 **Only the person edits their own goals.**
 If a parent can write into a child's goals it becomes a chore list with better
