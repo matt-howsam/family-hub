@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { addItem, editItem, deleteItem, addSaving, deleteSaving } from '@/lib/register';
+import { setIncomeStanding, setIncomeMonth } from '@/lib/income';
 import { getSession } from '@/lib/identity';
 
 export const dynamic = 'force-dynamic';
@@ -109,6 +110,30 @@ export async function POST(request) {
       if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
       try {
         await deleteSaving(body.id);
+      } catch {
+        return NextResponse.json({ error: 'write_failed' }, { status: 500 });
+      }
+      return NextResponse.json({ ok: true });
+    }
+
+    case 'set_income_standing': {
+      if (body.standingCents == null) return NextResponse.json({ error: 'standingCents is required' }, { status: 400 });
+      try {
+        await setIncomeStanding(body.standingCents);
+      } catch {
+        return NextResponse.json({ error: 'write_failed' }, { status: 500 });
+      }
+      return NextResponse.json({ ok: true });
+    }
+
+    case 'set_income_month': {
+      if (!body.year || !body.month || body.amountCents == null) {
+        return NextResponse.json({ error: 'year, month and amountCents are required' }, { status: 400 });
+      }
+      try {
+        await setIncomeMonth({
+          year: body.year, month: body.month, amountCents: body.amountCents, enteredBy: session.person ?? null,
+        });
       } catch {
         return NextResponse.json({ error: 'write_failed' }, { status: 500 });
       }

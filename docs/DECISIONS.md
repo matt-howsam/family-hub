@@ -588,6 +588,63 @@ hasn't been rebuilt yet (see Open).
 
 ---
 
+## Monthly position & asset fund
+
+See `docs/family-hub-monthly-position-brief.md`, built against `lib/income.js`,
+`lib/assetFund.js` and `lib/monthlyPosition.js`.
+
+**The accrual is the expense; the repair is a draw.** An asset repair or
+replacement never appears in the savings calculation or on the scorecard. It
+reduces the fund balance, which was already expensed through the monthly
+accrual. Counting both double-counts, in the month it hurts most.
+
+**The savings calculation uses the register's grand total
+(`totalMonthlyCents`), never the reducing number.** That figure excludes
+mortgage and school fees by design — it is a reduction target, not an
+outgoing.
+
+**The asset fund accrues for repairs as well as replacements.** Replacement
+amortisation alone misses the more frequent draw. A pool pump was a
+replacement; a Defender compressor was a repair.
+
+**Every fund draw attaches to an asset.** The balance becomes real and the
+next estimate is based on history rather than a guess.
+
+**Income is a standing figure overridden per month, as one number.** Same
+pattern as scorecard events and term-layer corrections. No breakdown of
+sources — the position, not the ledger.
+
+**Income never reaches the fridge — stricter than the register's own
+mortgage-hiding rule.** Not a tile, not a line, not behind an avatar tap, and
+not even fetched for a non-adult phone session — the full-omission treatment
+`notes` already gets, not the cosmetic `hideCostOnFridge` one. The rest of
+the register stays visible to any phone session; income, the savings pool
+and the fund total do not.
+
+**A month's position is provisional until the scorecard is complete and
+income is confirmed for it — both conditions, one state.** Once `final`, a
+month is frozen forever: editing a budget or an asset estimate afterward must
+never move it. `lib/monthlyPosition.js#getMonthlyPosition` enforces this
+twice — the app returns a cached final row untouched, and the upsert's own
+`where state is distinct from 'final'` guard blocks a write to one even on a
+race.
+
+**New columns use the `_cents` suffix**, departing from the brief's own
+unsuffixed draft (`income`, `register_gross`, `savings_pool`...) to match the
+dominant, more recent schema convention (`cost_cents`, `annual_saving_cents`)
+rather than the older unsuffixed style (`asset.purchase_cost`,
+`spend_entry.amount`) the brief's draft happened to echo.
+
+**The fund balance has no history before this shipped.** There is no accrual
+ledger, only the current accrual rate — backdating it across months it never
+applied to would be exactly the false precision this app avoids elsewhere
+(`lib/calendar.js`'s "nobody knows the day" rule). The balance only ever sums
+`monthly_position.fund_accrual_cents` rows that actually get computed, going
+forward, minus every draw including the two seeded ones — so it opens
+negative. That is a fact, not an error, same as a negative savings pool.
+
+---
+
 ## Scope
 
 **Release 1 is projects, operations register and spending scorecard.**

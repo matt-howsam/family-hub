@@ -907,6 +907,94 @@ insert into asset (name) values
   ('Solar system'), ('TVs'), ('Computer'), ('Sound system')
 on conflict (name) do nothing;
 
+alter table asset add column if not exists repair_allowance_annual_cents int;
+alter table asset add column if not exists repair_basis text
+  check (repair_basis in ('entered', 'percent_of_value'));
+
+-- Monthly position & asset fund — docs/family-hub-monthly-position-brief.md.
+-- Relates three kinds of money already tracked separately: recurring (the
+-- register's grand total), discretionary (the scorecard's month total) and
+-- capital (the asset fund's accrual, below). `monthly_position` is cached
+-- per month and, once `state = 'final'`, never retroactively recomputed —
+-- editing a budget or an asset estimate later must not silently change a
+-- past month's reported savings. See lib/monthlyPosition.js, which mirrors
+-- lib/scorecard.js's lazy-create-then-freeze `ensurePeriod`, not a cron —
+-- there isn't one (Hobby-plan cron is capped at once/day).
+create table if not exists income_setting (
+  id                     boolean     primary key default true check (id),
+  income_standing_cents  int         not null default 0,
+  updated_at             timestamptz not null default now()
+);
+insert into income_setting (id) values (true) on conflict (id) do nothing;
+
+-- A standing figure, overridden per month — same pattern as the scorecard's
+-- base + event budget and the term layer's imported-then-corrected
+-- timetable. One number, never a breakdown of sources (§ the brief).
+create table if not exists income_month (
+  year         int         not null,
+  month        int         not null check (month between 1 and 12),
+  amount_cents int         not null,
+  entered_by   text,
+  entered_at   timestamptz not null default now(),
+  primary key (year, month)
+);
+
+create table if not exists monthly_position (
+  year                  int         not null,
+  month                 int         not null check (month between 1 and 12),
+  income_cents          int         not null,
+  income_source         text        not null check (income_source in ('standing', 'entered')),
+  register_gross_cents  int         not null,
+  scorecard_total_cents int         not null,
+  fund_accrual_cents    int         not null,
+  savings_pool_cents    int         not null,
+  state                 text        not null check (state in ('provisional', 'final')),
+  computed_at           timestamptz not null default now(),
+  primary key (year, month)
+);
+
+-- A draw against the fund — a repair or replacement actually paid. The
+-- accrual (above) is the expense; a draw is never subtracted again here,
+-- only against the fund balance (lib/assetFund.js#getFundBalanceCents) —
+-- counting both would double-count in exactly the month it hurts most.
+-- No natural unique key, so its seed below guards re-runs the same way
+-- register_saving's does: `where not exists`, not a constraint.
+create table if not exists asset_fund_draw (
+  id           serial primary key,
+  asset_id     int         not null references asset(id) on delete cascade,
+  amount_cents int         not null,
+  kind         text        not null check (kind in ('repair', 'replacement')),
+  occurred_on  date        not null,
+  vendor       text,
+  note         text,
+  created_at   timestamptz not null default now()
+);
+
+-- Vehicles are assets too — the Defender is the real worked example of a
+-- repair allowance exceeding the replacement line. Name only, nothing
+-- fabricated, same seed philosophy as the bare rows above. Linked to the
+-- servicing already on the register/job board (this file, the projects
+-- seed block above) via job.asset_id, which was added unenforced specifically
+-- because this table didn't exist yet — no new column needed.
+insert into asset (name) values ('Defender'), ('Mazda') on conflict (name) do nothing;
+
+update job set asset_id = (select id from asset where name = 'Defender')
+where title = 'Servicing — Defender' and asset_id is null;
+update job set asset_id = (select id from asset where name = 'Mazda')
+where title = 'Servicing — Mazda' and asset_id is null;
+
+-- The two known draws that motivated this whole brief.
+insert into asset_fund_draw (asset_id, amount_cents, kind, occurred_on, vendor)
+select id, 140000, 'replacement', '2026-09-08', null from asset where name = 'Pool pump'
+and not exists (
+  select 1 from asset_fund_draw where occurred_on = '2026-09-08' and kind = 'replacement'
+);
+insert into asset_fund_draw (asset_id, amount_cents, kind, occurred_on, vendor)
+select id, 149000, 'repair', '2026-10-14', null from asset where name = 'Defender'
+and not exists (
+  select 1 from asset_fund_draw where occurred_on = '2026-10-14' and kind = 'repair'
+);
+
 -- Chores & pocket money — job board + weekly contribution bonus.
 -- See docs/family-hub-chores-brief.md, which supersedes design-brief §7.10
 -- (the old assigned-chore-ticked-by-a-child model). A job is offered, not

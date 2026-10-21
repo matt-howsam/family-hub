@@ -45,6 +45,10 @@ function costCaption(item) {
   return per ? `${kind} / ${per}` : kind;
 }
 
+function formatYm(year, month) {
+  return new Date(Date.UTC(year, month - 1, 1)).toLocaleDateString('en-AU', { month: 'short', year: 'numeric' });
+}
+
 function daysUntil(dateStr) {
   if (!dateStr) return null;
   return Math.round((new Date(`${dateStr}T00:00:00Z`) - new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00Z`)) / 86400000);
@@ -265,7 +269,49 @@ function SavingForm({ onSaved, onCancel }) {
   );
 }
 
-export default function RegisterScreen({ view, fridge, role }) {
+/** Household income — adults-only, same as everything that reads it. Two
+    separate writes behind one small form: the standing figure (every
+    month until changed) or this month's entered override, which is what
+    moves a month from `provisional` to `final` once the scorecard is also
+    complete. See docs/family-hub-monthly-position-brief.md. */
+function IncomeForm({ currentYm, onSaved, onCancel }) {
+  const [mode, setMode] = useState('standing');
+  const [amount, setAmount] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const cents = dollarsToCents(amount);
+    if (!cents) return;
+    setBusy(true);
+    setError(false);
+    const body = mode === 'standing'
+      ? { action: 'set_income_standing', standingCents: cents }
+      : { action: 'set_income_month', year: currentYm.year, month: currentYm.month, amountCents: cents };
+    const res = await post(body);
+    setBusy(false);
+    if (!res.ok) { setError(true); return; }
+    onSaved();
+  };
+
+  return (
+    <form className="mp-add" onSubmit={submit}>
+      <select value={mode} onChange={(e) => setMode(e.target.value)}>
+        <option value="standing">Standing figure — every month</option>
+        {currentYm && <option value="month">{formatYm(currentYm.year, currentYm.month)} only</option>}
+      </select>
+      <input placeholder="Income ($)" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus />
+      {error && <p className="sc-entry-row__flag">Not saved — try again.</p>}
+      <div style={{ display: 'flex', gap: 'var(--fh-space-3)' }}>
+        <button type="button" className="mp-clear" style={{ flex: 1, marginTop: 0 }} onClick={onCancel}>Cancel</button>
+        <button className="mp-add__submit" style={{ flex: 1 }} type="submit" disabled={busy || !amount}>Save</button>
+      </div>
+    </form>
+  );
+}
+
+export default function RegisterScreen({ view, fridge, role, position, fund }) {
   const router = useRouter();
   // Reachable both from the dashboard tile (§8) and from Settings (adults
   // only) — the back arrow returns wherever it came from rather than
@@ -278,6 +324,7 @@ export default function RegisterScreen({ view, fridge, role }) {
   const [addingItem, setAddingItem] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [addingSaving, setAddingSaving] = useState(false);
+  const [editingIncome, setEditingIncome] = useState(false);
 
   useEffect(() => {
     if (!fridge) return undefined;
@@ -294,7 +341,7 @@ export default function RegisterScreen({ view, fridge, role }) {
   }, [fridge, router]);
 
   const canEdit = !fridge && role === 'adult';
-  const closeForms = () => { setAddingItem(false); setEditingId(null); setAddingSaving(false); };
+  const closeForms = () => { setAddingItem(false); setEditingId(null); setAddingSaving(false); setEditingIncome(false); };
   const onSaved = () => { closeForms(); router.refresh(); };
 
   const renderItem = (item) => {
@@ -347,6 +394,92 @@ export default function RegisterScreen({ view, fridge, role }) {
           <span className="rg-hero__figure rg-hero__figure--won">{formatMoney(view.savingsWonThisYearCents)}</span>
         </div>
       </div>
+
+      {position && (
+        <>
+          <h2 className="group">
+            Monthly position
+            {position.current && (
+              <span className="group__count">
+                {position.current.state === 'final' ? 'Final' : 'Provisional'} · {formatYm(position.current.year, position.current.month)}
+              </span>
+            )}
+          </h2>
+          <div className="card">
+            {!position.current && <p className="hol-empty">Nothing to show yet.</p>}
+            {position.current && (
+              <>
+                <div className="row">
+                  <div className="row__main"><span className="row__title">Income</span></div>
+                  <span className="row__figure">{formatMoney(position.current.incomeCents)}</span>
+                </div>
+                <div className="row">
+                  <div className="row__main"><span className="row__title">Register (gross)</span></div>
+                  <span className="row__figure">−{formatMoney(position.current.registerGrossCents)}</span>
+                </div>
+                <div className="row">
+                  <div className="row__main"><span className="row__title">Scorecard</span></div>
+                  <span className="row__figure">−{formatMoney(position.current.scorecardTotalCents)}</span>
+                </div>
+                <div className="row">
+                  <div className="row__main"><span className="row__title">Asset fund accrual</span></div>
+                  <span className="row__figure">−{formatMoney(position.current.fundAccrualCents)}</span>
+                </div>
+                <div className="row">
+                  <div className="row__main"><span className="row__title">Savings pool</span></div>
+                  <span className="row__figure">{formatMoney(position.current.savingsPoolCents)}</span>
+                </div>
+              </>
+            )}
+            {position.history.slice(0, -1).reverse().map((p) => (
+              <div className="row row--quiet" key={`${p.year}-${p.month}`}>
+                <div className="row__main">
+                  <span className="row__title">{formatYm(p.year, p.month)}</span>
+                  <span className="row__sub">{p.state === 'final' ? 'Final' : 'Provisional'}</span>
+                </div>
+                <span className="row__figure">{formatMoney(p.savingsPoolCents)}</span>
+              </div>
+            ))}
+          </div>
+          {canEdit && !editingIncome && (
+            <button type="button" className="sc-entry-cta" style={{ marginTop: 'var(--fh-space-4)' }}
+                    onClick={() => setEditingIncome(true)}>
+              Set income
+            </button>
+          )}
+          {editingIncome && (
+            <div className="hol-form-wrap">
+              <IncomeForm currentYm={position.current} onSaved={onSaved} onCancel={closeForms} />
+            </div>
+          )}
+        </>
+      )}
+
+      {fund && (
+        <>
+          <h2 className="group">Asset fund</h2>
+          <div className="card">
+            <div className="row">
+              <div className="row__main"><span className="row__title">Accrual</span></div>
+              <span className="row__figure">{formatMoney(fund.accrualMonthlyCents)}/mo</span>
+            </div>
+            <div className="row">
+              <div className="row__main"><span className="row__title">Balance</span></div>
+              <span className="row__figure">{formatMoney(fund.balanceCents)}</span>
+            </div>
+            {fund.draws.length === 0 && <p className="hol-empty">No draws logged yet.</p>}
+            {fund.draws.map((d) => (
+              <div className="row" key={d.id}>
+                <div className="row__main">
+                  <span className="row__title">{d.assetName}</span>
+                  <span className="row__sub">{d.occurredOn} · {d.kind}</span>
+                </div>
+                <span className="row__figure">−{formatMoney(d.amountCents)}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {view.actionQueue.length > 0 && (
         <>

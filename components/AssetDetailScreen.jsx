@@ -35,6 +35,10 @@ function DetailsForm({ asset, onSaved, onCancel }) {
   const [expectedReplacementYear, setExpectedReplacementYear] = useState(asset.expectedReplacementYear != null ? String(asset.expectedReplacementYear) : '');
   const [replacementEstimate, setReplacementEstimate] = useState(asset.replacementEstimate != null ? String(asset.replacementEstimate / 100) : '');
   const [estimateYear, setEstimateYear] = useState(asset.estimateYear != null ? String(asset.estimateYear) : '');
+  const [repairAllowance, setRepairAllowance] = useState(
+    asset.repairAllowanceAnnualCents != null ? String(asset.repairAllowanceAnnualCents / 100) : ''
+  );
+  const [repairBasis, setRepairBasis] = useState(asset.repairBasis ?? 'entered');
   const [notes, setNotes] = useState(asset.notes ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
@@ -52,6 +56,8 @@ function DetailsForm({ asset, onSaved, onCancel }) {
       expectedReplacementYear: expectedReplacementYear.trim() === '' ? null : parseInt(expectedReplacementYear, 10),
       replacementEstimate: replacementEstimate.trim() === '' ? null : dollarsToCents(replacementEstimate),
       estimateYear: estimateYear.trim() === '' ? null : parseInt(estimateYear, 10),
+      repairAllowanceAnnualCents: repairAllowance.trim() === '' ? null : dollarsToCents(repairAllowance),
+      repairBasis: repairAllowance.trim() === '' ? null : repairBasis,
       notes: notes.trim() || null,
     });
     setBusy(false);
@@ -79,6 +85,14 @@ function DetailsForm({ asset, onSaved, onCancel }) {
                onChange={(e) => setReplacementEstimate(e.target.value)} />
         <input style={{ flex: 1 }} placeholder="Estimate made in (year)" inputMode="numeric" value={estimateYear}
                onChange={(e) => setEstimateYear(e.target.value)} />
+      </div>
+      <div style={{ display: 'flex', gap: 'var(--fh-space-3)' }}>
+        <input style={{ flex: 1 }} placeholder="Repair allowance ($/yr)" inputMode="decimal" value={repairAllowance}
+               onChange={(e) => setRepairAllowance(e.target.value)} />
+        <select style={{ flex: 1 }} value={repairBasis} onChange={(e) => setRepairBasis(e.target.value)}>
+          <option value="entered">Entered directly</option>
+          <option value="percent_of_value">% of replacement value</option>
+        </select>
       </div>
       <input placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
 
@@ -137,6 +151,82 @@ function UploadForm({ assetId, onSaved }) {
   );
 }
 
+const DRAW_KIND_LABEL = { repair: 'Repair', replacement: 'Replacement' };
+
+/** Dated amount against this asset — the fund's draw log, per the brief.
+    Same shape as the register's "Log a saving" form (lib/register.js's
+    register_saving), just against an asset instead of a register line. */
+function AddDrawForm({ assetId, onSaved, onCancel }) {
+  const [occurredOn, setOccurredOn] = useState('');
+  const [amount, setAmount] = useState('');
+  const [kind, setKind] = useState('repair');
+  const [vendor, setVendor] = useState('');
+  const [note, setNote] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setError(false);
+    const res = await post({
+      action: 'add_draw', assetId, occurredOn, amountCents: dollarsToCents(amount), kind,
+      vendor: vendor.trim() || null, note: note.trim() || null,
+    });
+    setBusy(false);
+    if (!res.ok) { setError(true); return; }
+    onSaved();
+  };
+
+  return (
+    <form className="mp-add" onSubmit={submit}>
+      <div style={{ display: 'flex', gap: 'var(--fh-space-3)' }}>
+        <input style={{ flex: 1 }} type="date" value={occurredOn} onChange={(e) => setOccurredOn(e.target.value)} />
+        <input style={{ flex: 1 }} placeholder="Amount ($)" inputMode="decimal" value={amount}
+               onChange={(e) => setAmount(e.target.value)} />
+      </div>
+      <select value={kind} onChange={(e) => setKind(e.target.value)}>
+        <option value="repair">Repair</option>
+        <option value="replacement">Replacement</option>
+      </select>
+      <input placeholder="Vendor (optional)" value={vendor} onChange={(e) => setVendor(e.target.value)} />
+      <input placeholder="Note (optional)" value={note} onChange={(e) => setNote(e.target.value)} />
+      {error && <p className="sc-entry-row__flag">Not saved — try again.</p>}
+      <div style={{ display: 'flex', gap: 'var(--fh-space-3)', marginTop: 'var(--fh-space-4)' }}>
+        <button type="button" className="mp-clear" style={{ flex: 1, marginTop: 0 }} onClick={onCancel}>Cancel</button>
+        <button className="mp-add__submit" style={{ flex: 1 }} type="submit" disabled={busy || !occurredOn || !amount}>
+          Log it
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function DrawRow({ draw, canEdit, onDeleted }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleDelete = async () => {
+    if (!confirmDelete) { setConfirmDelete(true); return; }
+    await post({ action: 'delete_draw', id: draw.id });
+    onDeleted();
+  };
+
+  return (
+    <div className="row">
+      <div className="row__main">
+        <span className="row__title">{DRAW_KIND_LABEL[draw.kind]}{draw.vendor && ` — ${draw.vendor}`}</span>
+        <span className="row__sub">{draw.occurredOn}{draw.note && ` · ${draw.note}`}</span>
+      </div>
+      <span className="row__figure">{formatMoney(draw.amountCents)}</span>
+      {canEdit && (
+        <button type="button" className="mp-lib-archive" onClick={handleDelete}>
+          {confirmDelete ? 'Tap again' : 'Delete'}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function DocumentRow({ doc, canEdit, onDeleted }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const Icon = doc.contentType === 'application/pdf' ? FilePdf : ImageIcon;
@@ -167,11 +257,12 @@ function DocumentRow({ doc, canEdit, onDeleted }) {
   );
 }
 
-export default function AssetDetailScreen({ asset, documents, fridge, role }) {
+export default function AssetDetailScreen({ asset, documents, draws, fridge, role }) {
   const router = useRouter();
   const viewTimer = useRef(null);
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [addingDraw, setAddingDraw] = useState(false);
 
   useEffect(() => {
     if (!fridge) return undefined;
@@ -227,6 +318,9 @@ export default function AssetDetailScreen({ asset, documents, fridge, role }) {
           {asset.expectedReplacementYear && `${asset.replacementEstimate != null ? ' · ' : ''}expected ${asset.expectedReplacementYear}`}
         </p>
       )}
+      {asset.repairAllowanceAnnualCents != null && (
+        <p className="pj-flag">{formatMoney(asset.repairAllowanceAnnualCents)}/yr repair allowance</p>
+      )}
       {asset.notes && <p className="pj-flag">{asset.notes}</p>}
 
       {canEdit && !editing && (
@@ -235,6 +329,23 @@ export default function AssetDetailScreen({ asset, documents, fridge, role }) {
       {editing && (
         <div className="hol-form-wrap">
           <DetailsForm asset={asset} onSaved={() => { setEditing(false); refresh(); }} onCancel={() => setEditing(false)} />
+        </div>
+      )}
+
+      <h2 className="group">Fund draws</h2>
+      <div className="card">
+        {draws.length === 0 && <p className="hol-empty">No repairs or replacements logged yet.</p>}
+        {draws.map((d) => <DrawRow key={d.id} draw={d} canEdit={canEdit} onDeleted={refresh} />)}
+      </div>
+      {canEdit && !addingDraw && (
+        <button type="button" className="sc-entry-cta" style={{ marginTop: 'var(--fh-space-4)' }}
+                onClick={() => setAddingDraw(true)}>
+          Log a draw
+        </button>
+      )}
+      {addingDraw && (
+        <div className="hol-form-wrap">
+          <AddDrawForm assetId={asset.id} onSaved={() => { setAddingDraw(false); refresh(); }} onCancel={() => setAddingDraw(false)} />
         </div>
       )}
 
