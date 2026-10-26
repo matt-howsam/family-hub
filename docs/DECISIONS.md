@@ -365,6 +365,46 @@ is worse than an absent one.
 The layout adapts; edit controls appear only when the device identifies as a
 person rather than `role=display`.
 
+**The fridge iPad moves to the bench, 26 October 2026, and `role=display`'s
+write scope generalises from a hardcoded allowlist to a register check.**
+Confirmed by Matt while scoping `docs/Family Hub — Meals, Recipes & Shopping
+brief.md`. It is the same physical iPad and the same `role=display` pairing —
+not a second device — relocated from the fridge door to the kitchen bench,
+where it sits open like a recipe book rather than mounted on the wall. That
+relocation is also a deliberate intention change, not just furniture: this
+device becomes the primary editing surface for meals, recipes and the
+shopping list, which the two rules above ("read-only with one exception",
+"no edit affordances") no longer describe without qualification.
+
+The exception generalises along the household/family register line already
+used for write gating elsewhere, rather than growing a third hardcoded
+allowlist entry per module: **`role=display` may write in any family-register
+module (meal planner — unchanged; meals, recipes, shopping list — new).
+Household-register modules (Spending Scorecard, Operations Register) are
+unaffected and stay `role=adult`-only, on this device same as any other.**
+"No edit affordances at all" still holds everywhere outside that set —
+chores' single exception and the register boundary are unchanged, only the
+family-register surface area is wider now. See `docs/identity.md`'s "Roles
+and capabilities" table and "The fridge" section for the implementation-level
+amendment.
+
+**Recipes and a shopping list are back in scope, reversing the meal planner
+brief's "not this module."** `docs/family-hub-meal-planner-brief.md` ruled
+both out explicitly ("Recipes: a card is a name, not instructions";
+"Shopping lists: Reminders already does this"), written before Renée asked
+for a list the household would actually use and before the bench relocation
+made iPad recipe/list editing viable. Superseded by
+`docs/Family Hub — Meals, Recipes & Shopping brief.md`.
+
+**Recipe images are stored in Vercel Blob, not Postgres `bytea` — a
+deliberate exception to §7.7's file storage decision.** `bytea` fits one-off
+files with no size/volume pressure. Recipe photos are different: imported
+from source URLs, downloaded rather than hotlinked, resized to a ~1200px
+main image plus a ~300px thumbnail, and accessed repeatedly on meal cards and
+the cook view. That access pattern is what a blob store and a CDN are for;
+pushing it through `bytea` would carry every recipe image through the
+database on every read for no benefit the household would notice.
+
 **Rose authors her own assignments. Email ingestion only proposes.**
 Extracted items land in a review queue she confirms. A missed uniform is a bad
 morning; a missed assessment is a grade. A tool she trusts completely beats a

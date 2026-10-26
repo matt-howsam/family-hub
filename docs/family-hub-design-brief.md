@@ -120,10 +120,20 @@ The fridge holds an anonymous read-only identity.
 exclusion is reversed. She has full write parity with Matt everywhere,
 including the operations register.
 
-**Design implication:** every screen has a fridge variant and a phone variant.
-The fridge variant has no edit affordances at all — no disabled buttons, no
-greyed-out fields. Buttons that can never be pressed are worse than absent
-ones.
+**Amended 26 October 2026** — see `docs/DECISIONS.md` ("The fridge iPad moves
+to the bench") and `docs/Family Hub — Meals, Recipes & Shopping brief.md`:
+"Fridge iPad | Nothing. Read-only, always" is no longer universally true. It
+is the same device, same `role=display` identity, physically moved from the
+fridge door to the kitchen bench, and now a primary editing surface for
+family-register modules — starting with meals, recipes and the shopping list.
+Household-register modules (Spending Scorecard, Operations Register) are
+unaffected: still adult-only, still read-only on this device.
+
+**Design implication:** every screen has a `role=display` variant and a
+person-phone variant. Outside the modules this device is now allowed to edit,
+the `role=display` variant still has no edit affordances at all — no disabled
+buttons, no greyed-out fields. Buttons that can never be pressed are worse
+than absent ones.
 
 ---
 

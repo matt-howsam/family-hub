@@ -78,7 +78,11 @@ re-enable it — clearing the flag does, deliberately.
 ### The fridge
 
 Paired the same way, choosing *This is the fridge* rather than a person. It
-receives `role = display` and no person.
+receives `role = display` and no person. **Physically relocated to the
+kitchen bench, 26 October 2026** — same device, same pairing, same cookie;
+"the fridge" stays its name in code and docs because the role and pairing
+flow don't change, only where it sits and how much it's now allowed to write
+(see "Roles and capabilities" above).
 
 - The display session never expires. The iPad is always on, always powered, and
   a logged-out fridge is a dead appliance.
@@ -122,7 +126,7 @@ Mirrors §5, with Rose's assignment write added per §7.11.
 
 | Role | Person | Can write |
 |---|---|---|
-| `display` | none | Chore ticks. Meal planner nights. Nothing else. |
+| `display` | none | Chore ticks. Meal planner nights. Meals/recipes/shopping-list writes (family-register). Nothing in a household-register module. |
 | `adult` | Matt, Renée | Everything |
 | `child` | Rose | Her goals, her assignments, her chore ticks, holiday ideas, her own discovery settings |
 | `child` | Tom | His goals, his assignments, his chore ticks, holiday ideas, his own discovery settings |
@@ -134,6 +138,18 @@ gets full write access, same as Matt. This removes the app's only
 person-level write distinction. Every write route, register included, now
 gates on `role === 'adult'` alone — the same check already used everywhere
 else — rather than needing a second, person-specific check anywhere.
+
+**Amended 26 October 2026:** `display`'s write scope was a short hardcoded
+list ("chore ticks, meal planner nights, nothing else") because the fridge
+iPad was fixed to the wall and editing from it was deliberately minimal. The
+device has since moved to the kitchen bench (see "The fridge" below and
+`docs/DECISIONS.md`), and is now the primary editing surface for meals,
+recipes and the shopping list. The gate generalises from a route allowlist to
+a register check: **`role=display` may write in any family-register module;
+a household-register module (Spending Scorecard, Operations Register) still
+requires `role=adult`, regardless of device.** Enforce this the same way as
+every other role check — in the route handler, reading `lib/register.js`'s
+module-to-register mapping server-side, never inferred from the component.
 
 Enforce in the route handler, reading the cookie server-side. Never in the
 component. A UI that hides a control is a courtesy; the route is the rule.

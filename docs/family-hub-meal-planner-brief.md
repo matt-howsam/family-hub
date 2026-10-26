@@ -1,7 +1,13 @@
 # Family Hub — Meal Planner Brief
 
-**Status:** proposed, not built.
-**Last updated:** 11 September 2026
+**Status:** built. `meal_card`/`meal_plan` are in `schema.sql`; the planner
+lives in `lib/mealplanner.js`, `app/planner/page.jsx` and
+`components/PlannerScreen.jsx`. The "Not this module" list below is
+superseded for Recipes and Shopping lists — see
+`docs/Family Hub — Meals, Recipes & Shopping brief.md` and
+`docs/DECISIONS.md` ("Recipes and a shopping list are back in scope").
+**Last updated:** 11 September 2026; status line and scope note added
+26 October 2026.
 
 A new module, not one of the original ten. It replaces the whiteboard on the
 fridge where the week's dinners are currently written. Claude Code should
@@ -277,8 +283,11 @@ Notes:
 
 ### Not this module
 
-- **Recipes.** A card is a name, not instructions.
-- **Shopping lists.** Reminders already does this.
+- **Recipes.** A card is a name, not instructions. *Superseded 26 October
+  2026 — see `docs/Family Hub — Meals, Recipes & Shopping brief.md`.*
+- **Shopping lists.** Reminders already does this. *Superseded 26 October
+  2026, same brief — Reminders wasn't store-aware and didn't derive from
+  planned meals.*
 - **Breakfast and lunch.** The whiteboard is dinners.
 - **Links to the Groceries scorecard line.** Different ritual, different
   number.
