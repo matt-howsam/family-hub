@@ -1242,3 +1242,63 @@ create table if not exists supporter (
 -- a rename-in-place, not a migration of real data.
 alter table goal add column if not exists wish_id int references wish(id);
 alter table goal drop column if exists want_id;
+
+-- Shopping list, Phase 1 of docs/Family Hub — Meals, Recipes & Shopping
+-- brief.md. Ad-hoc items only — `list_entry.meal_id` is deliberately not
+-- here yet: the brief's data model assumes an existing `meal` table with a
+-- `recipe_id`/`status` column, but no such table exists (there's
+-- `meal_card`, the library, and `meal_plan`, keyed by `night date` with no
+-- surrogate id to reference). That's a Phase 2 problem, added via
+-- `alter table ... add column if not exists` once recipes settle the real
+-- shape, same pattern as every other column added after the fact above.
+create table if not exists store (
+  id         serial primary key,
+  name       text not null unique,
+  sort_order int  not null default 0
+);
+
+insert into store (name, sort_order) values ('Coles', 1), ('Aldi', 2), ('Butcher', 3)
+on conflict (name) do nothing;
+
+-- The canonical thing you buy. Store lives here, not on the recipe line,
+-- so resolving "2 garlic cloves, crushed" and "1 tsp minced garlic" to the
+-- same store assignment isn't a recurring chore — see the brief's "Item
+-- resolution". `is_staple` drives the pantry tick defaulting to "have".
+-- Named `shop_item`, not `item` — `item` already exists (the ingestion
+-- review queue's approved items, line 201); `create table if not exists`
+-- would have silently no-opped against it rather than erroring, and did on
+-- the first pass of this migration until caught by a failing query.
+create table if not exists shop_item (
+  id               serial primary key,
+  name             text    not null,
+  aliases          text[]  not null default '{}',
+  default_store_id int     references store(id),
+  is_staple        boolean not null default false,
+  archived_at      timestamptz,
+  created_at       timestamptz not null default now()
+);
+
+-- One open shop at a time. Closing it (`completed_at`) is what the
+-- Saturday-morning review reads to know what belonged to the last run —
+-- see the brief's "Weekly shop cycle".
+create table if not exists shop (
+  id           serial primary key,
+  started_at   timestamptz not null default now(),
+  completed_at timestamptz
+);
+
+-- One row per item per shop, grouped by store on display. Archived, never
+-- deleted, for the same restorable-bin reason as everything else above —
+-- a mis-tap on a shared device is the real risk, not storage.
+create table if not exists list_entry (
+  id          serial primary key,
+  item_id     int  not null references shop_item(id),
+  store_id    int  not null references store(id),
+  source      text not null default 'adhoc' check (source in ('meal', 'adhoc')),
+  shop_id     int  references shop(id),
+  status      text not null default 'needed' check (status in ('needed', 'have', 'bought')),
+  added_by    text,
+  archived_at timestamptz,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);

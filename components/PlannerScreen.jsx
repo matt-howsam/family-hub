@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, ArrowLeft } from '@phosphor-icons/react/ssr';
 import { foodIcon, FOOD_ICONS } from '@/lib/foodIcons';
+import ShoppingListPanel from '@/components/ShoppingListPanel';
 
 const SHEET_IDLE_MS = 30000;
 const VIEW_IDLE_MS = 60000;
@@ -139,6 +140,7 @@ function AddCardForm({ onAdd }) {
 
 export default function PlannerScreen({
   todayKey, thisMonday, nextMonday, thisWeek, nextWeek, library, role, defaultWeek,
+  stores, list, bin,
 }) {
   const router = useRouter();
   const fridge = role === 'display';
@@ -147,6 +149,7 @@ export default function PlannerScreen({
   const [nextPlan, setNextPlan] = useState(nextWeek);
   const [lib, setLib] = useState(library);
   const [pickerNight, setPickerNight] = useState(null);
+  const [showList, setShowList] = useState(false);
   const [toast, setToast] = useState(null);
 
   const sheetTimer = useRef(null);
@@ -158,7 +161,9 @@ export default function PlannerScreen({
     const arm = () => {
       clearTimeout(sheetTimer.current);
       clearTimeout(viewTimer.current);
-      if (pickerNight) sheetTimer.current = setTimeout(() => setPickerNight(null), SHEET_IDLE_MS);
+      if (pickerNight || showList) {
+        sheetTimer.current = setTimeout(() => { setPickerNight(null); setShowList(false); }, SHEET_IDLE_MS);
+      }
       viewTimer.current = setTimeout(() => router.push('/'), VIEW_IDLE_MS);
     };
     arm();
@@ -169,7 +174,7 @@ export default function PlannerScreen({
       clearTimeout(viewTimer.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fridge, pickerNight]);
+  }, [fridge, pickerNight, showList]);
 
   const plan = week === 'this' ? thisPlan : nextPlan;
   const setPlan = week === 'this' ? setThisPlan : setNextPlan;
@@ -261,6 +266,9 @@ export default function PlannerScreen({
       <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="mp-header">
         <span className="mp-header__title">Dinner</span>
+        <button className="mp-header__list" onClick={() => setShowList(true)}>
+          List{list.length ? ` · ${list.length}` : ''}
+        </button>
       </div>
 
       <div className="mp-switch">
@@ -334,6 +342,15 @@ export default function PlannerScreen({
           onPick={pick}
           onClear={clearCurrent}
           onClose={() => setPickerNight(null)}
+        />
+      )}
+
+      {showList && (
+        <ShoppingListPanel
+          stores={stores}
+          list={list}
+          bin={bin}
+          onClose={() => setShowList(false)}
         />
       )}
 

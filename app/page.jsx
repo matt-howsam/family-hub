@@ -15,6 +15,7 @@ import { briefing, dayKey } from '@/lib/timetable';
 import { overlayToday } from '@/lib/todayBriefing';
 import { getWhatsOn } from '@/lib/whatson';
 import { getTonight } from '@/lib/mealplanner';
+import { getOpenShop, getList } from '@/lib/shoppinglist';
 import { getStoredConditions } from '@/lib/conditions';
 import { eveningLine } from '@/lib/todo';
 import { getSession } from '@/lib/identity';
@@ -36,6 +37,8 @@ export default async function Wall() {
   const now = today(TZ);
   const w = weekLetter(anchor, now);
   const tonight = await getTonight();
+  const openShop = await getOpenShop();
+  const shoppingList = await getList(openShop?.id);
   const projectsTile = await getProjectsTile();
   const spendingTile = await getSpendingTile();
   const registerTile = await getRegisterTile();
@@ -126,7 +129,7 @@ export default async function Wall() {
         <WeekLetter letter={w.letter} schoolWeek={w.schoolWeek} canWrite={hasDb} />
       </section>
 
-      <TonightLine tonight={tonight} />
+      <TonightLine tonight={tonight} listCount={shoppingList.length} />
 
       {/* Family register — people. Softer radius, more air, tinted. Kid
           cards run the whole school day; the water card is additive once
