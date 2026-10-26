@@ -140,7 +140,7 @@ function AddCardForm({ onAdd }) {
 
 export default function PlannerScreen({
   todayKey, thisMonday, nextMonday, thisWeek, nextWeek, library, role, defaultWeek,
-  stores, list, bin,
+  stores, list, bin, categories,
 }) {
   const router = useRouter();
   const fridge = role === 'display';
@@ -350,6 +350,7 @@ export default function PlannerScreen({
           stores={stores}
           list={list}
           bin={bin}
+          categories={categories}
           onClose={() => setShowList(false)}
         />
       )}

@@ -1312,3 +1312,43 @@ create table if not exists list_entry (
 alter table shop_item add column if not exists category text check (category in (
   'produce', 'bakery', 'deli', 'dairy', 'meat_seafood', 'frozen', 'pantry', 'drinks', 'household', 'other'
 ));
+
+-- Categories move from a fixed check-constrained list to a real table, so
+-- Matt or Renée can add or rename an aisle from Settings without a code
+-- deploy — same reasoning as `store`, same shape.
+create table if not exists category (
+  id         serial primary key,
+  name       text not null unique,
+  sort_order int  not null default 0
+);
+
+insert into category (name, sort_order) values
+  ('Produce', 1), ('Bakery', 2), ('Deli', 3), ('Dairy & Eggs', 4),
+  ('Meat & Seafood', 5), ('Frozen', 6), ('Pantry', 7), ('Drinks', 8),
+  ('Household', 9), ('Other', 10)
+on conflict (name) do nothing;
+
+-- `shop_item.category` (above) is superseded by `category_id` below, left
+-- in place rather than dropped: scripts/apply-schema.mjs replays this whole
+-- file on every run, and a backfill statement that reads a column dropped
+-- by an earlier run would break every apply after it. Harmless, unused
+-- cruft beats a migration that can only run once.
+alter table shop_item add column if not exists category_id int references category(id);
+
+-- One-time backfill from the old text keys, safe to replay: once
+-- category_id is set, the where clause skips the row on every later run.
+update shop_item set category_id = (
+  select id from category where name = case coalesce(shop_item.category, 'other')
+    when 'produce' then 'Produce'
+    when 'bakery' then 'Bakery'
+    when 'deli' then 'Deli'
+    when 'dairy' then 'Dairy & Eggs'
+    when 'meat_seafood' then 'Meat & Seafood'
+    when 'frozen' then 'Frozen'
+    when 'pantry' then 'Pantry'
+    when 'drinks' then 'Drinks'
+    when 'household' then 'Household'
+    else 'Other'
+  end
+)
+where category_id is null;

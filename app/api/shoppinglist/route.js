@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/identity';
 import {
   addAdhocItem, setEntryStatus, deleteEntry, restoreEntry,
-  startNewShop, resolveLeftover, createStore,
+  startNewShop, resolveLeftover, createStore, createCategory, renameCategory,
 } from '@/lib/shoppinglist';
 
 const ok = (extra) => NextResponse.json({ ok: true, ...extra });
@@ -24,7 +24,7 @@ export async function POST(request) {
         newStore = await createStore(body.newStoreName);
         storeId = newStore?.id ?? null;
       }
-      const result = await addAdhocItem(body.name ?? '', storeId, session?.person ?? null, body.category ?? null);
+      const result = await addAdhocItem(body.name ?? '', storeId, session?.person ?? null, body.categoryId ?? null);
       if (!result.ok) return result.needsStore ? ok(result) : badRequest(result.error ?? 'could not add item');
       return ok({ ...result, newStore });
     }
@@ -57,6 +57,20 @@ export async function POST(request) {
       }
       await resolveLeftover(body.id, body.resolution);
       return ok();
+
+    case 'addCategory': {
+      if (!body.name) return badRequest('name required');
+      const category = await createCategory(body.name);
+      if (!category) return badRequest('could not add category');
+      return ok({ category });
+    }
+
+    case 'renameCategory': {
+      if (!body.id || !body.name) return badRequest('id and name are required');
+      const category = await renameCategory(body.id, body.name);
+      if (!category) return badRequest('could not rename category');
+      return ok({ category });
+    }
 
     default:
       return badRequest('unknown action');

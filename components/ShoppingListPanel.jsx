@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, Trash, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
-import { CATEGORIES, DEFAULT_CATEGORY, groupByCategory } from '@/lib/categories';
+import { groupByCategory } from '@/lib/categories';
 
 const TOAST_MS = 8000;
 const NEW_STORE = '__new__';
@@ -20,7 +20,7 @@ async function postList(body) {
  * half of the week view, not its own route. The phone equivalent is
  * components/ShoppingListScreen.jsx at /list.
  */
-export default function ShoppingListPanel({ stores, list, bin, onClose }) {
+export default function ShoppingListPanel({ stores, list, bin, categories, onClose }) {
   const router = useRouter();
   const [items, setItems] = useState(list);
   const [storeList, setStoreList] = useState(stores);
@@ -30,7 +30,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
   const [pendingName, setPendingName] = useState(null);
   const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
   const [newStoreName, setNewStoreName] = useState('');
-  const [pendingCategory, setPendingCategory] = useState(DEFAULT_CATEGORY);
+  const [pendingCategory, setPendingCategory] = useState(categories[0]?.id ?? '');
   const [leftovers, setLeftovers] = useState(null);
   const [showBin, setShowBin] = useState(false);
   const toastTimer = useRef(null);
@@ -60,7 +60,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
     const result = await postList({
       action: 'add',
       name: pendingName,
-      category: pendingCategory,
+      categoryId: pendingCategory ? Number(pendingCategory) : null,
       ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
     });
     if (result.newStore) {
@@ -70,7 +70,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
     setPendingName(null);
     setNewStoreName('');
     setPendingStore(storeList[0]?.id ?? '');
-    setPendingCategory(DEFAULT_CATEGORY);
+    setPendingCategory(categories[0]?.id ?? '');
     router.refresh();
   };
 
@@ -121,7 +121,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
     }, {}),
   )
     .sort((a, b) => a.storeSort - b.storeSort)
-    .map((group) => ({ ...group, aisles: groupByCategory(group.items) }));
+    .map((group) => ({ ...group, aisles: groupByCategory(group.items, categories) }));
 
   return (
     <div className="sl-backdrop" onClick={onClose}>
@@ -189,14 +189,20 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
                   />
                 )}
                 <select value={pendingCategory} onChange={(e) => setPendingCategory(e.target.value)}>
-                  {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+                  {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
-                <button type="submit" className="mp-add__submit">Add</button>
+                <button
+                  type="submit"
+                  className="mp-add__submit"
+                  disabled={pendingStore === NEW_STORE && !newStoreName.trim()}
+                >
+                  Add
+                </button>
               </form>
             ) : (
               <form className="sl-add" onSubmit={submitAdd}>
                 <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
-                <button type="submit" className="mp-add__submit">Add</button>
+                <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
               </form>
             )}
 

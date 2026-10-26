@@ -610,6 +610,7 @@ html, body {
 .mp-add__submit { min-height: var(--fh-target-min); border: 0; border-radius: var(--fh-radius-btn);
                    background: var(--fh-teal); color: var(--fh-ink-inverse);
                    font: var(--fh-text-row); padding: 0 var(--fh-space-6); }
+.mp-add__submit:disabled { background: var(--fh-surface-sunken); color: var(--fh-ink-label); }
 
 @media (max-width: 560px) {
   .mp-page { padding: var(--fh-gutter-phone); }
@@ -747,6 +748,19 @@ html, body {
 .pair__link { display: block; margin-top: var(--fh-space-6); border: 0; background: none;
               color: var(--fh-ink-label); font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
               text-transform: uppercase; text-decoration: underline; padding: 0; }
+
+/* Shopping categories — components/CategoryManager.jsx. */
+.cat-row { display: flex; align-items: center; gap: var(--fh-space-3);
+           padding: var(--fh-space-2) 0; border-top: var(--fh-border-hair); }
+.cat-row:first-child { border-top: 0; }
+.cat-row__input { flex: 1; min-width: 0; min-height: var(--fh-target-min);
+                   border: var(--fh-border-input); border-radius: var(--fh-radius-md);
+                   padding: 0 var(--fh-space-4); font: var(--fh-text-body); font-family: var(--fh-font);
+                   background: var(--fh-surface); }
+.cat-row__save { flex-shrink: 0; min-height: 44px; border: 0; border-radius: var(--fh-radius-md);
+                  padding: 0 var(--fh-space-4); background: var(--fh-teal); color: var(--fh-ink-inverse);
+                  font-weight: 700; }
+.cat-row__save:disabled { opacity: .5; }
 
 /* ==========================================================================
    To do — docs/family-hub-todo-brief.md. Reuses .wo-rows/.wo-subhead for the

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Trash } from '@phosphor-icons/react/ssr';
-import { CATEGORIES, DEFAULT_CATEGORY, groupByCategory } from '@/lib/categories';
+import { groupByCategory } from '@/lib/categories';
 
 const TOAST_MS = 8000;
 const POLL_MS = 12000;
@@ -34,7 +34,7 @@ function saveQueue(q) {
  * app-open with zero signal, since there's no service worker caching the
  * route itself.
  */
-export default function ShoppingListScreen({ stores, initialList }) {
+export default function ShoppingListScreen({ stores, initialList, categories }) {
   const router = useRouter();
   const [items, setItems] = useState(initialList);
   const [storeList, setStoreList] = useState(stores);
@@ -45,7 +45,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
   const [pendingName, setPendingName] = useState(null);
   const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
   const [newStoreName, setNewStoreName] = useState('');
-  const [pendingCategory, setPendingCategory] = useState(DEFAULT_CATEGORY);
+  const [pendingCategory, setPendingCategory] = useState(categories[0]?.id ?? '');
   const [toast, setToast] = useState(null);
   const [queueLen, setQueueLen] = useState(0);
   const [online, setOnline] = useState(true);
@@ -127,7 +127,13 @@ export default function ShoppingListScreen({ stores, initialList }) {
     if (!trimmed) return;
     setName('');
     const result = await dispatch({ action: 'add', name: trimmed });
-    if (result.needsStore) { setPendingName(trimmed); return; }
+    if (result.needsStore) {
+      setPendingName(trimmed);
+      // Default to whichever store's tab is open — the common case while
+      // shopping is adding a new item to the aisle you're already in.
+      setPendingStore(activeStore ?? storeList[0]?.id ?? '');
+      return;
+    }
     if (result.entry) {
       setItems((cur) => [...cur, result.entry]);
       setActiveStore((cur) => cur ?? result.entry.storeId);
@@ -143,7 +149,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     const result = await dispatch({
       action: 'add',
       name: pendingName,
-      category: pendingCategory,
+      categoryId: pendingCategory ? Number(pendingCategory) : null,
       ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
     });
     if (result.newStore) {
@@ -156,7 +162,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     setPendingName(null);
     setNewStoreName('');
     setPendingStore(storeList[0]?.id ?? '');
-    setPendingCategory(DEFAULT_CATEGORY);
+    setPendingCategory(categories[0]?.id ?? '');
     router.refresh();
   };
 
@@ -187,7 +193,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  const aisles = groupByCategory(items.filter((i) => i.storeId === activeStore));
+  const aisles = groupByCategory(items.filter((i) => i.storeId === activeStore), categories);
 
   return (
     <main className="sl-phone">
@@ -244,14 +250,20 @@ export default function ShoppingListScreen({ stores, initialList }) {
             />
           )}
           <select value={pendingCategory} onChange={(e) => setPendingCategory(e.target.value)}>
-            {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <button type="submit" className="mp-add__submit">Add</button>
+          <button
+            type="submit"
+            className="mp-add__submit"
+            disabled={pendingStore === NEW_STORE && !newStoreName.trim()}
+          >
+            Add
+          </button>
         </form>
       ) : (
         <form className="sl-add" onSubmit={submitAdd}>
           <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
-          <button type="submit" className="mp-add__submit">Add</button>
+          <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
         </form>
       )}
 

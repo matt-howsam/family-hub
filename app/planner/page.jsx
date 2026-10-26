@@ -1,6 +1,6 @@
 import { mondayOf, today, TZ } from '@/lib/week';
 import { getWeekPlan, getLibrary } from '@/lib/mealplanner';
-import { getOpenShop, getList, getStores, getBin } from '@/lib/shoppinglist';
+import { getOpenShop, getList, getStores, getBin, getCategories } from '@/lib/shoppinglist';
 import { getRole } from '@/lib/role';
 import PlannerScreen from '@/components/PlannerScreen';
 
@@ -15,7 +15,7 @@ export default async function PlannerPage() {
   const nextMonday = new Date(thisMonday.getTime() + 7 * DAY);
   const iso = (d) => d.toISOString().slice(0, 10);
 
-  const [thisWeek, nextWeek, library, role, shop, stores, bin] = await Promise.all([
+  const [thisWeek, nextWeek, library, role, shop, stores, bin, categories] = await Promise.all([
     getWeekPlan(thisMonday),
     getWeekPlan(nextMonday),
     getLibrary(),
@@ -23,6 +23,7 @@ export default async function PlannerPage() {
     getOpenShop(),
     getStores(),
     getBin(),
+    getCategories(),
   ]);
   const list = await getList(shop?.id);
 
@@ -42,6 +43,7 @@ export default async function PlannerPage() {
       stores={stores}
       list={list}
       bin={bin}
+      categories={categories}
     />
   );
 }
