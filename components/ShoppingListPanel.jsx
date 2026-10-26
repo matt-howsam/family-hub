@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { X, Trash, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
 
 const TOAST_MS = 8000;
+const NEW_STORE = '__new__';
 
 async function postList(body) {
   const res = await fetch('/api/shoppinglist', {
@@ -21,11 +22,13 @@ async function postList(body) {
 export default function ShoppingListPanel({ stores, list, bin, onClose }) {
   const router = useRouter();
   const [items, setItems] = useState(list);
+  const [storeList, setStoreList] = useState(stores);
   const [binItems, setBinItems] = useState(bin);
   const [toast, setToast] = useState(null);
   const [name, setName] = useState('');
   const [pendingName, setPendingName] = useState(null);
   const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
+  const [newStoreName, setNewStoreName] = useState('');
   const [leftovers, setLeftovers] = useState(null);
   const [showBin, setShowBin] = useState(false);
   const toastTimer = useRef(null);
@@ -50,9 +53,20 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
   const submitPendingStore = async (e) => {
     e.preventDefault();
     if (!pendingName) return;
-    const result = await postList({ action: 'add', name: pendingName, storeId: Number(pendingStore) });
+    const addingNewStore = pendingStore === NEW_STORE;
+    if (addingNewStore && !newStoreName.trim()) return;
+    const result = await postList({
+      action: 'add',
+      name: pendingName,
+      ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
+    });
+    if (result.newStore) {
+      setStoreList((cur) => (cur.some((s) => s.id === result.newStore.id) ? cur : [...cur, result.newStore]));
+    }
     if (result.entry) setItems((cur) => [...cur, result.entry]);
     setPendingName(null);
+    setNewStoreName('');
+    setPendingStore(storeList[0]?.id ?? '');
     router.refresh();
   };
 
@@ -153,8 +167,16 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
               <form className="sl-add" onSubmit={submitPendingStore}>
                 <span className="sl-panel__label">New item: {pendingName}. Which store?</span>
                 <select value={pendingStore} onChange={(e) => setPendingStore(e.target.value)}>
-                  {stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  {storeList.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  <option value={NEW_STORE}>Add a new store…</option>
                 </select>
+                {pendingStore === NEW_STORE && (
+                  <input
+                    placeholder="Store name, e.g. Bunnings"
+                    value={newStoreName}
+                    onChange={(e) => setNewStoreName(e.target.value)}
+                  />
+                )}
                 <button type="submit" className="mp-add__submit">Add</button>
               </form>
             ) : (

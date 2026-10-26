@@ -7,6 +7,7 @@ import { ArrowLeft, Trash } from '@phosphor-icons/react/ssr';
 const TOAST_MS = 8000;
 const POLL_MS = 12000;
 const QUEUE_KEY = 'fh_list_queue';
+const NEW_STORE = '__new__';
 
 async function send(body) {
   const res = await fetch('/api/shoppinglist', {
@@ -35,12 +36,14 @@ function saveQueue(q) {
 export default function ShoppingListScreen({ stores, initialList }) {
   const router = useRouter();
   const [items, setItems] = useState(initialList);
+  const [storeList, setStoreList] = useState(stores);
   const [activeStore, setActiveStore] = useState(
     stores.find((s) => initialList.some((i) => i.storeId === s.id))?.id ?? stores[0]?.id ?? null,
   );
   const [name, setName] = useState('');
   const [pendingName, setPendingName] = useState(null);
   const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
+  const [newStoreName, setNewStoreName] = useState('');
   const [toast, setToast] = useState(null);
   const [queueLen, setQueueLen] = useState(0);
   const [online, setOnline] = useState(true);
@@ -133,12 +136,23 @@ export default function ShoppingListScreen({ stores, initialList }) {
   const submitPendingStore = async (e) => {
     e.preventDefault();
     if (!pendingName) return;
-    const result = await dispatch({ action: 'add', name: pendingName, storeId: Number(pendingStore) });
+    const addingNewStore = pendingStore === NEW_STORE;
+    if (addingNewStore && !newStoreName.trim()) return;
+    const result = await dispatch({
+      action: 'add',
+      name: pendingName,
+      ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
+    });
+    if (result.newStore) {
+      setStoreList((cur) => (cur.some((s) => s.id === result.newStore.id) ? cur : [...cur, result.newStore]));
+    }
     if (result.entry) {
       setItems((cur) => [...cur, result.entry]);
       setActiveStore((cur) => cur ?? result.entry.storeId);
     }
     setPendingName(null);
+    setNewStoreName('');
+    setPendingStore(storeList[0]?.id ?? '');
     router.refresh();
   };
 
@@ -157,7 +171,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     });
   };
 
-  const storesWithItems = stores.filter((s) => items.some((i) => i.storeId === s.id));
+  const storesWithItems = storeList.filter((s) => items.some((i) => i.storeId === s.id));
 
   // The active tab can empty out (its last item ticked-and-cleared, deleted,
   // or restored elsewhere) while another still has items — fall back rather
@@ -210,8 +224,16 @@ export default function ShoppingListScreen({ stores, initialList }) {
         <form className="sl-add" onSubmit={submitPendingStore}>
           <span className="sl-panel__label">New item: {pendingName}. Which store?</span>
           <select value={pendingStore} onChange={(e) => setPendingStore(e.target.value)}>
-            {stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            {storeList.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            <option value={NEW_STORE}>Add a new store…</option>
           </select>
+          {pendingStore === NEW_STORE && (
+            <input
+              placeholder="Store name, e.g. Bunnings"
+              value={newStoreName}
+              onChange={(e) => setNewStoreName(e.target.value)}
+            />
+          )}
           <button type="submit" className="mp-add__submit">Add</button>
         </form>
       ) : (

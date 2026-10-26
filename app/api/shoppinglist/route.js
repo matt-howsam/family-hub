@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/identity';
 import {
   addAdhocItem, setEntryStatus, deleteEntry, restoreEntry,
-  startNewShop, resolveLeftover,
+  startNewShop, resolveLeftover, createStore,
 } from '@/lib/shoppinglist';
 
 const ok = (extra) => NextResponse.json({ ok: true, ...extra });
@@ -18,9 +18,15 @@ export async function POST(request) {
 
   switch (body.action) {
     case 'add': {
-      const result = await addAdhocItem(body.name ?? '', body.storeId ?? null, session?.person ?? null);
+      let storeId = body.storeId ?? null;
+      let newStore = null;
+      if (!storeId && body.newStoreName) {
+        newStore = await createStore(body.newStoreName);
+        storeId = newStore?.id ?? null;
+      }
+      const result = await addAdhocItem(body.name ?? '', storeId, session?.person ?? null);
       if (!result.ok) return result.needsStore ? ok(result) : badRequest(result.error ?? 'could not add item');
-      return ok(result);
+      return ok({ ...result, newStore });
     }
 
     case 'setStatus':
