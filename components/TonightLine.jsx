@@ -27,7 +27,7 @@ export default function TonightLine({ tonight, listCount = 0 }) {
           <CaretRight size={14} className="tonight__chevron" />
         </Link>
         <Link className="tonight__list" href="/list" aria-label="Shopping list">
-          <ListChecks size={18} />
+          <ListChecks size={24} className="tonight__list-icon" />
           {listCount > 0 && <span className="tonight__list-count">{listCount}</span>}
         </Link>
       </div>

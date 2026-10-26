@@ -65,6 +65,12 @@ html, body {
                   min-height: 44px; min-width: 44px; justify-content: center;
                   color: var(--fh-ink-label); text-decoration: none; flex-shrink: 0; }
 .tonight__list-count { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta); color: var(--fh-ink-label); }
+
+@media (max-width: 560px) {
+  /* Smaller bump on a phone than the fridge/iPad default above — read at
+     arm's length on a phone, read from across the kitchen on the fridge. */
+  .tonight__list-icon { width: 21px; height: 21px; }
+}
 .tonight__prep { margin-top: var(--fh-space-2); font: var(--fh-text-answer);
                   letter-spacing: var(--fh-track-answer); color: var(--fh-attention-accent); }
 
