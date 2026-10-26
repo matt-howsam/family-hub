@@ -1302,3 +1302,13 @@ create table if not exists list_entry (
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+
+-- Aisle category, so the list can mirror the walk through the store
+-- instead of just grouping by store. Nullable rather than backfilled —
+-- an item created before this column existed shows under "Other" until
+-- someone adds it again or it's picked once more. Fixed vocabulary, not
+-- free text, so the aisle order in lib/categories.js stays meaningful;
+-- keep the two in sync if a category is ever added or renamed.
+alter table shop_item add column if not exists category text check (category in (
+  'produce', 'bakery', 'deli', 'dairy', 'meat_seafood', 'frozen', 'pantry', 'drinks', 'household', 'other'
+));

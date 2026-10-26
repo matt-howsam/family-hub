@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Trash } from '@phosphor-icons/react/ssr';
+import { CATEGORIES, DEFAULT_CATEGORY, groupByCategory } from '@/lib/categories';
 
 const TOAST_MS = 8000;
 const POLL_MS = 12000;
@@ -44,6 +45,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
   const [pendingName, setPendingName] = useState(null);
   const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
   const [newStoreName, setNewStoreName] = useState('');
+  const [pendingCategory, setPendingCategory] = useState(DEFAULT_CATEGORY);
   const [toast, setToast] = useState(null);
   const [queueLen, setQueueLen] = useState(0);
   const [online, setOnline] = useState(true);
@@ -141,6 +143,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     const result = await dispatch({
       action: 'add',
       name: pendingName,
+      category: pendingCategory,
       ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
     });
     if (result.newStore) {
@@ -153,6 +156,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     setPendingName(null);
     setNewStoreName('');
     setPendingStore(storeList[0]?.id ?? '');
+    setPendingCategory(DEFAULT_CATEGORY);
     router.refresh();
   };
 
@@ -183,7 +187,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  const rows = items.filter((i) => i.storeId === activeStore);
+  const aisles = groupByCategory(items.filter((i) => i.storeId === activeStore));
 
   return (
     <main className="sl-phone">
@@ -207,16 +211,21 @@ export default function ShoppingListScreen({ stores, initialList }) {
         ))}
       </div>
 
-      {rows.length === 0 && <p className="sl-empty">Nothing here.</p>}
-      {rows.map((entry) => (
-        <div className={`sl-row${entry.status === 'bought' ? ' sl-row--bought' : ''}`} key={entry.id}>
-          <button className="sl-row__check" onClick={() => tick(entry)} aria-label="Mark bought">
-            {entry.status === 'bought' ? '✓' : ''}
-          </button>
-          <span className="sl-row__name">{entry.itemName}</span>
-          <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
-            <Trash size={18} />
-          </button>
+      {aisles.length === 0 && <p className="sl-empty">Nothing here.</p>}
+      {aisles.map((aisle) => (
+        <div key={aisle.key}>
+          <div className="sl-aisle-label">{aisle.label}</div>
+          {aisle.items.map((entry) => (
+            <div className={`sl-row${entry.status === 'bought' ? ' sl-row--bought' : ''}`} key={entry.id}>
+              <button className="sl-row__check" onClick={() => tick(entry)} aria-label="Mark bought">
+                {entry.status === 'bought' ? '✓' : ''}
+              </button>
+              <span className="sl-row__name">{entry.itemName}</span>
+              <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
+                <Trash size={18} />
+              </button>
+            </div>
+          ))}
         </div>
       ))}
 
@@ -234,6 +243,9 @@ export default function ShoppingListScreen({ stores, initialList }) {
               onChange={(e) => setNewStoreName(e.target.value)}
             />
           )}
+          <select value={pendingCategory} onChange={(e) => setPendingCategory(e.target.value)}>
+            {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          </select>
           <button type="submit" className="mp-add__submit">Add</button>
         </form>
       ) : (

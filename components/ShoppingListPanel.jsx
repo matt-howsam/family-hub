@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, Trash, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
+import { CATEGORIES, DEFAULT_CATEGORY, groupByCategory } from '@/lib/categories';
 
 const TOAST_MS = 8000;
 const NEW_STORE = '__new__';
@@ -29,6 +30,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
   const [pendingName, setPendingName] = useState(null);
   const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
   const [newStoreName, setNewStoreName] = useState('');
+  const [pendingCategory, setPendingCategory] = useState(DEFAULT_CATEGORY);
   const [leftovers, setLeftovers] = useState(null);
   const [showBin, setShowBin] = useState(false);
   const toastTimer = useRef(null);
@@ -58,6 +60,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
     const result = await postList({
       action: 'add',
       name: pendingName,
+      category: pendingCategory,
       ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
     });
     if (result.newStore) {
@@ -67,6 +70,7 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
     setPendingName(null);
     setNewStoreName('');
     setPendingStore(storeList[0]?.id ?? '');
+    setPendingCategory(DEFAULT_CATEGORY);
     router.refresh();
   };
 
@@ -115,7 +119,9 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
       (acc[i.storeId] ??= { storeName: i.storeName, storeSort: i.storeSort, items: [] }).items.push(i);
       return acc;
     }, {}),
-  ).sort((a, b) => a.storeSort - b.storeSort);
+  )
+    .sort((a, b) => a.storeSort - b.storeSort)
+    .map((group) => ({ ...group, aisles: groupByCategory(group.items) }));
 
   return (
     <div className="sl-backdrop" onClick={onClose}>
@@ -146,18 +152,23 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
             {grouped.map((group) => (
               <div className="sl-group" key={group.storeName}>
                 <div className="sl-group__label">{group.storeName}</div>
-                {group.items.map((entry) => (
-                  <div className="sl-row" key={entry.id}>
-                    <button
-                      className={`sl-row__tick${entry.status === 'have' ? ' sl-row__tick--have' : ''}`}
-                      onClick={() => tick(entry)}
-                    >
-                      {entry.status === 'have' ? 'Have' : 'Needed'}
-                    </button>
-                    <span className="sl-row__name">{entry.itemName}</span>
-                    <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
-                      <Trash size={18} />
-                    </button>
+                {group.aisles.map((aisle) => (
+                  <div key={aisle.key}>
+                    <div className="sl-aisle-label">{aisle.label}</div>
+                    {aisle.items.map((entry) => (
+                      <div className="sl-row" key={entry.id}>
+                        <button
+                          className={`sl-row__tick${entry.status === 'have' ? ' sl-row__tick--have' : ''}`}
+                          onClick={() => tick(entry)}
+                        >
+                          {entry.status === 'have' ? 'Have' : 'Needed'}
+                        </button>
+                        <span className="sl-row__name">{entry.itemName}</span>
+                        <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
+                          <Trash size={18} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
@@ -177,6 +188,9 @@ export default function ShoppingListPanel({ stores, list, bin, onClose }) {
                     onChange={(e) => setNewStoreName(e.target.value)}
                   />
                 )}
+                <select value={pendingCategory} onChange={(e) => setPendingCategory(e.target.value)}>
+                  {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+                </select>
                 <button type="submit" className="mp-add__submit">Add</button>
               </form>
             ) : (

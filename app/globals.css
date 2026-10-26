@@ -650,6 +650,13 @@ html, body {
                     text-transform: uppercase; color: var(--fh-ink-label); }
 .sl-empty { padding: var(--fh-space-4) var(--fh-space-2); color: var(--fh-ink-label); }
 
+/* Aisle sub-heading within a store group — mirrors the walk through the
+   store (produce, bakery, deli, ...) rather than just grouping by store. */
+.sl-aisle-label { padding: var(--fh-space-2) var(--fh-space-6) var(--fh-space-1);
+                   font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                   text-transform: uppercase; color: var(--fh-ink-label);
+                   border-top: var(--fh-border-hair); opacity: .75; }
+
 .sl-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center;
           gap: var(--fh-space-4); min-height: var(--fh-target-min);
           padding: var(--fh-space-3) var(--fh-space-6); border-top: var(--fh-border-hair); }

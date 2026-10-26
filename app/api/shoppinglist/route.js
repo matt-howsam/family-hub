@@ -24,7 +24,7 @@ export async function POST(request) {
         newStore = await createStore(body.newStoreName);
         storeId = newStore?.id ?? null;
       }
-      const result = await addAdhocItem(body.name ?? '', storeId, session?.person ?? null);
+      const result = await addAdhocItem(body.name ?? '', storeId, session?.person ?? null, body.category ?? null);
       if (!result.ok) return result.needsStore ? ok(result) : badRequest(result.error ?? 'could not add item');
       return ok({ ...result, newStore });
     }
