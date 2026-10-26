@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CaretRight, ShoppingCart } from '@phosphor-icons/react/ssr';
+import { CaretRight, ListChecks } from '@phosphor-icons/react/ssr';
 import { foodIcon } from '@/lib/foodIcons';
 
 /* Sits under the date and week letter, not a tile — tonight's dinner decays
@@ -27,7 +27,7 @@ export default function TonightLine({ tonight, listCount = 0 }) {
           <CaretRight size={14} className="tonight__chevron" />
         </Link>
         <Link className="tonight__list" href="/list" aria-label="Shopping list">
-          <ShoppingCart size={18} />
+          <ListChecks size={18} />
           {listCount > 0 && <span className="tonight__list-count">{listCount}</span>}
         </Link>
       </div>

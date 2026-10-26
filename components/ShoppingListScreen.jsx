@@ -173,7 +173,7 @@ export default function ShoppingListScreen({ stores, initialList }) {
 
   return (
     <main className="sl-phone">
-      <Link className="wo-back" href="/settings" aria-label="Back"><ArrowLeft size={24} /></Link>
+      <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="sl-phone__header">
         <span className="sl-panel__title">Shopping list</span>
         {(!online || queueLen > 0) && (
