@@ -18,15 +18,17 @@ export async function POST(request) {
 
   switch (body.action) {
     case 'add': {
-      let storeId = body.storeId ?? null;
-      let newStore = null;
-      if (!storeId && body.newStoreName) {
-        newStore = await createStore(body.newStoreName);
-        storeId = newStore?.id ?? null;
-      }
-      const result = await addAdhocItem(body.name ?? '', storeId, session?.person ?? null, body.categoryId ?? null);
-      if (!result.ok) return result.needsStore ? ok(result) : badRequest(result.error ?? 'could not add item');
-      return ok({ ...result, newStore });
+      if (!body.storeId) return badRequest('storeId required');
+      const result = await addAdhocItem(body.name ?? '', body.storeId, session?.person ?? null, body.categoryId ?? null);
+      if (!result.ok) return badRequest(result.error ?? 'could not add item');
+      return ok(result);
+    }
+
+    case 'addStore': {
+      if (!body.name) return badRequest('name required');
+      const store = await createStore(body.name);
+      if (!store) return badRequest('could not add store');
+      return ok({ store });
     }
 
     case 'setStatus':

@@ -1,11 +1,10 @@
 'use client';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Trash, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
+import { X, Plus, Trash, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
 import { groupByCategory } from '@/lib/categories';
 
 const TOAST_MS = 8000;
-const NEW_STORE = '__new__';
 
 async function postList(body) {
   const res = await fetch('/api/shoppinglist', {
@@ -19,6 +18,12 @@ async function postList(body) {
  * per the brief's "Where the list lives", this is a panel over the lower
  * half of the week view, not its own route. The phone equivalent is
  * components/ShoppingListScreen.jsx at /list.
+ *
+ * Unlike the phone, there's no store tab here — the iPad shows every
+ * store's items at once, so the add form carries its own explicit "add
+ * to" store picker instead. Either way, the store an item lands under is
+ * whatever's picked at add time, never remembered from a previous add —
+ * see lib/shoppinglist.js#addAdhocItem.
  */
 export default function ShoppingListPanel({ stores, list, bin, categories, onClose }) {
   const router = useRouter();
@@ -27,10 +32,10 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
   const [binItems, setBinItems] = useState(bin);
   const [toast, setToast] = useState(null);
   const [name, setName] = useState('');
-  const [pendingName, setPendingName] = useState(null);
-  const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
+  const [addStore, setAddStore] = useState(stores[0]?.id ?? '');
+  const [addCategory, setAddCategory] = useState('');
+  const [addingStore, setAddingStore] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
-  const [pendingCategory, setPendingCategory] = useState(categories[0]?.id ?? '');
   const [leftovers, setLeftovers] = useState(null);
   const [showBin, setShowBin] = useState(false);
   const toastTimer = useRef(null);
@@ -44,33 +49,29 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
   const submitAdd = async (e) => {
     e.preventDefault();
     const trimmed = name.trim();
-    if (!trimmed) return;
+    if (!trimmed || !addStore) return;
     setName('');
-    const result = await postList({ action: 'add', name: trimmed });
-    if (result.needsStore) { setPendingName(trimmed); return; }
+    const result = await postList({
+      action: 'add',
+      name: trimmed,
+      storeId: Number(addStore),
+      categoryId: addCategory ? Number(addCategory) : null,
+    });
     if (result.entry) setItems((cur) => [...cur, result.entry]);
     router.refresh();
   };
 
-  const submitPendingStore = async (e) => {
+  const submitNewStore = async (e) => {
     e.preventDefault();
-    if (!pendingName) return;
-    const addingNewStore = pendingStore === NEW_STORE;
-    if (addingNewStore && !newStoreName.trim()) return;
-    const result = await postList({
-      action: 'add',
-      name: pendingName,
-      categoryId: pendingCategory ? Number(pendingCategory) : null,
-      ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
-    });
-    if (result.newStore) {
-      setStoreList((cur) => (cur.some((s) => s.id === result.newStore.id) ? cur : [...cur, result.newStore]));
+    const trimmed = newStoreName.trim();
+    if (!trimmed) return;
+    const result = await postList({ action: 'addStore', name: trimmed });
+    if (result.store) {
+      setStoreList((cur) => (cur.some((s) => s.id === result.store.id) ? cur : [...cur, result.store]));
+      setAddStore(result.store.id);
     }
-    if (result.entry) setItems((cur) => [...cur, result.entry]);
-    setPendingName(null);
     setNewStoreName('');
-    setPendingStore(storeList[0]?.id ?? '');
-    setPendingCategory(categories[0]?.id ?? '');
+    setAddingStore(false);
     router.refresh();
   };
 
@@ -146,82 +147,87 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
           </div>
         ) : (
           <>
-            <button className="sl-start" onClick={startShop}>Start new shop</button>
+            <div className="sl-panel__scroll">
+              <button className="sl-start" onClick={startShop}>Start new shop</button>
 
-            {grouped.length === 0 && <p className="sl-empty">Nothing on the list.</p>}
-            {grouped.map((group) => (
-              <div className="sl-group" key={group.storeName}>
-                <div className="sl-group__label">{group.storeName}</div>
-                {group.aisles.map((aisle) => (
-                  <div key={aisle.key}>
-                    <div className="sl-aisle-label">{aisle.label}</div>
-                    {aisle.items.map((entry) => (
-                      <div className="sl-row" key={entry.id}>
-                        <button
-                          className={`sl-row__tick${entry.status === 'have' ? ' sl-row__tick--have' : ''}`}
-                          onClick={() => tick(entry)}
-                        >
-                          {entry.status === 'have' ? 'Have' : 'Needed'}
-                        </button>
-                        <span className="sl-row__name">{entry.itemName}</span>
-                        <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
-                          <Trash size={18} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
+              {grouped.length === 0 && <p className="sl-empty">Nothing on the list.</p>}
+              {grouped.map((group) => (
+                <div className="sl-group" key={group.storeName}>
+                  <div className="sl-group__label">{group.storeName}</div>
+                  {group.aisles.map((aisle) => (
+                    <div key={aisle.key}>
+                      <div className="sl-aisle-label">{aisle.label}</div>
+                      {aisle.items.map((entry) => (
+                        <div className="sl-row" key={entry.id}>
+                          <button
+                            className={`sl-row__tick${entry.status === 'have' ? ' sl-row__tick--have' : ''}`}
+                            onClick={() => tick(entry)}
+                          >
+                            {entry.status === 'have' ? 'Have' : 'Needed'}
+                          </button>
+                          <span className="sl-row__name">{entry.itemName}</span>
+                          <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
+                            <Trash size={18} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
 
-            {pendingName ? (
-              <form className="sl-add" onSubmit={submitPendingStore}>
-                <span className="sl-panel__label">New item: {pendingName}. Which store?</span>
-                <select value={pendingStore} onChange={(e) => setPendingStore(e.target.value)}>
-                  {storeList.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  <option value={NEW_STORE}>Add a new store…</option>
-                </select>
-                {pendingStore === NEW_STORE && (
+              <button className="sl-bin-toggle" onClick={() => setShowBin((v) => !v)}>
+                {showBin ? 'Hide' : 'Show'} recently removed{binItems.length ? ` (${binItems.length})` : ''}
+              </button>
+              {showBin && (
+                <div className="sl-bin">
+                  {binItems.length === 0 && <p className="sl-empty">Nothing removed recently.</p>}
+                  {binItems.map((b) => (
+                    <div className="sl-row" key={b.id}>
+                      <span className="sl-row__name">{b.itemName} <span className="sl-review__store">· {b.storeName}</span></span>
+                      <button className="sl-row__restore" onClick={() => restoreFromBin(b)}>
+                        <ArrowCounterClockwise size={18} /> Restore
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="sl-panel__footer">
+              {addingStore && (
+                <form className="sl-add-store" onSubmit={submitNewStore}>
                   <input
-                    placeholder="Store name, e.g. Bunnings"
+                    placeholder="New store, e.g. Bunnings"
                     value={newStoreName}
                     onChange={(e) => setNewStoreName(e.target.value)}
+                    autoFocus
                   />
-                )}
-                <select value={pendingCategory} onChange={(e) => setPendingCategory(e.target.value)}>
-                  {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-                <button
-                  type="submit"
-                  className="mp-add__submit"
-                  disabled={pendingStore === NEW_STORE && !newStoreName.trim()}
-                >
-                  Add
-                </button>
-              </form>
-            ) : (
+                  <button type="submit" className="mp-add__submit" disabled={!newStoreName.trim()}>Add</button>
+                </form>
+              )}
               <form className="sl-add" onSubmit={submitAdd}>
                 <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
+                <div className="sl-add__row">
+                  <select value={addStore} onChange={(e) => setAddStore(e.target.value)} aria-label="Add to store">
+                    {storeList.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                  <button
+                    type="button"
+                    className="sl-add__new-store"
+                    onClick={() => setAddingStore((v) => !v)}
+                    aria-label="Add a new store"
+                  >
+                    <Plus size={16} weight="bold" />
+                  </button>
+                  <select value={addCategory} onChange={(e) => setAddCategory(e.target.value)} aria-label="Aisle">
+                    <option value="">Uncategorised</option>
+                    {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
                 <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
               </form>
-            )}
-
-            <button className="sl-bin-toggle" onClick={() => setShowBin((v) => !v)}>
-              {showBin ? 'Hide' : 'Show'} recently removed{binItems.length ? ` (${binItems.length})` : ''}
-            </button>
-            {showBin && (
-              <div className="sl-bin">
-                {binItems.length === 0 && <p className="sl-empty">Nothing removed recently.</p>}
-                {binItems.map((b) => (
-                  <div className="sl-row" key={b.id}>
-                    <span className="sl-row__name">{b.itemName} <span className="sl-review__store">· {b.storeName}</span></span>
-                    <button className="sl-row__restore" onClick={() => restoreFromBin(b)}>
-                      <ArrowCounterClockwise size={18} /> Restore
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            </div>
           </>
         )}
 

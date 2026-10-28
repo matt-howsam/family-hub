@@ -2,13 +2,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Trash } from '@phosphor-icons/react/ssr';
+import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react/ssr';
 import { groupByCategory } from '@/lib/categories';
 
 const TOAST_MS = 8000;
 const POLL_MS = 12000;
 const QUEUE_KEY = 'fh_list_queue';
-const NEW_STORE = '__new__';
 
 async function send(body) {
   const res = await fetch('/api/shoppinglist', {
@@ -33,6 +32,10 @@ function saveQueue(q) {
  * across phones by polling every ~12s) but this does not survive a cold
  * app-open with zero signal, since there's no service worker caching the
  * route itself.
+ *
+ * Every store shows as a tab, not just ones with items — the tab you're
+ * on is "the selected list": adding an item always lands there, full stop,
+ * no memory of where that item went last time (see lib/shoppinglist.js).
  */
 export default function ShoppingListScreen({ stores, initialList, categories }) {
   const router = useRouter();
@@ -42,10 +45,8 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
     stores.find((s) => initialList.some((i) => i.storeId === s.id))?.id ?? stores[0]?.id ?? null,
   );
   const [name, setName] = useState('');
-  const [pendingName, setPendingName] = useState(null);
-  const [pendingStore, setPendingStore] = useState(stores[0]?.id ?? '');
+  const [addingStore, setAddingStore] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
-  const [pendingCategory, setPendingCategory] = useState(categories[0]?.id ?? '');
   const [toast, setToast] = useState(null);
   const [queueLen, setQueueLen] = useState(0);
   const [online, setOnline] = useState(true);
@@ -124,45 +125,24 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
   const submitAdd = async (e) => {
     e.preventDefault();
     const trimmed = name.trim();
-    if (!trimmed) return;
+    if (!trimmed || !activeStore) return;
     setName('');
-    const result = await dispatch({ action: 'add', name: trimmed });
-    if (result.needsStore) {
-      setPendingName(trimmed);
-      // Default to whichever store's tab is open — the common case while
-      // shopping is adding a new item to the aisle you're already in.
-      setPendingStore(activeStore ?? storeList[0]?.id ?? '');
-      return;
-    }
-    if (result.entry) {
-      setItems((cur) => [...cur, result.entry]);
-      setActiveStore((cur) => cur ?? result.entry.storeId);
-    }
+    const result = await dispatch({ action: 'add', name: trimmed, storeId: activeStore });
+    if (result.entry) setItems((cur) => [...cur, result.entry]);
     router.refresh();
   };
 
-  const submitPendingStore = async (e) => {
+  const submitNewStore = async (e) => {
     e.preventDefault();
-    if (!pendingName) return;
-    const addingNewStore = pendingStore === NEW_STORE;
-    if (addingNewStore && !newStoreName.trim()) return;
-    const result = await dispatch({
-      action: 'add',
-      name: pendingName,
-      categoryId: pendingCategory ? Number(pendingCategory) : null,
-      ...(addingNewStore ? { newStoreName: newStoreName.trim() } : { storeId: Number(pendingStore) }),
-    });
-    if (result.newStore) {
-      setStoreList((cur) => (cur.some((s) => s.id === result.newStore.id) ? cur : [...cur, result.newStore]));
+    const trimmed = newStoreName.trim();
+    if (!trimmed) return;
+    const result = await dispatch({ action: 'addStore', name: trimmed });
+    if (result.store) {
+      setStoreList((cur) => (cur.some((s) => s.id === result.store.id) ? cur : [...cur, result.store]));
+      setActiveStore(result.store.id);
     }
-    if (result.entry) {
-      setItems((cur) => [...cur, result.entry]);
-      setActiveStore((cur) => cur ?? result.entry.storeId);
-    }
-    setPendingName(null);
     setNewStoreName('');
-    setPendingStore(storeList[0]?.id ?? '');
-    setPendingCategory(categories[0]?.id ?? '');
+    setAddingStore(false);
     router.refresh();
   };
 
@@ -181,91 +161,77 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
     });
   };
 
-  const storesWithItems = storeList.filter((s) => items.some((i) => i.storeId === s.id));
-
-  // The active tab can empty out (its last item ticked-and-cleared, deleted,
-  // or restored elsewhere) while another still has items — fall back rather
-  // than show a blank "Nothing here" with a live tab sitting unselected.
-  useEffect(() => {
-    if (storesWithItems.length && !storesWithItems.some((s) => s.id === activeStore)) {
-      setActiveStore(storesWithItems[0].id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
-
   const aisles = groupByCategory(items.filter((i) => i.storeId === activeStore), categories);
 
   return (
     <main className="sl-phone">
-      <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
       <div className="sl-phone__header">
-        <span className="sl-panel__title">Shopping list</span>
-        {(!online || queueLen > 0) && (
-          <span className="sl-offline">Offline{queueLen ? ` · ${queueLen} not yet synced` : ''}</span>
+        <Link className="wo-back" href="/" aria-label="Back to the wall"><ArrowLeft size={24} /></Link>
+        <div className="sl-phone__titlebar">
+          <span className="sl-panel__title">Shopping list</span>
+          {(!online || queueLen > 0) && (
+            <span className="sl-offline">Offline{queueLen ? ` · ${queueLen} not yet synced` : ''}</span>
+          )}
+        </div>
+
+        <div className="sl-tabs">
+          {storeList.map((s) => (
+            <button
+              key={s.id}
+              className={`sl-tabs__tab${s.id === activeStore ? ' sl-tabs__tab--active' : ''}`}
+              onClick={() => setActiveStore(s.id)}
+            >
+              {s.name}
+            </button>
+          ))}
+          <button
+            className="sl-tabs__add"
+            onClick={() => setAddingStore((v) => !v)}
+            aria-label="Add a new store"
+          >
+            <Plus size={16} weight="bold" />
+          </button>
+        </div>
+
+        {addingStore && (
+          <form className="sl-add-store" onSubmit={submitNewStore}>
+            <input
+              placeholder="New store, e.g. Bunnings"
+              value={newStoreName}
+              onChange={(e) => setNewStoreName(e.target.value)}
+              autoFocus
+            />
+            <button type="submit" className="mp-add__submit" disabled={!newStoreName.trim()}>Add</button>
+          </form>
         )}
       </div>
 
-      <div className="sl-tabs">
-        {storesWithItems.map((s) => (
-          <button
-            key={s.id}
-            className={`sl-tabs__tab${s.id === activeStore ? ' sl-tabs__tab--active' : ''}`}
-            onClick={() => setActiveStore(s.id)}
-          >
-            {s.name}
-          </button>
+      <div className="sl-phone__scroll">
+        {aisles.length === 0 && <p className="sl-empty">Nothing here.</p>}
+        {aisles.map((aisle) => (
+          <div key={aisle.key}>
+            <div className="sl-aisle-label">{aisle.label}</div>
+            {aisle.items.map((entry) => (
+              <div className={`sl-row${entry.status === 'bought' ? ' sl-row--bought' : ''}`} key={entry.id}>
+                <button className="sl-row__check" onClick={() => tick(entry)} aria-label="Mark bought">
+                  {entry.status === 'bought' ? '✓' : ''}
+                </button>
+                <span className="sl-row__name">{entry.itemName}</span>
+                <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
+                  <Trash size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
         ))}
       </div>
 
-      {aisles.length === 0 && <p className="sl-empty">Nothing here.</p>}
-      {aisles.map((aisle) => (
-        <div key={aisle.key}>
-          <div className="sl-aisle-label">{aisle.label}</div>
-          {aisle.items.map((entry) => (
-            <div className={`sl-row${entry.status === 'bought' ? ' sl-row--bought' : ''}`} key={entry.id}>
-              <button className="sl-row__check" onClick={() => tick(entry)} aria-label="Mark bought">
-                {entry.status === 'bought' ? '✓' : ''}
-              </button>
-              <span className="sl-row__name">{entry.itemName}</span>
-              <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
-                <Trash size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-      ))}
-
-      {pendingName ? (
-        <form className="sl-add" onSubmit={submitPendingStore}>
-          <span className="sl-panel__label">New item: {pendingName}. Which store?</span>
-          <select value={pendingStore} onChange={(e) => setPendingStore(e.target.value)}>
-            {storeList.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            <option value={NEW_STORE}>Add a new store…</option>
-          </select>
-          {pendingStore === NEW_STORE && (
-            <input
-              placeholder="Store name, e.g. Bunnings"
-              value={newStoreName}
-              onChange={(e) => setNewStoreName(e.target.value)}
-            />
-          )}
-          <select value={pendingCategory} onChange={(e) => setPendingCategory(e.target.value)}>
-            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-          <button
-            type="submit"
-            className="mp-add__submit"
-            disabled={pendingStore === NEW_STORE && !newStoreName.trim()}
-          >
-            Add
-          </button>
-        </form>
-      ) : (
+      <div className="sl-phone__footer">
         <form className="sl-add" onSubmit={submitAdd}>
           <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
           <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
         </form>
-      )}
+      </div>
 
       {toast && (
         <div className="mp-toast">
