@@ -237,9 +237,9 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
                   </select>
                   <button
                     type="button"
-                    className="sl-add__new-store"
+                    className={`sl-add__new-store${addingStore ? ' sl-add__new-store--active' : ''}`}
                     onClick={() => setAddingStore((v) => !v)}
-                    aria-label="Add a new store"
+                    aria-label={addingStore ? 'Close add store' : 'Add a new store'}
                   >
                     <Plus size={16} weight="bold" />
                   </button>

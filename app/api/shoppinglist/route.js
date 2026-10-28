@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/identity';
 import {
   addAdhocItem, setEntryStatus, deleteEntry, restoreEntry, clearChecked,
-  startNewShop, resolveLeftover, createStore, createCategory, renameCategory,
+  startNewShop, resolveLeftover, createStore, archiveStore, restoreStore,
+  createCategory, renameCategory,
 } from '@/lib/shoppinglist';
 
 const ok = (extra) => NextResponse.json({ ok: true, ...extra });
@@ -28,6 +29,20 @@ export async function POST(request) {
       if (!body.name) return badRequest('name required');
       const store = await createStore(body.name);
       if (!store) return badRequest('could not add store');
+      return ok({ store });
+    }
+
+    case 'removeStore': {
+      if (!body.id) return badRequest('id required');
+      const store = await archiveStore(body.id);
+      if (!store) return badRequest('store still has items, or could not remove');
+      return ok({ store });
+    }
+
+    case 'restoreStore': {
+      if (!body.id) return badRequest('id required');
+      const store = await restoreStore(body.id);
+      if (!store) return badRequest('could not restore store');
       return ok({ store });
     }
 

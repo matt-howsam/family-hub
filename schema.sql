@@ -1260,6 +1260,11 @@ create table if not exists store (
 insert into store (name, sort_order) values ('Coles', 1), ('Aldi', 2), ('Butcher', 3)
 on conflict (name) do nothing;
 
+-- Archived, never deleted — a "Remove store" only ever offered once its
+-- list is empty, but a hard delete would still fight the foreign keys on
+-- any historical list_entry/shop_item row that ever pointed at it.
+alter table store add column if not exists archived_at timestamptz;
+
 -- The canonical thing you buy. Store lives here, not on the recipe line,
 -- so resolving "2 garlic cloves, crushed" and "1 tsp minced garlic" to the
 -- same store assignment isn't a recurring chore — see the brief's "Item

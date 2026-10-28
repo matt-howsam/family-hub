@@ -656,6 +656,10 @@ html, body {
                     font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
                     text-transform: uppercase; color: var(--fh-ink-label); }
 .sl-empty { padding: var(--fh-space-4) var(--fh-space-2); color: var(--fh-ink-label); }
+.sl-remove-store { display: inline-block; margin-top: var(--fh-space-2); min-height: 44px;
+                    border: 0; background: none; padding: 0 var(--fh-space-2);
+                    color: var(--fh-ink-label); font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta);
+                    text-transform: uppercase; text-decoration: underline; }
 
 /* Aisle sub-heading within a store group — mirrors the walk through the
    store (produce, bakery, deli, ...) rather than just grouping by store. */
@@ -696,6 +700,11 @@ html, body {
 .sl-add__new-store { flex-shrink: 0; min-height: var(--fh-target-min); min-width: 44px;
                       border: var(--fh-border-input); border-radius: var(--fh-radius-md);
                       background: var(--fh-surface); color: var(--fh-ink-label); }
+/* The icon itself rotates 45° — a "+" and an "×" are the same glyph at
+   that angle, so the toggle reads as one continuous affordance rather
+   than a swap between two unrelated icons. */
+.sl-add__new-store svg { transition: transform .15s ease; }
+.sl-add__new-store--active svg { transform: rotate(45deg); }
 
 /* The inline "new store" form — same shape on both surfaces, triggered by
    a "+" next to the phone's tabs or the iPad's add-to-store picker. */
@@ -746,6 +755,8 @@ html, body {
                 border: var(--fh-border-input); border-radius: var(--fh-radius-md);
                 background: var(--fh-surface); color: var(--fh-ink-label);
                 display: flex; align-items: center; justify-content: center; }
+.sl-tabs__add svg { transition: transform .15s ease; }
+.sl-tabs__add--active svg { transform: rotate(45deg); }
 .sl-phone__scroll { flex: 1; overflow-y: auto; padding: 0 var(--fh-gutter-phone); }
 .sl-phone__footer { flex-shrink: 0; padding: var(--fh-space-4) var(--fh-gutter-phone) var(--fh-gutter-phone);
                      border-top: var(--fh-border-hair); background: var(--fh-page-bg); }

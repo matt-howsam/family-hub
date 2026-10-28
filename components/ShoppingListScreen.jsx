@@ -151,6 +151,26 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
     router.refresh();
   };
 
+  // Only offered once the tab you're looking at is empty — the open-shop
+  // check in lib/shoppinglist.js#archiveStore is the real guard, this is
+  // just what makes the link show up in the first place.
+  const removeStore = async () => {
+    if (storeList.length <= 1) return;
+    const store = storeList.find((s) => s.id === activeStore);
+    if (!store) return;
+    const remaining = storeList.filter((s) => s.id !== activeStore);
+    setStoreList(remaining);
+    setActiveStore(remaining[0]?.id ?? null);
+    await dispatch({ action: 'removeStore', id: store.id });
+    router.refresh();
+    showToast(`${store.name} removed`, async () => {
+      setStoreList((cur) => (cur.some((s) => s.id === store.id) ? cur : [...cur, store]));
+      setActiveStore(store.id);
+      await dispatch({ action: 'restoreStore', id: store.id });
+      router.refresh();
+    });
+  };
+
   const tick = async (entry) => {
     const next = entry.status === 'bought' ? 'needed' : 'bought';
     setItems((cur) => cur.map((i) => (i.id === entry.id ? { ...i, status: next } : i)));
@@ -208,9 +228,9 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
             </button>
           ))}
           <button
-            className="sl-tabs__add"
+            className={`sl-tabs__add${addingStore ? ' sl-tabs__add--active' : ''}`}
             onClick={() => setAddingStore((v) => !v)}
-            aria-label="Add a new store"
+            aria-label={addingStore ? 'Close add store' : 'Add a new store'}
           >
             <Plus size={16} weight="bold" />
           </button>
@@ -230,7 +250,14 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
       </div>
 
       <div className="sl-phone__scroll">
-        {aisles.length === 0 && <p className="sl-empty">Nothing here.</p>}
+        {aisles.length === 0 && (
+          <div className="sl-empty">
+            <p>Nothing here.</p>
+            {storeList.length > 1 && (
+              <button className="sl-remove-store" onClick={removeStore}>Remove store</button>
+            )}
+          </div>
+        )}
         {aisles.map((aisle) => (
           <div key={aisle.key}>
             <div className="sl-aisle-label">{aisle.label}</div>
