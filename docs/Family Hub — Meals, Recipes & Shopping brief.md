@@ -72,18 +72,9 @@ Quantities are not merged in v1. Entries are grouped by item with their source m
 
 ## Weekly shop cycle
 
-The list is continuous and runs from shop to shop, not by calendar week. Each Saturday morning starts with a short review of the last shop, then planning, then the new list.
+**Removed, 29 October 2026.** Phase 1 shipped this as "Start new shop" — close the current shop, review every un-bought item (keep/drop), open a new one. In practice nobody used the review; the real pattern was ticking items bought, then wanting them gone, which "Clear checked" already does directly. Worse, tapping "Start new shop" with nothing to review did nothing visible, which read as broken and invited a second tap — each one silently opening another empty shop and stranding real items on the now-closed one (caught directly: a real shop cycle's worth of items ended up split across three closed, invisible shops before this was noticed and the data migrated back onto the one that stayed open).
 
-1. **Start new shop** (button on the iPad list panel). This opens the review of what's left from the previous shop.
-2. **Review leftovers.** Unbought items are grouped by the meal they were for. Keep or drop each one, or keep or drop a whole meal's group. Ad-hoc leftovers default to keep.
-3. **Review last week's meals.** Planned meals not marked cooked are offered as "move to this week" or "drop". A moved meal brings its bought ingredients as "have" and its unbought ones as "needed". A dropped meal takes its unbought items with it.
-4. **Plan the week.** Add meals as usual. Each one adds its items to the list.
-5. **Pantry tick and ad-hoc adds**, then go shopping from the phone.
-6. **Mid-week top-ups** go onto the same open list. There's no need to start a new shop for one item.
-
-Meals changed on the fly are handled in step 3. If a meal was swapped mid-week because something wasn't available, mark the original skipped and add the replacement, and the review cleans up its leftovers next Saturday.
-
-Data: add a `shop` record (id, started\_at, completed\_at) and a `shop_id` on `list_entry`, so the review knows what belonged to the last run.
+There is now exactly one shop, permanently — `getOpenShop()` still underlies every list operation (`list_entry.shop_id` still points at it), but nothing ever closes it or opens another. Bought items leave the list only via "Clear checked" or a one-by-one manual delete; needed-but-stale items are manual-delete only, with no periodic prompt to reconsider them. That's a deliberate tradeoff, not an oversight: a nudge to review stale items would be worth adding back if it turns out people actually want one, but it should be its own small feature, not bundled with a weekly-shop-boundary concept nothing else in the app depends on.
 
 ## Where the list lives
 
@@ -134,7 +125,7 @@ Phase 1 answers Renée's request on its own. Each later phase builds on real use
 
 | Phase | Scope | Done when |
 | --- | --- | --- |
-| 1. Shopping list | `store`, `item`, `list_entry` (ad-hoc only). iPad list view by store with ad-hoc add. Phone shop view with offline ticks and sync. Carry-over. Soft delete and undo. | Renée does a real shop from her phone. |
+| 1. Shopping list | `store`, `item`, `list_entry` (ad-hoc only). One list view (fridge/iPad and phone) by store with ad-hoc add. Offline ticks and sync. Soft delete and undo. | Renée does a real shop from her phone. |
 | 2. Recipes | `recipe`, `recipe_ingredient`, meal → recipe link. URL import and manual entry with review screen. Item resolution. Derived list entries. Staples. Cook view. iPad meal and icon editing. | A planned week produces a correct per-store list. |
 | 3. Photo import | Vision extraction through the Claude API into the same review screen. | A recipe book page and a handwritten card both import cleanly. |
 

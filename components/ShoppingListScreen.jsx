@@ -52,7 +52,6 @@ export default function ShoppingListScreen({ stores, initialList, categories, bi
   const [toast, setToast] = useState(null);
   const [queueLen, setQueueLen] = useState(0);
   const [online, setOnline] = useState(true);
-  const [leftovers, setLeftovers] = useState(null);
   const [binItems, setBinItems] = useState(bin);
   const [showBin, setShowBin] = useState(false);
   const toastTimer = useRef(null);
@@ -189,9 +188,8 @@ export default function ShoppingListScreen({ stores, initialList, categories, bi
     });
   };
 
-  // No scheduled clearing — bought items only drop off when a new shop
-  // starts (they don't carry forward). This is the immediate, manual version
-  // of that: clear what's checked on the tab you're looking at, right now.
+  // No scheduled clearing, and no weekly shop boundary either — bought
+  // items only ever leave the list via this or a one-by-one manual delete.
   const clearChecked = async () => {
     const toClear = items.filter((i) => i.storeId === activeStore && i.status === 'bought');
     if (!toClear.length) return;
@@ -213,21 +211,6 @@ export default function ShoppingListScreen({ stores, initialList, categories, bi
     router.refresh();
   };
 
-  const startShop = async () => {
-    const { leftovers: found } = await dispatch({ action: 'startShop' });
-    if (!found?.length) { router.refresh(); return; }
-    setLeftovers(found);
-  };
-
-  const resolveLeftover = async (entry, resolution) => {
-    await dispatch({ action: 'resolveLeftover', id: entry.id, resolution });
-    setLeftovers((cur) => {
-      const next = cur.filter((l) => l.id !== entry.id);
-      return next.length ? next : null;
-    });
-    router.refresh();
-  };
-
   const aisles = groupByCategory(items.filter((i) => i.storeId === activeStore), categories);
   const hasChecked = items.some((i) => i.storeId === activeStore && i.status === 'bought');
 
@@ -242,28 +225,26 @@ export default function ShoppingListScreen({ stores, initialList, categories, bi
           )}
         </div>
 
-        {!leftovers && (
-          <div className="sl-tabs">
-            {storeList.map((s) => (
-              <button
-                key={s.id}
-                className={`sl-tabs__tab${s.id === activeStore ? ' sl-tabs__tab--active' : ''}`}
-                onClick={() => setActiveStore(s.id)}
-              >
-                {s.name}
-              </button>
-            ))}
+        <div className="sl-tabs">
+          {storeList.map((s) => (
             <button
-              className={`sl-tabs__add${addingStore ? ' sl-tabs__add--active' : ''}`}
-              onClick={() => setAddingStore((v) => !v)}
-              aria-label={addingStore ? 'Close add store' : 'Add a new store'}
+              key={s.id}
+              className={`sl-tabs__tab${s.id === activeStore ? ' sl-tabs__tab--active' : ''}`}
+              onClick={() => setActiveStore(s.id)}
             >
-              <Plus size={16} weight="bold" />
+              {s.name}
             </button>
-          </div>
-        )}
+          ))}
+          <button
+            className={`sl-tabs__add${addingStore ? ' sl-tabs__add--active' : ''}`}
+            onClick={() => setAddingStore((v) => !v)}
+            aria-label={addingStore ? 'Close add store' : 'Add a new store'}
+          >
+            <Plus size={16} weight="bold" />
+          </button>
+        </div>
 
-        {!leftovers && addingStore && (
+        {addingStore && (
           <form className="sl-add-store" onSubmit={submitNewStore}>
             <input
               placeholder="New store, e.g. Bunnings"
@@ -277,81 +258,60 @@ export default function ShoppingListScreen({ stores, initialList, categories, bi
       </div>
 
       <div className="sl-phone__scroll">
-        {leftovers ? (
-          <div className="sl-review">
-            <div className="sl-panel__label">From last shop — keep or drop?</div>
-            {leftovers.map((l) => (
-              <div className="sl-review__row" key={l.id}>
-                <span>{l.itemName} <span className="sl-review__store">· {l.storeName}</span></span>
-                <div className="sl-review__actions">
-                  <button onClick={() => resolveLeftover(l, 'keep')}>Keep</button>
-                  <button onClick={() => resolveLeftover(l, 'drop')}>Drop</button>
-                </div>
+        {aisles.length === 0 && (
+          <div className="sl-empty">
+            <p>Nothing here.</p>
+            {storeList.length > 1 && (
+              <button className="sl-remove-store" onClick={removeStore}>Remove store</button>
+            )}
+          </div>
+        )}
+        {aisles.map((aisle) => (
+          <div key={aisle.key}>
+            <div className="sl-aisle-label">{aisle.label}</div>
+            {aisle.items.map((entry) => (
+              <div className={`sl-row${entry.status === 'bought' ? ' sl-row--bought' : ''}`} key={entry.id}>
+                <button className="sl-row__check" onClick={() => tick(entry)} aria-label="Mark bought">
+                  {entry.status === 'bought' ? '✓' : ''}
+                </button>
+                <span className="sl-row__name">{entry.itemName}</span>
+                <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
+                  <Trash size={18} />
+                </button>
               </div>
             ))}
           </div>
-        ) : (
-          <>
-            <button className="sl-start" onClick={startShop}>Start new shop</button>
+        ))}
 
-            {aisles.length === 0 && (
-              <div className="sl-empty">
-                <p>Nothing here.</p>
-                {storeList.length > 1 && (
-                  <button className="sl-remove-store" onClick={removeStore}>Remove store</button>
-                )}
-              </div>
-            )}
-            {aisles.map((aisle) => (
-              <div key={aisle.key}>
-                <div className="sl-aisle-label">{aisle.label}</div>
-                {aisle.items.map((entry) => (
-                  <div className={`sl-row${entry.status === 'bought' ? ' sl-row--bought' : ''}`} key={entry.id}>
-                    <button className="sl-row__check" onClick={() => tick(entry)} aria-label="Mark bought">
-                      {entry.status === 'bought' ? '✓' : ''}
-                    </button>
-                    <span className="sl-row__name">{entry.itemName}</span>
-                    <button className="sl-row__delete" onClick={() => remove(entry)} aria-label="Remove">
-                      <Trash size={18} />
-                    </button>
-                  </div>
-                ))}
+        <button className="sl-bin-toggle" onClick={() => setShowBin((v) => !v)}>
+          {showBin ? 'Hide' : 'Show'} recently removed{binItems.length ? ` (${binItems.length})` : ''}
+        </button>
+        {showBin && (
+          <div className="sl-bin">
+            {binItems.length === 0 && <p className="sl-empty">Nothing removed recently.</p>}
+            {binItems.map((b) => (
+              <div className="sl-row" key={b.id}>
+                <span className="sl-row__name">{b.itemName} <span className="sl-review__store">· {b.storeName}</span></span>
+                <button className="sl-row__restore" onClick={() => restoreFromBin(b)}>Restore</button>
               </div>
             ))}
-
-            <button className="sl-bin-toggle" onClick={() => setShowBin((v) => !v)}>
-              {showBin ? 'Hide' : 'Show'} recently removed{binItems.length ? ` (${binItems.length})` : ''}
-            </button>
-            {showBin && (
-              <div className="sl-bin">
-                {binItems.length === 0 && <p className="sl-empty">Nothing removed recently.</p>}
-                {binItems.map((b) => (
-                  <div className="sl-row" key={b.id}>
-                    <span className="sl-row__name">{b.itemName} <span className="sl-review__store">· {b.storeName}</span></span>
-                    <button className="sl-row__restore" onClick={() => restoreFromBin(b)}>Restore</button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
+          </div>
         )}
       </div>
 
-      {!leftovers && (
-        <div className="sl-phone__footer">
-          {hasChecked && (
-            <button className="sl-clear-checked" onClick={clearChecked}>Clear checked</button>
-          )}
-          <form className="sl-add" onSubmit={submitAdd}>
-            <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
-            <select value={addCategory} onChange={(e) => setAddCategory(e.target.value)} aria-label="Aisle">
-              <option value="">Uncategorised</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
-          </form>
-        </div>
-      )}
+      <div className="sl-phone__footer">
+        {hasChecked && (
+          <button className="sl-clear-checked" onClick={clearChecked}>Clear checked</button>
+        )}
+        <form className="sl-add" onSubmit={submitAdd}>
+          <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
+          <select value={addCategory} onChange={(e) => setAddCategory(e.target.value)} aria-label="Aisle">
+            <option value="">Uncategorised</option>
+            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+          <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
+        </form>
+      </div>
 
       {toast && (
         <UndoToast

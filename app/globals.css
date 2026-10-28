@@ -678,14 +678,7 @@ html, body {
                      padding: 0 var(--fh-space-2); color: var(--fh-ink-label); font: var(--fh-text-meta);
                      letter-spacing: var(--fh-track-meta); text-transform: uppercase; text-decoration: underline; }
 
-.sl-review__row { display: flex; align-items: center; justify-content: space-between;
-                   min-height: var(--fh-target-min); padding: var(--fh-space-3) var(--fh-space-2);
-                   border-top: var(--fh-border-hair); }
-.sl-review__row:first-child { border-top: 0; }
 .sl-review__store { color: var(--fh-ink-label); }
-.sl-review__actions { display: flex; gap: var(--fh-space-3); }
-.sl-review__actions button { min-height: 44px; border: 0; border-radius: var(--fh-radius-md);
-                              padding: 0 var(--fh-space-4); background: var(--fh-surface-sunken); }
 
 /* The one shopping-list surface for every device (fridge/iPad and phone
    alike — see docs/DECISIONS.md, 29 October 2026). 810px matches the

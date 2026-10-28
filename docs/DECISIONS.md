@@ -423,7 +423,30 @@ an actual phone, which is narrower regardless.
 Two features that existed only in the deleted panel — Start new shop (the
 weekly carry-over review) and the restorable bin — were ported into
 `ShoppingListScreen.jsx` rather than dropped; losing either silently would
-have been a real regression, not a simplification.
+have been a real regression, not a simplification. (Start new shop was
+itself removed days later — see below — but porting it first, rather than
+dropping it in the same pass as the panel deletion, kept these as two
+separately-reasoned decisions instead of one tangled one.)
+
+**Start new shop is removed outright, 29 October 2026 — "Clear checked"
+already covers the real use, and the un-bought-item review it also did was
+never used.** Confirmed by Matt. The gap this opens: nothing now prompts a
+decision on a needed-but-stale item — it sits until someone notices and
+deletes it by hand, where Start new shop's leftover review used to force
+that decision weekly. Accepted deliberately, not overlooked: real use
+showed the pattern was ticking bought, then wanting them gone, not a
+weekly ritual.
+
+This was caught causing real damage, not just unused: tapping the button
+with nothing to review did nothing visible, which read as broken and
+invited a second tap — each one silently closing the current shop and
+opening an empty one, stranding whatever was still on the list on a shop
+that was now invisible (`getList` only ever shows the open shop). Three
+closed shops' worth of real household items turned up split and
+hidden this way before it was noticed; all were migrated back onto the
+one shop left open. `getOpenShop()` and `list_entry.shop_id` stay —
+every list write still needs an open shop to attach to — but there is now
+permanently exactly one, never closed, never replaced.
 
 **Rose authors her own assignments. Email ingestion only proposes.**
 Extracted items land in a review queue she confirms. A missed uniform is a bad

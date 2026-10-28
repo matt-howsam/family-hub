@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/identity';
 import {
   addAdhocItem, setEntryStatus, deleteEntry, restoreEntry, clearChecked,
-  startNewShop, resolveLeftover, createStore, archiveStore, restoreStore,
+  createStore, archiveStore, restoreStore,
   createCategory, renameCategory,
 } from '@/lib/shoppinglist';
 
@@ -68,18 +68,6 @@ export async function POST(request) {
       const cleared = await clearChecked(body.status, body.storeId ?? null);
       return ok({ cleared });
     }
-
-    case 'startShop': {
-      const { leftovers, newShopId } = await startNewShop();
-      return ok({ leftovers, newShopId });
-    }
-
-    case 'resolveLeftover':
-      if (!body.id || !['keep', 'drop'].includes(body.resolution)) {
-        return badRequest('id and a resolution of keep or drop are required');
-      }
-      await resolveLeftover(body.id, body.resolution);
-      return ok();
 
     case 'addCategory': {
       if (!body.name) return badRequest('name required');
