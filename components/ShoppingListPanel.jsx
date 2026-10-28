@@ -3,8 +3,9 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, Plus, Trash, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
 import { groupByCategory } from '@/lib/categories';
+import UndoToast from '@/components/UndoToast';
 
-const TOAST_MS = 8000;
+const TOAST_MS = 4000;
 
 async function postList(body) {
   const res = await fetch('/api/shoppinglist', {
@@ -254,10 +255,11 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
         )}
 
         {toast && (
-          <div className="mp-toast">
-            <span>{toast.message}</span>
-            <button className="mp-toast__undo" onClick={() => { toast.undo(); setToast(null); }}>Undo</button>
-          </div>
+          <UndoToast
+            message={toast.message}
+            onUndo={() => { toast.undo(); setToast(null); }}
+            onDismiss={() => setToast(null)}
+          />
         )}
       </div>
     </div>
