@@ -87,12 +87,14 @@ Data: add a `shop` record (id, started\_at, completed\_at) and a `shop_id` on `l
 
 ## Where the list lives
 
-On the iPad, the list belongs with the meal planner. On the phone, it belongs wherever is fastest to reach in the shop.
+**Amended 29 October 2026.** The iPad originally got its own docked panel (opened from the meal planner header, meals and list visible together) while the phone got a separate full-page `/list` route — two implementations of the same list. In real use this read as inconsistent rather than tailored: the fridge iPad, now bench-sited, was landing on the phone's `/list` route anyway (the Today-zone shopping icon links there for every device), and Matt's call once that surfaced was to stop maintaining two UIs and make the UX the same everywhere. `/list` (`components/ShoppingListScreen.jsx`) is now the only shopping-list surface, store-tabbed, holding Start new shop, the ad-hoc field and the restorable bin — used identically from the fridge/bench iPad and from a phone. Its container caps at 810px (the fridge iPad's own portrait width, same number `.mp-page` uses) rather than a phone-width 560px, so it isn't needlessly narrow on the iPad; an actual phone is narrower than 810px regardless, so the cap never binds there.
+
+The meal planner's header keeps a "List · N" link through to `/list` rather than opening anything inline — see docs/DECISIONS.md.
 
 | Surface | Entry point | Behaviour |
 | --- | --- | --- |
-| iPad | List button in the meal planner header, with a count badge ("List · 14") | Opens a panel over the lower half of the week view, so meals and list are visible together while planning. Holds Start new shop, pantry ticks and the ad-hoc field. |
-| Phone (now) | Under More, plus a direct `/list` route | Opens straight to store tabs. The route can be saved to the home screen for one-tap access in the car park. |
+| iPad / fridge | "List · N" link in the meal planner header; the Today-zone shopping icon | Navigates to `/list` — store tabs, same as a phone. |
+| Phone (now) | The Today-zone shopping icon; a direct `/list` route | Opens straight to store tabs. The route can be saved to the home screen for one-tap access in the car park. |
 | Phone (redesign) | Its own bottom tab | Shopping is the phone's main job for this module, so it should not sit in More. |
 
 ## Recipe import

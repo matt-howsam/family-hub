@@ -1,10 +1,10 @@
 import { mondayOf, today, TZ } from '@/lib/week';
 import { getWeekPlan, getLibrary } from '@/lib/mealplanner';
-import { getOpenShop, getList, getStores, getBin, getCategories } from '@/lib/shoppinglist';
+import { getOpenShop, getList } from '@/lib/shoppinglist';
 import { getRole } from '@/lib/role';
 import PlannerScreen from '@/components/PlannerScreen';
 
-/* Dinner gets planned standing at the fridge, so this is never cached. */
+/* Dinner gets planned at the fridge, so this is never cached. */
 export const dynamic = 'force-dynamic';
 
 const DAY = 86400000;
@@ -15,16 +15,16 @@ export default async function PlannerPage() {
   const nextMonday = new Date(thisMonday.getTime() + 7 * DAY);
   const iso = (d) => d.toISOString().slice(0, 10);
 
-  const [thisWeek, nextWeek, library, role, shop, stores, bin, categories] = await Promise.all([
+  const [thisWeek, nextWeek, library, role, shop] = await Promise.all([
     getWeekPlan(thisMonday),
     getWeekPlan(nextMonday),
     getLibrary(),
     getRole(),
     getOpenShop(),
-    getStores(),
-    getBin(),
-    getCategories(),
   ]);
+  // Only the count for the header's "List · N" badge — the list itself
+  // lives at /list now, the one shopping-list surface for every device
+  // (see components/ShoppingListScreen.jsx).
   const list = await getList(shop?.id);
 
   // Sunday: this week has one night left, so the view opens on next week.
@@ -40,10 +40,7 @@ export default async function PlannerPage() {
       library={library}
       role={role}
       defaultWeek={defaultWeek}
-      stores={stores}
-      list={list}
-      bin={bin}
-      categories={categories}
+      listCount={list.length}
     />
   );
 }

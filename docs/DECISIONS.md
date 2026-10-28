@@ -405,6 +405,26 @@ the cook view. That access pattern is what a blob store and a CDN are for;
 pushing it through `bytea` would carry every recipe image through the
 database on every read for no benefit the household would notice.
 
+**The shopping list drops its iPad-specific docked panel, 29 October
+2026 — one surface for every device, not two.** Confirmed by Matt: the
+bench iPad was observed landing on the phone's `/list` route anyway (the
+Today-zone shopping icon links there regardless of device, and nothing
+about the panel vs. the page was actually device-detected), and once that
+surfaced, the call was to stop maintaining two implementations of the same
+list rather than fix the routing to keep them separate. `components/
+ShoppingListPanel.jsx` (the docked-in-the-planner version) is deleted;
+`components/ShoppingListScreen.jsx` at `/list` is now the only shopping-list
+UI, used identically from the fridge/bench iPad and from a phone. The
+planner header's "List · N" is a plain link to `/list`, not an inline
+panel trigger. `/list`'s container caps at 810px, not a phone-width 560px,
+matching `.mp-page`'s own fridge-iPad-width number — the cap never binds on
+an actual phone, which is narrower regardless.
+
+Two features that existed only in the deleted panel — Start new shop (the
+weekly carry-over review) and the restorable bin — were ported into
+`ShoppingListScreen.jsx` rather than dropped; losing either silently would
+have been a real regression, not a simplification.
+
 **Rose authors her own assignments. Email ingestion only proposes.**
 Extracted items land in a review queue she confirms. A missed uniform is a bad
 morning; a missed assessment is a grade. A tool she trusts completely beats a

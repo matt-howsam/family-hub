@@ -515,7 +515,8 @@ html, body {
 .mp-header { display: flex; align-items: center; justify-content: space-between;
              padding: var(--fh-space-2) var(--fh-space-2) var(--fh-space-6); }
 .mp-header__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
-.mp-header__list { min-height: var(--fh-target-min); border: 0; border-radius: var(--fh-radius-btn);
+.mp-header__list { display: inline-flex; align-items: center; min-height: var(--fh-target-min);
+                    border: 0; border-radius: var(--fh-radius-btn); text-decoration: none;
                     padding: 0 var(--fh-space-4); background: var(--fh-teal-wash); color: var(--fh-teal-ink);
                     font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
 .mp-switch { display: flex; gap: var(--fh-space-2); margin-bottom: var(--fh-space-5); }
@@ -618,43 +619,14 @@ html, body {
 }
 
 /* ==========================================================================
-   Shopping list — Phase 1 of docs/Family Hub — Meals, Recipes & Shopping
-   brief.md. The iPad surface (.sl-panel) docks inside the planner; the
-   phone surface (.sl-phone) is its own page at /list. Both reuse .mp-toast
-   and .mp-add__submit rather than duplicating them.
+   Shopping list — the one surface for every device, fridge/iPad and phone
+   alike (docs/DECISIONS.md, 29 October 2026 — the earlier split into a
+   docked iPad panel plus a separate phone page was a second UI to keep in
+   sync for no real benefit; components/ShoppingListScreen.jsx at /list is
+   now the only implementation). Reuses .mp-toast and .mp-add__submit
+   rather than duplicating them.
    ========================================================================== */
-.sl-backdrop { position: fixed; inset: 0; background: rgba(20,69,74,.28);
-               display: flex; align-items: flex-end; z-index: 20; }
-/* Header and footer are fixed flex children; only .sl-panel__scroll
-   scrolls — so "Start new shop" and the add form never get pushed out of
-   view by a long list, same reasoning as .sl-phone below. */
-.sl-panel { width: 100%; max-height: 70vh; display: flex; flex-direction: column;
-            background: var(--fh-surface);
-            border-radius: var(--fh-radius-xl) var(--fh-radius-xl) 0 0;
-            box-shadow: var(--fh-shadow-frame); overflow: hidden; }
-.sl-panel__header { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
-                     padding: var(--fh-space-7) var(--fh-space-7) var(--fh-space-2); }
 .sl-panel__title { font: var(--fh-text-title); letter-spacing: var(--fh-track-title); }
-.sl-panel__close { min-height: var(--fh-target-min); min-width: var(--fh-target-min);
-                    border: 0; background: none; color: var(--fh-ink-label); }
-.sl-panel__label { display: block; padding: var(--fh-space-5) 0 var(--fh-space-3);
-                    font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
-                    text-transform: uppercase; color: var(--fh-ink-label); }
-.sl-panel__scroll { flex: 1; overflow-y: auto; padding: 0 var(--fh-space-7); }
-.sl-panel__footer { flex-shrink: 0; padding: var(--fh-space-4) var(--fh-space-7) var(--fh-space-7);
-                     border-top: var(--fh-border-hair); background: var(--fh-surface); }
-.sl-review { flex: 1; overflow-y: auto; padding: 0 var(--fh-space-7) var(--fh-space-7); }
-
-.sl-start { display: block; width: 100%; min-height: var(--fh-target-min);
-            margin-bottom: var(--fh-space-6); border: 0; border-radius: var(--fh-radius-btn);
-            background: var(--fh-surface-sunken); color: var(--fh-ink-body);
-            font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
-
-.sl-group { margin-bottom: var(--fh-space-5); border-radius: var(--fh-radius-xl);
-            background: var(--fh-surface); box-shadow: var(--fh-shadow-card); overflow: hidden; }
-.sl-group__label { padding: var(--fh-space-3) var(--fh-space-6);
-                    font: var(--fh-text-label); letter-spacing: var(--fh-track-label);
-                    text-transform: uppercase; color: var(--fh-ink-label); }
 .sl-empty { padding: var(--fh-space-4) var(--fh-space-2); color: var(--fh-ink-label); }
 .sl-remove-store { display: inline-block; margin-top: var(--fh-space-2); min-height: 44px;
                     border: 0; background: none; padding: 0 var(--fh-space-2);
@@ -674,10 +646,6 @@ html, body {
 .sl-row:first-child { border-top: 0; }
 .sl-row__name { font: var(--fh-text-row); letter-spacing: var(--fh-track-answer); }
 .sl-row--bought .sl-row__name { color: var(--fh-ink-label); text-decoration: line-through; }
-.sl-row__tick { min-height: 44px; min-width: 76px; border: 0; border-radius: var(--fh-radius-md);
-                background: var(--fh-surface-sunken); color: var(--fh-ink-label);
-                font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta); text-transform: uppercase; }
-.sl-row__tick--have { background: var(--fh-teal-wash); color: var(--fh-teal-ink); }
 .sl-row__check { min-height: 44px; min-width: 44px; border-radius: var(--fh-radius-md);
                   border: var(--fh-border-input); background: var(--fh-surface);
                   color: var(--fh-teal-ink); font-weight: 700; }
@@ -692,22 +660,7 @@ html, body {
   padding: 0 var(--fh-space-4); font: var(--fh-text-body); font-family: var(--fh-font);
   margin-bottom: var(--fh-space-3); background: var(--fh-surface);
 }
-/* iPad add form's inline store + "new store" + aisle row — three controls
-   side by side rather than stacked, so picking a destination store stays
-   a single glance, not three full-width rows. */
-.sl-add__row { display: flex; gap: var(--fh-space-3); margin-bottom: var(--fh-space-3); }
-.sl-add__row select { flex: 1; margin-bottom: 0; }
-.sl-add__new-store { flex-shrink: 0; min-height: var(--fh-target-min); min-width: 44px;
-                      border: var(--fh-border-input); border-radius: var(--fh-radius-md);
-                      background: var(--fh-surface); color: var(--fh-ink-label); }
-/* The icon itself rotates 45° — a "+" and an "×" are the same glyph at
-   that angle, so the toggle reads as one continuous affordance rather
-   than a swap between two unrelated icons. */
-.sl-add__new-store svg { transition: transform .15s ease; }
-.sl-add__new-store--active svg { transform: rotate(45deg); }
-
-/* The inline "new store" form — same shape on both surfaces, triggered by
-   a "+" next to the phone's tabs or the iPad's add-to-store picker. */
+/* The inline "new store" form, triggered by the "+" next to the tabs. */
 .sl-add-store { display: flex; gap: var(--fh-space-3); margin: var(--fh-space-3) 0; }
 .sl-add-store input { flex: 1; min-height: var(--fh-target-min); border-radius: var(--fh-radius-md);
                        border: var(--fh-border-input); padding: 0 var(--fh-space-4);
@@ -734,13 +687,18 @@ html, body {
 .sl-review__actions button { min-height: 44px; border: 0; border-radius: var(--fh-radius-md);
                               padding: 0 var(--fh-space-4); background: var(--fh-surface-sunken); }
 
-/* Header (back link, title, store tabs) and footer (add form) are fixed
+/* The one shopping-list surface for every device (fridge/iPad and phone
+   alike — see docs/DECISIONS.md, 29 October 2026). 810px matches the
+   fridge iPad's own portrait width (.mp-page uses the same number), so
+   this isn't phone-width-capped when it's the iPad showing it; an actual
+   phone is narrower than 810px anyway, so the cap never binds there.
+   Header (back link, title, store tabs) and footer (add form) are fixed
    flex children; only .sl-phone__scroll scrolls. A long list no longer
    pushes "Add an item" below the fold, and the store you're adding to
    stays visible the whole time you're scanning it. */
-.sl-phone { max-width: 560px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column;
+.sl-phone { max-width: 810px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column;
             background: var(--fh-page-bg); }
-.sl-phone__header { flex-shrink: 0; padding: var(--fh-gutter-phone) var(--fh-gutter-phone) 0; }
+.sl-phone__header { flex-shrink: 0; padding: var(--fh-gutter-wall) var(--fh-gutter-wall) 0; }
 .sl-phone__titlebar { display: flex; align-items: center; justify-content: space-between;
                        margin: var(--fh-space-4) 0 var(--fh-space-5); }
 .sl-offline { font: var(--fh-text-meta); letter-spacing: var(--fh-track-meta); text-transform: uppercase;
@@ -757,9 +715,15 @@ html, body {
                 display: flex; align-items: center; justify-content: center; }
 .sl-tabs__add svg { transition: transform .15s ease; }
 .sl-tabs__add--active svg { transform: rotate(45deg); }
-.sl-phone__scroll { flex: 1; overflow-y: auto; padding: 0 var(--fh-gutter-phone); }
-.sl-phone__footer { flex-shrink: 0; padding: var(--fh-space-4) var(--fh-gutter-phone) var(--fh-gutter-phone);
+.sl-phone__scroll { flex: 1; overflow-y: auto; padding: 0 var(--fh-gutter-wall); }
+.sl-phone__footer { flex-shrink: 0; padding: var(--fh-space-4) var(--fh-gutter-wall) var(--fh-gutter-wall);
                      border-top: var(--fh-border-hair); background: var(--fh-page-bg); }
+
+@media (max-width: 560px) {
+  .sl-phone__header { padding: var(--fh-gutter-phone) var(--fh-gutter-phone) 0; }
+  .sl-phone__scroll { padding: 0 var(--fh-gutter-phone); }
+  .sl-phone__footer { padding: var(--fh-space-4) var(--fh-gutter-phone) var(--fh-gutter-phone); }
+}
 
 /* ==========================================================================
    Pairing — docs/identity.md. Deliberately the plainest screen in the
