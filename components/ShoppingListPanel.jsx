@@ -93,6 +93,24 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
     });
   };
 
+  // No scheduled clearing — "Have" items only stop showing once a new shop
+  // starts and leaves them behind. This is the immediate, manual version:
+  // clear everything currently ticked "Have", across every store at once,
+  // since the iPad shows them all together rather than one store at a time.
+  const clearChecked = async () => {
+    const toClear = items.filter((i) => i.status === 'have');
+    if (!toClear.length) return;
+    const ids = toClear.map((i) => i.id);
+    setItems((cur) => cur.filter((i) => !ids.includes(i.id)));
+    await postList({ action: 'clearChecked', status: 'have' });
+    router.refresh();
+    showToast(`${toClear.length} cleared`, async () => {
+      setItems((cur) => [...cur, ...toClear]);
+      await Promise.all(ids.map((id) => postList({ action: 'restore', id })));
+      router.refresh();
+    });
+  };
+
   const restoreFromBin = async (entry) => {
     setBinItems((cur) => cur.filter((b) => b.id !== entry.id));
     setItems((cur) => [...cur, entry]);
@@ -123,6 +141,7 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
   )
     .sort((a, b) => a.storeSort - b.storeSort)
     .map((group) => ({ ...group, aisles: groupByCategory(group.items, categories) }));
+  const hasChecked = items.some((i) => i.status === 'have');
 
   return (
     <div className="sl-backdrop" onClick={onClose}>
@@ -195,6 +214,9 @@ export default function ShoppingListPanel({ stores, list, bin, categories, onClo
             </div>
 
             <div className="sl-panel__footer">
+              {hasChecked && (
+                <button className="sl-clear-checked" onClick={clearChecked}>Clear checked</button>
+              )}
               {addingStore && (
                 <form className="sl-add-store" onSubmit={submitNewStore}>
                   <input

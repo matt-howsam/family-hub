@@ -710,6 +710,12 @@ html, body {
                   letter-spacing: var(--fh-track-meta); text-transform: uppercase; }
 .sl-bin { border-radius: var(--fh-radius-xl); background: var(--fh-surface-sunken); overflow: hidden; }
 
+/* Bulk-clear link, right corner of the footer — no scheduled clearing
+   exists, so this is the manual, immediate equivalent. */
+.sl-clear-checked { display: block; width: 100%; text-align: right; min-height: 44px; border: 0; background: none;
+                     padding: 0 var(--fh-space-2); color: var(--fh-ink-label); font: var(--fh-text-meta);
+                     letter-spacing: var(--fh-track-meta); text-transform: uppercase; text-decoration: underline; }
+
 .sl-review__row { display: flex; align-items: center; justify-content: space-between;
                    min-height: var(--fh-target-min); padding: var(--fh-space-3) var(--fh-space-2);
                    border-top: var(--fh-border-hair); }

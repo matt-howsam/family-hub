@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/identity';
 import {
-  addAdhocItem, setEntryStatus, deleteEntry, restoreEntry,
+  addAdhocItem, setEntryStatus, deleteEntry, restoreEntry, clearChecked,
   startNewShop, resolveLeftover, createStore, createCategory, renameCategory,
 } from '@/lib/shoppinglist';
 
@@ -47,6 +47,12 @@ export async function POST(request) {
       if (!body.id) return badRequest('id required');
       await restoreEntry(body.id);
       return ok();
+
+    case 'clearChecked': {
+      if (!['needed', 'have', 'bought'].includes(body.status)) return badRequest('valid status required');
+      const cleared = await clearChecked(body.status, body.storeId ?? null);
+      return ok({ cleared });
+    }
 
     case 'startShop': {
       const { leftovers, newShopId } = await startNewShop();

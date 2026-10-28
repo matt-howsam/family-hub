@@ -161,7 +161,25 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
     });
   };
 
+  // No scheduled clearing — bought items only drop off when a new shop
+  // starts (they don't carry forward). This is the immediate, manual version
+  // of that: clear what's checked on the tab you're looking at, right now.
+  const clearChecked = async () => {
+    const toClear = items.filter((i) => i.storeId === activeStore && i.status === 'bought');
+    if (!toClear.length) return;
+    const ids = toClear.map((i) => i.id);
+    setItems((cur) => cur.filter((i) => !ids.includes(i.id)));
+    await dispatch({ action: 'clearChecked', status: 'bought', storeId: activeStore });
+    router.refresh();
+    showToast(`${toClear.length} cleared`, async () => {
+      setItems((cur) => [...cur, ...toClear]);
+      await Promise.all(ids.map((id) => dispatch({ action: 'restore', id })));
+      router.refresh();
+    });
+  };
+
   const aisles = groupByCategory(items.filter((i) => i.storeId === activeStore), categories);
+  const hasChecked = items.some((i) => i.storeId === activeStore && i.status === 'bought');
 
   return (
     <main className="sl-phone">
@@ -227,6 +245,9 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
       </div>
 
       <div className="sl-phone__footer">
+        {hasChecked && (
+          <button className="sl-clear-checked" onClick={clearChecked}>Clear checked</button>
+        )}
         <form className="sl-add" onSubmit={submitAdd}>
           <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
           <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
