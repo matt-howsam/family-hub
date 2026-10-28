@@ -45,6 +45,7 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
     stores.find((s) => initialList.some((i) => i.storeId === s.id))?.id ?? stores[0]?.id ?? null,
   );
   const [name, setName] = useState('');
+  const [addCategory, setAddCategory] = useState('');
   const [addingStore, setAddingStore] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
   const [toast, setToast] = useState(null);
@@ -127,7 +128,10 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
     const trimmed = name.trim();
     if (!trimmed || !activeStore) return;
     setName('');
-    const result = await dispatch({ action: 'add', name: trimmed, storeId: activeStore });
+    const result = await dispatch({
+      action: 'add', name: trimmed, storeId: activeStore,
+      categoryId: addCategory ? Number(addCategory) : null,
+    });
     if (result.entry) setItems((cur) => [...cur, result.entry]);
     router.refresh();
   };
@@ -250,6 +254,10 @@ export default function ShoppingListScreen({ stores, initialList, categories }) 
         )}
         <form className="sl-add" onSubmit={submitAdd}>
           <input placeholder="Add an item…" value={name} onChange={(e) => setName(e.target.value)} />
+          <select value={addCategory} onChange={(e) => setAddCategory(e.target.value)} aria-label="Aisle">
+            <option value="">Uncategorised</option>
+            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
           <button type="submit" className="mp-add__submit" disabled={!name.trim()}>Add</button>
         </form>
       </div>
